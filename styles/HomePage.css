@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+.nav-holder {
+  position: fixed;
+  top: 0;
+  width: 95.9%;
+  background-color: #9f0000;
+  padding: 1.5vh 2vw;
+  z-index: 10;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  object-fit: cover;
+  display: inline-block;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.site-name{
+  font-size: 25px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.account-icon{
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  object-fit: cover;
+  display: inline-block;
+}
+
+.profile-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-icons img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.content {
+  max-width: 1250px;
+  margin: 20px auto;
+  text-align: justify;
+  padding: 0 20px;
+  margin-top: 100px;
+  font-size: 20px;
+  font-weight: 400;
+  color: black;
+}
+
+.cinemas {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 100px;
+  gap: 30px;
+}
+
+.cinema-card {
+  width: 250px;
+  text-align: center;
+}
+
+.cinema-card img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+
+.cinema-name {
+  margin: 10px 0;
+  margin-top: 40px;
+  font-weight: bold;
+  font-size: 25px;
+  color: #900;
+}
+
+.visit-btn {
+  display: inline-block;
+  width:180px;
+  height: 40px;
+  background-color: #a02020;
+  margin-top: 20px;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  line-height: 40px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 25px;
+  cursor: pointer;
+  transition: background 0.3s;
+  
+}
+
+.visit-btn:hover {
+  background-color: #7c0000;
+}
