@@ -1,253 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movies</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="flex flex-col justify-start items-center w-screen h-screen m-0">
-    <div class="w-[95%] h-fit mb-10 mt-10">
-      <span class="flex flex-row w-[100%] justify-between items-center">
-        <h1 class="text-2xl text-red-600 font-bold underline">
-          YOUR FAVORITES
-        </h1>
-        <select
-          class="rounded-xl h-[40px] w-[200px] border border-gray-500 p-2 hover:cursor-pointer hover:bg-gray-100 duration-200"
-        >
-          <option value="" selected>Choose a cinema</option>
-          <option value="SM" selected>SM</option>
-          <option value="Robinson" selected>Robinson</option>
-          <option value="Ayala" selected>Ayala</option>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoviEase</title>
+  <link rel="stylesheet" href="../styles/MoviePage.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <div class="nav-holder">
+    <nav class="navbar">
+      <div class="nav-left">
+        <img src="../assets/logo.jpg" alt="Logo" class="logo">
+        <span class="site-name">MoviEase</span>
+      </div>
+      <div class="nav-links">
+        <a href="#">MOVIES</a>
+        <a href="#">SCHEDULE</a>
+        <a href="#">CINEMAS</a>
+      </div>
+      <div class="nav-right">
+        <select class="cinema-dropdown">
+          <option>Choose a cinema</option>
+          <option>SM Cinema</option>
+          <option>Robinsons</option>
+          <option>Ayala Malls</option>
         </select>
-      </span>
-      <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
-        <!-- SAMPLE MOVIE DATA HEREE -->
+        <img src="../assets/account_icon.png" alt="Account" class="account-icon">
+      </div>
+    </nav>
+  </div>
 
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            BLACK PHONE 2
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            GOOD BOY
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            TRONE ARES
-          </h1>
-        </div>
+  <!-- Now Showing Section -->
+  <section class="movie-section">
+    <h2 class="section-title">NOW SHOWING</h2>
+    <div class="movie-container">
+      <div class="movie-card">
+        <img src="../assets/quezon.jpg" alt="QUEZON">
+        <p>QUEZON</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/blackphone2.jpg" alt="BLACK PHONE 2">
+        <p>BLACK PHONE 2</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/goodboy.jpg" alt="GOOD BOY">
+        <p>GOOD BOY</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/roofman.jpg" alt="ROOFMAN">
+        <p>ROOFMAN</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/tronares.jpg" alt="TRON ARES">
+        <p>TRON ARES</p>
       </div>
     </div>
+    <button class="show-more">Show More</button>
+  </section>
 
-    <div class="w-[95%] h-fit mb-10 mt-10">
-      <span class="flex flex-row w-[100%] justify-between items-center">
-        <h1 class="text-2xl text-red-600 font-bold underline">NOW SHOWING</h1>
-      </span>
-      <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
-        <!-- SAMPLE MOVIE DATA HEREE -->
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            QUEZON
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            BLACK PHONE 2
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            GOOD BOY
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            ROOF MAN
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            TRONE ARES
-          </h1>
-        </div>
+  <!-- Coming Soon Section -->
+  <section class="movie-section coming-soon">
+    <h2 class="section-title">COMING SOON</h2>
+    <div class="movie-container">
+      <div class="movie-card">
+        <img src="../assets/chainsawman.jpg" alt="CHAINSAW MAN REZE ARC">
+        <p>CHAINSAW MAN REZE ARC</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/tronares.jpg" alt="TRON ARES">
+        <p>TRON ARES</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/minamahal.jpg" alt="MINAMAHAL">
+        <p>MINAMAHAL</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/roofman.jpg" alt="ROOFMAN">
+        <p>ROOFMAN</p>
+      </div>
+      <div class="movie-card">
+        <img src="../assets/zootopia2.jpg" alt="ZOOTOPIA 2">
+        <p>ZOOTOPIA 2</p>
       </div>
     </div>
+    <button class="show-more">Show More</button>
+  </section>
 
-    <div class="w-[95%] h-fit mb-10 mt-10">
-      <span class="flex flex-row w-[100%] justify-between items-center">
-        <h1 class="text-2xl text-red-600 font-bold underline">COMING SOON</h1>
-      </span>
-      <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
-        <!-- SAMPLE MOVIE DATA HEREE -->
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            CHAINSAW MAIN REZE ARC
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            TRON ARES
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            MINAMAHAL
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            ROOF MAN
-          </h1>
-        </div>
-
-        <div
-          class="bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-        >
-          <div class="h-[300px] mb-5">
-            <img
-              class="rounded-2xl object-cover w-full h-full"
-              src="/src/movie_image.jpg"
-            />
-          </div>
-          <h1
-            class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
-          >
-            ZOOTOPIA 2
-          </h1>
-        </div>
-      </div>
-    </div>
-  </body>
+</body>
 </html>
