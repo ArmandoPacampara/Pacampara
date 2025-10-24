@@ -67,7 +67,6 @@
   cursor: pointer;
 }
 
-/* Movie Section */
 .movie-section {
   padding: 40px 60px;
   background-color: #fff;
@@ -96,7 +95,6 @@
 
 .movie-card {
   width: 160px;
-  text-align: center;
   background-color: #b10000;
   border-radius: 20px;
   padding-bottom: 10px;
