@@ -1,4 +1,29 @@
+<?php
+require_once 'config/db.php';
+require_once 'app/model/UserModel.php';
+require_once 'app/controller/LoginController.php';
 
+session_start();
+
+$database = new Database();
+$db = $database->getConnection();
+
+$userModel = new UserModel($db);
+$loginController = new LoginController($userModel);
+
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $error = $loginController->login($email, $password);
+
+    if ($error) {
+        $_SESSION['error'] = $error;
+        header("Location: index.php");
+        exit;
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -308,7 +333,12 @@
       <div class="divider"><span>or continue with</span></div>
 
 
-      <form>
+      <form method="POST" action="">
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
+                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
         <center>
         <div class="input-group">
           <i class=""></i>
