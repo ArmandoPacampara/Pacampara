@@ -2,6 +2,7 @@
 require_once 'config/db.php';
 require_once 'app/model/UserModel.php';
 require_once 'app/controller/LoginController.php';
+require_once 'app/controller/classes/LoginController.php';
 
 session_start();
 

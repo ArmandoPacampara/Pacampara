@@ -1,26 +1,26 @@
 <?php
-require_once 'config/db.php';
+require_once __DIR__ . '/../config/db.php';
 
 class UserModel {
-    private $db;
+    private $conn;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct($db = null) {
+        $this->conn = $db ?? require __DIR__ . '/../config/db.php';
     }
 
     public function getAllUsers() {
         $query = "SELECT * FROM users";
-        return $this->db->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        return $this->conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-     public function getUserByEmail($email) {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE user_Email = ?");
+    public function getUserByEmail($email) {
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_Email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch();
     }
 
     public function getUserById($id) {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE user_ID = ?");
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_ID = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -28,12 +28,12 @@ class UserModel {
     public function createUser($data) {
         $query = "INSERT INTO users (user_Name, user_Email, user_contact, user_Password, email_Recovery, role_ID)
                   VALUES (:name, :email, :contact, :password, :recovery, :role)";
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->conn->prepare($query);
         return $stmt->execute($data);
     }
 
     public function deleteUser($id) {
-        $stmt = $this->db->prepare("DELETE FROM users WHERE user_ID = ?");
+        $stmt = $this->conn->prepare("DELETE FROM users WHERE user_ID = ?");
         return $stmt->execute([$id]);
     }
 }

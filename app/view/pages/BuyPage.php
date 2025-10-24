@@ -29,7 +29,6 @@
       <div class="bg-gray-500 w-[42%] h-[1px]"></div>
     </div>
 
-    <!-- AVAILABLE SCHEDULE LIST HERE -->
     <div
       class="flex justify-between items-center w-full h-[70px] bg-red-700 rounded-xl p-4 mb-5"
     >
