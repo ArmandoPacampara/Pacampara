@@ -1,0 +1,385 @@
+///
+<?php
+require_once 'config/db.php';
+require_once 'app/model/UserModel.php';
+require_once 'app/controller/LoginController.php';
+require_once 'app/controller/classes/LoginController.php';
+
+session_start();
+
+$database = new Database();
+$db = $database->getConnection();
+
+$userModel = new UserModel($db);
+$loginController = new LoginController($userModel);
+
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $error = $loginController->login($email, $password);
+
+    if ($error) {
+        $_SESSION['error'] = $error;
+        header("Location: index.php");
+        exit;
+    }
+}
+?>
+///
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoviEase Login</title>
+  <style>
+    /* prototype palang poh */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+
+    body {
+      background-color: #a31212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+
+    .wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+
+    .poster-container {
+      background-color: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      width: 380px;
+      height: 520px;
+      transition: transform 0.3s ease;
+      margin-right: -260px;
+      position : relative;
+    }
+
+
+    .poster-container:hover {
+      transform: translateY(-8px);
+    }
+
+
+    .poster-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+
+
+    .container {
+      position: unset;
+      background-color: #fff;
+      border-radius: 25px;
+      width: 920px;
+      padding: 80px;
+      padding-left: 280px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+
+    .logo img {
+      width: 40px;
+      margin-right: 10px;
+    }
+
+
+    .logo h1 {
+      color: #a31212;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+      font-size: 18px;
+    }
+
+
+    .social-login {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      width: 80%;
+    }
+
+
+    .social-btn {
+      flex: 1;
+      border: 1px solid #a31212;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 500;
+      color: #333;
+      background: #fff;
+      transition: 0.3s;
+    }
+
+
+    .social-btn:hover {
+      background-color: #fcecec;
+    }
+
+
+    .divider {
+      display: flex;
+      align-items: center;
+      color: #999;
+      margin: 20px 0;
+    }
+
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #ccc;
+    }
+
+
+    .divider span {
+      margin: 0 10px;
+      font-size: 14px;
+    }
+
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+
+    .input-group input {
+      width: 80%;
+      padding: 12px 40px 12px 40px;
+      border: 1px solid #a31212;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+
+    .input-group i {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      color: #a31212;
+    }
+
+
+    .input-group .eye {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      color: #a31212;
+      cursor: pointer;
+    }
+
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 20px;
+      padding-left: 100px;
+      padding-right: 100px;
+    }
+
+
+    .options label {
+      color: #a31212;
+    }
+
+
+    .options a {
+      color: #a31212;
+      text-decoration: none;
+    }
+
+
+    .options a:hover {
+      text-decoration: underline;
+    }
+
+
+    .login-btn {
+      width: 80%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #a31212;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+
+    .login-btn:hover {
+      background-color: #870e0e;
+    }
+
+
+    .signup {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+
+    .signup a {
+      color: #a31212;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+
+    .signup a:hover {
+      text-decoration: underline;
+    }
+
+
+    @media (max-width: 900px) {
+      .wrapper {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+
+      .poster-container {
+        width: 70%;
+        height: 300px;
+      }
+
+
+      .container {
+        position: unset;
+        width: 80%;
+      }
+    }
+
+    .google_logo, .facebook_logo {
+      width: 25px;
+      height: 25px;
+      margin-right: 10px;
+    }
+  </style>
+
+
+
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+
+  <div class="wrapper">
+    <div class="poster-container">
+      <img src="https://cdn.myanimelist.net/images/anime/1806/126216.jpg" alt="Chainsaw Man Poster">
+    </div>
+
+
+    <div class="container">
+      <div class="logo">
+        <img src="assets/MoviEase_logo (2).png" alt="logo">
+        <h1>MoviEase</h1>
+      </div>
+
+
+      <h2>Log In to your Account</h2>
+
+      <center>
+      <div class="social-login">
+        <div class="social-btn"><i class="fab fa-google" style="color:#DB4437;margin-right:5px;"></i name="google"> <img src="assets/google_logo.png" alt="google logo" class="google_logo">Google</div>
+        <div class="social-btn"><i class="fab fa-facebook-f" style="color:#1877F2;margin-right:5px;" name="facebook"></i><img src="assets/fb_logo.png" alt="facebook logo" class="facebook_logo">Facebook</div>
+      </div>
+      </center>
+
+
+      <div class="divider"><span>or continue with</span></div>
+
+
+      <form method="POST" action="">
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
+                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+        <center>
+        <div class="input-group">
+          <i class=""></i>
+          <input type="email" placeholder="Email" required name="email">
+        </div>
+        
+
+
+        <div class="input-group">
+          <i class=""></i>
+          <input type="password" placeholder="Password" required name="password">
+          <i class=""></i>
+        </div>
+        
+
+
+        <div class="options">
+          <label><input type="checkbox" name="remember-me"> Remember me</label>
+          <a href="#" name="forgot-password">Forgot Password?</a>
+        </div>
+
+
+        <button type="submit" class="login-btn" name="login">LOGIN</button>
+
+
+        <div class="signup">
+          Don’t have an account? <a href="#">Create an account</a>
+        </div>
+        </center>
+      </form>
+    </div>
+  </div>
+
+
+</body>
+</html>
+
+
+
+
+
