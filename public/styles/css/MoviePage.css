@@ -95,6 +95,7 @@
 
 .movie-card {
   width: 160px;
+  text-align: center;
   background-color: #b10000;
   border-radius: 20px;
   padding-bottom: 10px;
@@ -118,7 +119,6 @@
   transform: scale(1.05);
 }
 
-/* Show More Button */
 .show-more {
   display: block;
   margin: 0 auto;
