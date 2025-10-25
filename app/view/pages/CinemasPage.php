@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoviEase</title>
-  <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinemas</title>
+    <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
 </head>
 <body>
-
-   <div class="nav-holder">
-    <nav class="navbar">
-      <div class="nav-left">
-        <img src="../../../public/assets/images/logo_icon.jpg" alt="Logo" class="logo">
-        <span class="site-name">MoviEase</span>
-      </div>
-      <div class="nav-links">
-        <a href="#">MOVIES</a>
-        <a href="#">SCHEDULE</a>
-        <a href="#">CINEMAS</a>
-      </div>
-      <div class="nav-right">
-        <img src="../../../public/assets/images/account_icon.png" alt="Account" class="account-icon">
-      </div>
-    </nav>
-  </div>
-  
-  <div class="container">
+    <div class="container">
     <h2>MoviEase is an online movie ticket reservation system that makes booking faster, easier, and more convenient.</h2>
     <p>It allows users to check movie schedules, view available seats, and buy tickets securely from anywhere.</p>
     <p>With MoviEase, you can easily reserve your seats for cinemas in SM, Robinsons, and Ayala Malls, all in one platform. No more long lines — just smooth, real-time booking and instant digital tickets for a hassle-free movie experience.</p>
