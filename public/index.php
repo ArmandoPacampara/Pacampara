@@ -1,30 +1,7 @@
 <?php
-require_once 'config/db.php';
-require_once 'app/model/UserModel.php';
-require_once 'app/controller/LoginController.php';
-require_once 'app/controller/classes/LoginController.php';
-
-session_start();
-
-$database = new Database();
-$db = $database->getConnection();
-
-$userModel = new UserModel($db);
-$loginController = new LoginController($userModel);
-
-if (isset($_POST['login'])) {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    $error = $loginController->login($email, $password);
-
-    if ($error) {
-        $_SESSION['error'] = $error;
-        header("Location: index.php");
-        exit;
-    }
-}
+require_once __DIR__ . '/../app/model/Login.php';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -316,7 +293,7 @@ if (isset($_POST['login'])) {
 
     <div class="container">
       <div class="logo">
-        <img src="assets/MoviEase_logo (2).png" alt="logo">
+      <img src="assets/images/MoviEase_logo (2).png" alt="logo">
         <h1>MoviEase</h1>
       </div>
 
@@ -325,8 +302,8 @@ if (isset($_POST['login'])) {
 
       <center>
       <div class="social-login">
-        <div class="social-btn"><i class="fab fa-google" style="color:#DB4437;margin-right:5px;"></i name="google"> <img src="assets/google_logo.png" alt="google logo" class="google_logo">Google</div>
-        <div class="social-btn"><i class="fab fa-facebook-f" style="color:#1877F2;margin-right:5px;" name="facebook"></i><img src="assets/fb_logo.png" alt="facebook logo" class="facebook_logo">Facebook</div>
+        <div class="social-btn"><i class="fab fa-google" style="color:#DB4437;margin-right:5px;"></i name="google"> <img src="assets/images/google_logo.png" alt="google logo" class="google_logo">Google</div>
+        <div class="social-btn"><i class="fab fa-facebook-f" style="color:#1877F2;margin-right:5px;" name="facebook"></i><img src="assets/images/fb_logo.png" alt="facebook logo" class="facebook_logo">Facebook</div>
       </div>
       </center>
 
