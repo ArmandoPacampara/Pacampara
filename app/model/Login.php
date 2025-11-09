@@ -17,7 +17,6 @@ if (isset($_POST['login'])) {
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = mysqli_real_escape_string($con, $_POST['password']);
 
-    // Fetch user
     $query = "SELECT * FROM users WHERE user_Email = '$email' LIMIT 1";
     $result = mysqli_query($con, $query);
 
@@ -48,12 +47,12 @@ if (isset($_POST['login'])) {
             exit;
         } else {
             $_SESSION['error'] = "Incorrect password.";
-            header("Location: login.php");
+            header("Location: index.php");
             exit;
         }
     } else {
         $_SESSION['error'] = "No account found with that email.";
-        header("Location: login.php");
+        header("Location: index.php");
         exit;
     }
 }

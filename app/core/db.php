@@ -1,23 +1,12 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "moviease_db";
-    private $username = "root";
-    private $password = "";
-    public $conn;
+$host = "localhost";
+$user = "root";
+$pass = "admin";
+$dbname = "moviease_db";
 
-    public function getConnection() {
-        $this->conn = null;
+$con = new mysqli($host, $user, $pass, $dbname);
 
-        try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name,
-                                  $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $exception) {
-            echo "Database connection error: " . $exception->getMessage();
-        }
-
-        return $this->conn;
-    }
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
 }
 ?>

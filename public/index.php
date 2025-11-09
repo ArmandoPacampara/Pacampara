@@ -317,6 +317,7 @@ require_once __DIR__ . '/../app/model/Login.php';
                 <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
             </div>
         <?php endif; ?>
+        
         <center>
         <div class="input-group">
           <i class=""></i>
@@ -343,7 +344,7 @@ require_once __DIR__ . '/../app/model/Login.php';
 
 
         <div class="signup">
-          Don’t have an account? <a href="#">Create an account</a>
+          Don’t have an account? <a href="../app/view/pages/Signup.html">Create an account</a>
         </div>
         </center>
       </form>
