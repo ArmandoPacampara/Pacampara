@@ -19,7 +19,7 @@
       <div class="h-[400px] p-5">
         <img
           class="rounded-2xl object-cover w-full h-full"
-          src="/src/movie_image.jpg"
+          src="../../../public/assets/images/blackphone.jpg"
         />
       </div>
     </div>
@@ -42,7 +42,7 @@
         class="flex flex-row flex-nowrap justify-end items-center w-[60%] gap-2"
       >
         <button
-          class="bg-gray-200 rounded-xl text-red-700 font-bold p-2 w-[100px] hover:bg-white duration-200"
+          class="bg-gray-200 rounded-xl text-red-700 font-bold p-2 w-[100px] hover:bg-white duration-200 "
         >
           12PM
         </button>
