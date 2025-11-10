@@ -1,13 +1,11 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "moviease_db";
-    private $username = "root";
-    private $password = "MandoMando_11";
-    public $conn;
+$host = "localhost";
+$user = "root";
+$pass = "admin";
+$dbname = "moviease_db";
+$port = 3307;
 
-    function getConnection() {
-        $mysqli = new mysqli("localhost", "root", "MandoMando_11", "moviease_db");
+$con = new mysqli($host, $user, $pass, $dbname, $port);
 
         // Check connection
         if ($mysqli->connect_error) {
@@ -17,4 +15,7 @@ class Database {
         return $mysqli; // <-- return the connection
     }
 }
+
+$now_showing_result = $con->query("SELECT * FROM movies WHERE movie_Status='Now Showing'");
+$coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_Status='Coming Soon'");
 ?>
