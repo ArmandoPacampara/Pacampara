@@ -65,7 +65,7 @@ body {
   width: 920px;
   height: 610px; 
   padding: 80px;
-  padding-top: 110px;
+  padding-top: 70px;
   padding-left: 290px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
@@ -261,38 +261,46 @@ input[type="checkbox"] {
 
       <div class="divider"></div>
 
-      <form method="POST" action="">
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
-                <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-        
-        <center>
-          <div class="input-group">
-            <img src="public/assets/images/mail_icon.png" class="email" alt="email"><input type="email" placeholder="Email" required name="email">
-          </div>
-
-          <div class="input-group">
-            <img src="public/assets/images/lock_icon.png" class="pass" alt="password"><input type="password" placeholder="Password" required name="password">
-          </div>
-          
-        <div class="options">
-          <label><input type="checkbox" name="remember-me"> Remember me</label>
-          <a href="#" name="forgot-password"><b>Forgot Password?</b></a>
+<form method="POST" action="">
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
+            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
         </div>
+    <?php endif; ?>
 
+    <center>
+      <div class="input-group">
+        <img src="public/assets/images/mail_icon.png" class="email" alt="email">
+        <input type="email" placeholder="Email" required name="email">
+      </div>
 
-        <button type="submit" class="login-btn" name="login">LOGIN</button>
+      <div class="input-group">
+        <img src="public/assets/images/lock_icon.png" class="pass" alt="password">
+        <input type="password" placeholder="Password" required name="password">
+      </div>
 
+      <div class="options">
+        <label><input type="checkbox" name="remember-me"> Remember me</label>
+        <a href="#" name="forgot-password"><b>Forgot Password?</b></a>
+      </div>
 
-        <div class="signup">
-          Don’t have an account? &nbsp;&nbsp;<a href="app/view/pages/Signup.php"> Create an account</a>
-        </div>
-        </center>
-      </form>
+      <div class="g-recaptcha" data-sitekey="6LcWAgwsAAAAALl4FSBG6_2tVBB8msJpmc88e8KR"></div>
+      <br>
+
+      <button type="submit" class="login-btn" name="login">LOGIN</button>
+
+      <div class="signup">
+        Don’t have an account? &nbsp;&nbsp;<a href="app/view/pages/Signup.php"> Create an account</a>
+      </div>
+    </center>
+</form>
+
+<!-- reCAPTCHA script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </div>
   </div>
+
+
 
 
 </body>

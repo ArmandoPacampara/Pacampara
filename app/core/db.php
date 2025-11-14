@@ -3,11 +3,13 @@ class Database {
     private $host = "localhost";
     private $db_name = "moviease_db";
     private $username = "root";
-    private $password = "MandoMando_11";
+    private $password = "admin";
+
+    private $root = "3307";
     public $conn;
 
     function getConnection() {
-        $mysqli = new mysqli("localhost", "root", "MandoMando_11", "moviease_db");
+        $mysqli = new mysqli("localhost", "root", "admin", "moviease_db", 3307);
 
         // Check connection
         if ($mysqli->connect_error) {
