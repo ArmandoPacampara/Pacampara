@@ -8,6 +8,8 @@ class Database {
     private $root = "3307";
     public $conn;
 
+    
+
     function getConnection() {
         $mysqli = new mysqli("localhost", "root", "admin", "moviease_db", 3307);
 
@@ -16,7 +18,14 @@ class Database {
             die("Connection failed: " . $mysqli->connect_error);
         }
 
-        return $mysqli; // <-- return the connection
+        return $mysqli; 
     }
 }
+// baguhin niyo nalang yung details ng connection dito
+$host = "localhost";
+$user = "root";
+$pass = "admin";
+$dbname = "moviease_db";
+$port = 3307;
+$con = new mysqli($host, $user, $pass, $dbname, $port);
 ?>

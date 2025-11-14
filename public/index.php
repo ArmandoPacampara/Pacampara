@@ -236,7 +236,7 @@ form .input-group input[type="password"] {
 }
 
 input[type="checkbox"] {
-  accent-color: #a31212; /* your theme red */
+  accent-color: #a31212; 
   cursor: pointer;
   margin-top: -10px;
   margin-bottom: 10px;
