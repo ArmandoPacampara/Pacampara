@@ -1,0 +1,202 @@
+/* Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #ffffff;
+}
+
+/* ===== HEADER ===== */
+.page-header {
+  padding: 20px 0;
+  text-align: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.logo-section i {
+  font-size: 2.2rem;
+  color: #a10000;
+}
+
+.logo-section h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #a10000;
+  font-weight: bold;
+}
+
+/* ===== SEARCH + FILTER ===== */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 420px;
+  border: 2px solid #a10000;
+  border-radius: 25px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.search-bar button {
+  background: #a10000;
+  border: none;
+  color: white;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background: #cc0000;
+}
+
+.filter select {
+  border: none;
+  background: #a10000;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.filter select:hover {
+  background: #cc0000;
+}
+
+/* ===== MOVIE LIST ===== */
+.movie-list {
+  margin-left: 100px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 30px;
+}
+
+/* Common Card Style */
+.movie-card {
+  width: 180px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 2px solid #a10000;
+  background: white;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+/* Poster */
+.movie-card img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+/* Movie title */
+.movie-card h3 {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #a10000;
+  font-weight: bold;
+}
+
+/* Add Card */
+.add-card {
+  background: #a10000;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4rem;
+  cursor: pointer;
+  height: 320px;
+}
+
+.add-card:hover {
+  background: #cc0000;
+}
+
+/* ===== POPUP MODAL ===== */
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-box {
+  width: 350px;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.modal-box h2 {
+  margin-top: 0;
+  color: #a10000;
+}
+
+.modal-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 18px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#cancelBtn {
+  background: #777;
+  color: white;
+}
+
+#saveBtn {
+  background: #a10000;
+  color: white;
+}
