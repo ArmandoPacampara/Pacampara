@@ -1,5 +1,5 @@
 <?php
-require_once 'app/model/Login.php';
+require_once '../app/model/Login.php';
 ?>
 
 <!DOCTYPE html>
@@ -253,7 +253,7 @@ input[type="checkbox"] {
 
     <div class="container">
       <div class="logo">
-      <img src="public/assets/images/movies_icon.png" alt="logo">
+      <img src="../public/assets/images/movies_icon.png" alt="logo">
         <h1>MoviEase</h1>
       </div>
 
@@ -270,12 +270,12 @@ input[type="checkbox"] {
 
     <center>
       <div class="input-group">
-        <img src="public/assets/images/mail_icon.png" class="email" alt="email">
+        <img src="../public/assets/images/mail_icon.png" class="email" alt="email">
         <input type="email" placeholder="Email" required name="email">
       </div>
 
       <div class="input-group">
-        <img src="public/assets/images/lock_icon.png" class="pass" alt="password">
+        <img src="../public/assets/images/lock_icon.png" class="pass" alt="password">
         <input type="password" placeholder="Password" required name="password">
       </div>
 
@@ -290,7 +290,7 @@ input[type="checkbox"] {
       <button type="submit" class="login-btn" name="login">LOGIN</button>
 
       <div class="signup">
-        Don’t have an account? &nbsp;&nbsp;<a href="app/view/pages/Signup.php"> Create an account</a>
+        Don’t have an account? &nbsp;&nbsp;<a href="../app/view/pages/Signup.php"> Create an account</a>
       </div>
     </center>
 </form>

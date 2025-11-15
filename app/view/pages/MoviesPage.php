@@ -2,10 +2,9 @@
 // MoviesPage.php
 include '../../../app/core/db.php'; 
 
-
-$now_showing_result = $con->query("SELECT * FROM movies WHERE movie_Status='Now Showing'");
-$coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_Status='Coming Soon'");
-$you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='You might like'");
+$now_showing_result = $con->query("SELECT * FROM movies WHERE movie_status='Now Showing'");
+$coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Coming Soon'");
+$you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_status='You might like'");
 ?>
 
 <!DOCTYPE html>
@@ -40,8 +39,8 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
       <?php while($movie = $you_might_like_result->fetch_assoc()) { ?>
         <div
           class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_Name']); ?>"
-          data-hours="<?= $movie['movie_Hours']; ?>"
+          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+          data-hours="<?= $movie['movie_hours']; ?>"
           data-price="<?= $movie['price']; ?>"
           data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
         >
@@ -54,7 +53,7 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
           <h1
             class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
           >
-            <?= htmlspecialchars($movie['movie_Name']); ?>
+            <?= htmlspecialchars($movie['movie_name']); ?>
           </h1>
         </div>
       <?php } ?>
@@ -70,8 +69,8 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
       <?php while($movie = $now_showing_result->fetch_assoc()) { ?>
         <div
           class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_Name']); ?>"
-          data-hours="<?= $movie['movie_Hours']; ?>"
+          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+          data-hours="<?= $movie['movie_hours']; ?>"
           data-price="<?= $movie['price']; ?>"
           data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
         >
@@ -84,7 +83,7 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
           <h1
             class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
           >
-            <?= htmlspecialchars($movie['movie_Name']); ?>
+            <?= htmlspecialchars($movie['movie_name']); ?>
           </h1>
         </div>
       <?php } ?>
@@ -100,8 +99,8 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
       <?php while($movie = $coming_soon_result->fetch_assoc()) { ?>
         <div
           class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_Name']); ?>"
-          data-hours="<?= $movie['movie_Hours']; ?>"
+          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+          data-hours="<?= $movie['movie_hours']; ?>"
           data-price="<?= $movie['price']; ?>"
           data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
         >
@@ -114,7 +113,7 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
           <h1
             class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center"
           >
-            <?= htmlspecialchars($movie['movie_Name']); ?>
+            <?= htmlspecialchars($movie['movie_name']); ?>
           </h1>
         </div>
       <?php } ?>

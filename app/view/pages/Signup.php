@@ -416,7 +416,7 @@ form .input-group input[type="text"] {
       <h2>Sign Up your Account</h2>
       <div class="divider"></div>
 
-      <form>
+      <form action="../../model/Signup.php" method="POST" enctype="multipart/form-data">
         <center>
           <div class="container2">
             <div class="profile-upload">

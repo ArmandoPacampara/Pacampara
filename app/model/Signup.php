@@ -1,7 +1,7 @@
 <?php
 session_start();
-include 'db.php';
-require '../../../vendor/autoload.php'; 
+include '../core/db.php';
+require '../../vendor/autoload.php'; 
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -52,12 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'your_email@gmail.com'; 
-        $mail->Password   = 'your_app_password';  
+        $mail->Username   = 'austrianeonlouis@gmail.com'; 
+        $mail->Password   = 'gpziilcgmlgisenm';  
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
-        $mail->setFrom('your_email@gmail.com', 'MoviEase');
+        $mail->setFrom('austrianeonlouis@gmail.com', 'MoviEase');
         $mail->addAddress($email, $name);
         $mail->isHTML(true);
         $mail->Subject = 'MoviEase Email Verification OTP';
