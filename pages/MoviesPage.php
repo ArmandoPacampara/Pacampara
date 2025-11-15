@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movies</title>
+      <link rel="stylesheet" href="../styles/MoviesPageA.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="flex flex-col justify-start items-center w-screen h-screen m-0">
