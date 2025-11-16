@@ -8,30 +8,34 @@ class SignupController {
         $this->userModel = new UserModel($db);
     }
 
-    public function register($name, $email, $contact, $password, $recoveryEmail, $roleID) {
+    public function register($name, $email, $contact, $password, $confirmPassword): ?string {
 
+        // Password match check
+        if ($password !== $confirmPassword) {
+            return "Passwords do not match.";
+        }
+
+        // Duplicate email check
         if ($this->userModel->getUserByEmail($email)) {
-            return "Email is already registered.";
+            return "Email already exists.";
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        // Hash password
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        $userData = [
-            'name' => $name,
-            'email' => $email,
-            'contact' => $contact,
-            'password' => $hashedPassword,
-            'recoveryEmail' => $recoveryEmail,
-            'roleID' => $roleID
-        ];
-        $result = $this->userModel->createUser($userData);
+        // Create user (no recoveryEmail, no role param)
+        $created = $this->userModel->createUser(
+            $name,
+            $email,
+            $contact,
+            $passwordHash
+        );
 
-        if ($result) {
-            header('Location: /app/view/pages/login.php');
-            exit;
-        } else {
-            return "Failed to register user. Please try again.";
+        if ($created) {
+            return null; // success
         }
+
+        return "Registration failed. Please try again.";
     }
 }
 ?>

@@ -1,203 +1,176 @@
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
 
-    body {
-      background-color: #a31212;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 40px;
-    }
-
-    .poster-container {
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      width: 380px;
-      height: 520px;
-      margin-right: -260px;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-
-    .poster-container:hover {
-      transform: translateY(-8px);
-    }
-
-    .poster-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 20px;
-    }
-
-    .container {
-      position: unset;
-      background-color: #fff;
-      border-radius: 25px;
-      height: 609px;
-      width: 920px;
-      padding: 50px;
-      padding-left: 280px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .icon i {
-      font-size: 60px;
-      color: #a31212;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 12px;
-      width: 20px;
-      height: 20px;
-      pointer-events: none;
-    }
-
-    .input-group input:focus {
-      border-color: #870e0e;
-    }
-
-    form .input-group input[type="text"]{
-      width: 80%;
-      margin-top: 3px;
-      padding: 12px 16px;
-      border: 1px solid #a31212;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      color: #333 !important;
-      background-color: #fff6f6;
-      transition: all 0.3s ease;
-    }
-    
-    .next-btn {
-      width: 120px;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background-color: #a31212;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      display: block;
-      margin: 20px auto 0;
-    }
-
-    .next-btn:hover {
-      background-color: #870e0e;
-    }
-
-    .dots {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-      color: #a31212;
-    }
-
-    .dots span {
-      height: 8px;
-      width: 8px;
-      background-color: #a31212;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 4px;
-    }
-
-    .dots span:nth-child(2) {
-      opacity: 0.6;
-    }
-
-    @media (max-width: 900px) {
-      .wrapper {
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .poster-container {
-        width: 70%;
-        height: 300px;
-      }
-
-    .container {
-        width: 80%;
-        padding-left: 40px;
-      }
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-    
-    .logo h1 {
-      color: #a31212;
-      font-size: 38px;
-      font-weight: 700;
-    }
-
-    .icon {
-      width: 40px;
-    }
-
-    .logo img {
-      width: 42px;
-      margin-top: -10px;
-      margin-right: 10px;
-    }
-        .container2 {
-      display: flex;
-      flex-direction: column;
-      padding-top: 30px;
-      padding-left: 100px;
-    }
-    .button-container {
-      display: flex;
-      justify-content: right;
-      margin-top: 10px;
-      padding-left: 260px;
-    }
-
-    .container2 {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* ===== Global Styles ===== */
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-.back-btn {
+body {
+  background-color: #a31212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  margin-right: 50px;
+  font-size: 16px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: #999;
+  margin-bottom: -15px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+.divider span {
+  font-size: 14px;
+}
+
+/* ===== Layout ===== */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.poster-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 380px;
+  height: 520px;
+  margin-right: -260px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.poster-container:hover {
+  transform: translateY(-8px);
+}
+
+.poster-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.container {
+  position: unset;
+  background-color: #fff;
+  border-radius: 25px;
+  height: 609px;
+  width: 920px;
+  padding-top: 70px;
+  padding-bottom: 110p8x;
+  padding-right: 80px;
+  padding-left: 310px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Logo Section ===== */
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo img {
+  width: 42px;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
+.logo h1 {
+  color: #a31212;
+  font-size: 38px;
+  font-weight: 700;
+  margin-right: 50px;
+}
+
+/* ===== Input Fields (icon outside input) ===== */
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 92%;
+}
+
+.input-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 15px; 
+  flex-shrink: 0;
+}
+
+form .input-group input[type="text"] {
+  width: 80%;
+  margin-top: 3px;
+  padding: 12px 16px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  color: #333 !important;
+  background-color: #fff6f6;
+  transition: all 0.3s ease;
+}
+
+.input-group input,
+.input-group select {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #870e0e;
+}
+
+/* ===== Buttons ===== */
+.next-btn {
   width: 120px;
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background-color: #666;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #fff;
+  margin-right: 100px;
+}
+
+.back-btn,.signup-btn {
+  width: 120px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
   color: #fff;
   font-weight: bold;
   cursor: pointer;
@@ -205,51 +178,77 @@
   margin-right: 10px;
 }
 
-.back-btn:hover {
-  background-color: #555;
-}
-
 .signup-btn {
-  width: 120px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background-color: #a31212;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+  margin-right: 100px;
 }
 
+.next-btn,
+.signup-btn {
+  background-color: #a31212;
+}
+
+.next-btn:hover,
 .signup-btn:hover {
   background-color: #870e0e;
 }
 
-.input-group select {
-  width: 80%;
-  padding: 12px 12px 12px 40px;
-  border: 1px solid #a31212;
-  border-radius: 8px;
-  outline: none;
-  font-size: 14px;
-  transition: border 0.3s;
-  background-color: white;
-  cursor: pointer;
+.back-btn {
+  background-color: #666;
 }
 
-.input-group select:focus {
-  border-color: #870e0e;
+.back-btn:hover {
+  background-color: #555;
 }
 
-.step-2-buttons{
-        display: flex;
-      justify-content: center;
-      margin-top: 30px;
-      padding-left: 130px;
+/* ===== Step Buttons Container ===== */
+.button-container {
+  display: flex;
+  justify-content: right;
+  margin-top: 10px;
+  padding-left: 260px;
 }
 
+.step-2-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  padding-left: 130px;
+}
 
-/* Genre checkbox styles */
+/* ===== Step Transition ===== */
+.container2 {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  padding-left: 40px;
+  padding-right: 60px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ===== Dots Indicator ===== */
+.dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-right: 55px;
+  color: #a31212;
+}
+
+.dots span {
+  height: 8px;
+  width: 8px;
+  background-color: #a31212;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 4px;
+  transition: opacity 0.3s;
+}
+
+.dots span:nth-child(2) {
+  opacity: 0.6;
+}
+
+/* ===== Genre Checkbox Section ===== */
 .genre-group {
   margin-bottom: 20px;
   width: 80%;
@@ -264,10 +263,35 @@
   text-align: left;
 }
 
+.genres-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 20px 20px; /* row and column spacing */
+  width: 80%;
+  margin: 0 auto;
+  margin-left: 10px;
+}
+
+.genres-container label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.genres-container input[type="checkbox"] {
+  accent-color: #a31212; /* red checkbox theme */
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 .checkbox-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 5px;
 }
 
 .checkbox-label {
@@ -293,16 +317,147 @@
   accent-color: #a31212;
 }
 
-/* Optional: Style for step 2 button container */
-.button-container.step-2-buttons {
-  justify-content: center;
-  gap: 15px;
-  padding-left: 0;
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .poster-container {
+    width: 70%;
+    height: 300px;
+  }
+
+  .container {
+    width: 80%;
+    padding-left: 40px;
+  }
 }
 
-.checkbox-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 3px;
-  margin-top: 5px;
+/* Center the captcha container */
+#g-recaptcha {
+  display: block;
+  margin: 0 auto; /* Center horizontally */
+  text-align: center; /* Make sure the elements inside are centered */
+  width: 100%; /* Ensure the reCAPTCHA takes full width available */
+  max-width: 500px; /* You can adjust this width based on preference */
+}
+
+#captchaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px; /* Same as the width above */
+  margin: 0 auto; /* Center horizontally */
+}
+
+/* ===== Profile Upload Section ===== */
+.profile-upload {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  margin-right: 200px;
+}
+
+.profile-upload label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 50%;
+  border: 2px solid #a31212;
+  border-color: #870e0e;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.profile-upload label:hover {
+  transform: scale(1.05);
+}
+
+.profile-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  background-color: #fff6f6;
+}
+
+.upload-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 35%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-upload label:hover .upload-overlay {
+  opacity: 1;
+}
+
+/* LOCATION DESIGN */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  width: 380px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-btn {
+  background: #a31212;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: gray;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }

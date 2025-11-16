@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase Booking Steps</title>
-  <link rel="stylesheet" href="../../../public/styles/css/checkout.css">
+  <link rel="stylesheet" href="../../../../public/styles/css/checkout.css">
 </head>
 <body>
   <div class="booking-container">
     <div class="movie-header">
-      <img src="../../../public/assets/images/blackphone.jpg" alt="Black Phone Movie Poster" class="movie-poster">
+      <img src="../../../../public/assets/images/blackphone.jpg" alt="Black Phone Movie Poster" class="movie-poster">
       <div class="movie-info">
         <h2 class="movie-title">QUEZON</h2>
         <div class="address" >

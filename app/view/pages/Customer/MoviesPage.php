@@ -1,6 +1,6 @@
 <?php
 // MoviesPage.php
-include '../../../app/core/db.php'; 
+include '../../../../app/core/db.php'; 
 
 
 $now_showing_result = $con->query("SELECT * FROM movies WHERE movie_Status='Now Showing'");
@@ -64,9 +64,9 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
   <!-- NOW SHOWING -->
   <div class="w-[95%] h-fit mb-10 mt-10">
     <span class="flex flex-row w-[100%] justify-between items-center">
-      <h1 class="text-2xl text-red-600 font-bold underline">NOW SHOWING</h1>
+      <h1 class="text-2xl text-red-600 font-bold underline mb-[10px]">NOW SHOWING</h1>
     </span>
-    <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
+    <div class="flex flex-wrap gap-7 justify-start w-full h-fit p-3">
       <?php while($movie = $now_showing_result->fetch_assoc()) { ?>
         <div
           class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
@@ -78,7 +78,7 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
           <div class="h-[300px] mb-5">
             <img
               class="rounded-2xl object-cover w-full h-full"
-              src="../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
+              src="../../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
             />
           </div>
           <h1
@@ -108,7 +108,7 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
           <div class="h-[300px] mb-5">
             <img
               class="rounded-2xl object-cover w-full h-full"
-              src="../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
+              src="../../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
             />
           </div>
           <h1
@@ -145,11 +145,11 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
 
         popUpContent.innerHTML = `
           <div class="h-full rounded-3xl">
-            <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
+            <img class="rounded-3xl object-cover w-full h-full" src="../../../../public/assets/images/${poster}" />
           </div>
           <div class="flex flex-col w-[70%] h-full">
             <div class="h-[70%]">
-              <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
+              <img class="rounded-3xl object-cover w-full h-full" src="../../../../public/assets/images/${poster}" />
             </div>
             <div class="flex flex-row justify-between items-center w-full h-full p-5">
               <h1 class="text-red-700 font-bold text-3xl">${hours}</h1>
