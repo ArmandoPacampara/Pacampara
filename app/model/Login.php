@@ -12,7 +12,7 @@ if (isset($_POST['login'])) {
 
     if (!$captcha) {
         $_SESSION['error'] = "Please verify that you're not a robot.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 
@@ -26,7 +26,7 @@ if (isset($_POST['login'])) {
 
     if (!$responseKeys["success"]) {
         $_SESSION['error'] = "Captcha verification failed. Please try again.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 
@@ -64,12 +64,12 @@ if (isset($_POST['login'])) {
 
         } else {
             $_SESSION['error'] = "Incorrect email or password.";
-            header("Location: index.php");
+            header("Location: ");
             exit;
         }
     } else {
         $_SESSION['error'] = "Incorrect email or password.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 }

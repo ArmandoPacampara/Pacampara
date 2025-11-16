@@ -1,31 +1,33 @@
 <?php
-class Database {
+class Database
+{
     private $host = "localhost";
     private $db_name = "moviease_db";
     private $username = "root";
-    private $password = "admin";
+    private $password = ""; //admin yung password 
 
-    private $root = "3307";
+    private $port = "3307";
     public $conn;
 
-    
 
-    function getConnection() {
-        $mysqli = new mysqli("localhost", "root", "admin", "moviease_db", 3307);
+
+    function getConnection()
+    {
+        $mysqli = new mysqli($this->host, $this->username, $this->password, $this->db_name, $this->port);
 
         // Check connection
         if ($mysqli->connect_error) {
             die("Connection failed: " . $mysqli->connect_error);
         }
 
-        return $mysqli; 
+        return $mysqli;
     }
 }
 // baguhin niyo nalang yung details ng connection dito
-$host = "localhost";
-$user = "root";
-$pass = "admin";
-$dbname = "moviease_db";
-$port = 3307;
-$con = new mysqli($host, $user, $pass, $dbname, $port);
+// $host = "localhost";
+// $user = "root";
+// $pass = "admin";
+// $dbname = "moviease_db";
+// $port = 3307;
+// $con = new mysqli($host, $user, $pass, $dbname, $port);
 ?>
