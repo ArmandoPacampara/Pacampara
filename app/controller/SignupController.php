@@ -1,14 +1,23 @@
 <?php
 require_once __DIR__ . '/../model/UserModel.php';
 
-class SignupController {
+class SignupController
+{
     private $userModel;
 
-    public function __construct($db) {
-        $this->userModel = new UserModel($db);
+    public function __construct($db = null)
+    {
+        if ($db)
+            $this->userModel = new UserModel($db);
     }
 
-    public function register($name, $email, $contact, $password, $recoveryEmail, $roleID) {
+    // public function index()
+    // {
+    //     require __DIR__ . '/../view/pages/Signup.php';
+    // }
+
+    public function register($name, $email, $contact, $password, $recoveryEmail, $roleID)
+    {
 
         if ($this->userModel->getUserByEmail($email)) {
             return "Email is already registered.";
@@ -27,7 +36,7 @@ class SignupController {
         $result = $this->userModel->createUser($userData);
 
         if ($result) {
-            header('Location: /app/view/pages/login.php');
+            header('Location: ');
             exit;
         } else {
             return "Failed to register user. Please try again.";
