@@ -1,66 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoviEase Admin Dashboard</title>
-  <link rel="stylesheet" href="../../../public/styles/css/AdminPage.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoviEase Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/css/AdminPage.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- ===== TOP NAVBAR ===== -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+        <i class="fa-solid fa-film"></i>
+        <span class="navbar-title">MoviEase</span>
+      </div>
+      <h2 class="navbar-center">ADMIN DASHBOARD</h2>
+      <div class="navbar-right">
+        <i class="fa-solid fa-gear"></i>
+        <img
+          src="assets/images/profile_icon.png"
+          alt="Admin"
+          class="profile-pic"
+        />
+      </div>
+    </header>
 
-  <!-- ===== TOP NAVBAR ===== -->
-  <header class="navbar">
-    <div class="navbar-left">
-      <button id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
-      <i class="fa-solid fa-film"></i>
-      <span class="navbar-title">MoviEase</span>
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="container">
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar" id="sidebar">
+        <nav class="menu">
+          <a href="dashboard.html" target="content-frame"
+            ><i class="fa-solid fa-gauge"></i> <span>Dashboard</span></a
+          >
+          <a href="UsersPage.html" target="content-frame"
+            ><i class="fa-solid fa-users"></i> <span>Users</span></a
+          >
+          <a href="cinemas.html" target="content-frame"
+            ><i class="fa-solid fa-building"></i> <span>Cinemas</span></a
+          >
+          <a href="MoviesPageA.html" target="content-frame"
+            ><i class="fa-solid fa-film"></i> <span>Movies</span></a
+          >
+          <a href="schedule.html" target="content-frame"
+            ><i class="fa-solid fa-calendar-days"></i> <span>Calendar</span></a
+          >
+          <a href="seats.html" target="content-frame"
+            ><i class="fa-solid fa-chair"></i> <span>Seats</span></a
+          >
+          <a href="reports.html" target="content-frame"
+            ><i class="fa-solid fa-chart-line"></i> <span>Reports</span></a
+          >
+        </nav>
+      </aside>
+
+      <!-- ===== MAIN CONTENT AREA (IFRAME) ===== -->
+      <main class="main-content">
+        <iframe
+          name="content-frame"
+          src="dashboard.html"
+          frameborder="0"
+          class="content-frame"
+        ></iframe>
+      </main>
     </div>
-    <h2 class="navbar-center">ADMIN DASHBOARD</h2>
-    <div class="navbar-right">
-      <i class="fa-solid fa-gear"></i>
-      <img src="profile.jpg" alt="Admin" class="profile-pic">
-    </div>
-  </header>
 
-  <!-- ===== MAIN CONTAINER ===== -->
-  <div class="container">
+    <!-- ===== JS FOR SIDEBAR TOGGLE ===== -->
+    <script>
+      const toggleButton = document.getElementById("toggleSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const menuLinks = sidebar.querySelectorAll(".menu a span");
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar" id="sidebar">
-      <nav class="menu">
-        <a href="dashboard.html" target="content-frame"><i class="fa-solid fa-gauge"></i> <span>Dashboard</span></a>
-        <a href="UsersPage.html" target="content-frame"><i class="fa-solid fa-users"></i> <span>Users</span></a>
-        <a href="cinemas.html" target="content-frame"><i class="fa-solid fa-building"></i> <span>Cinemas</span></a>
-        <a href="MoviesPageA.html" target="content-frame"><i class="fa-solid fa-film"></i> <span>Movies</span></a>
-        <a href="schedule.html" target="content-frame"><i class="fa-solid fa-calendar-days"></i> <span>Calendar</span></a>
-        <a href="seats.html" target="content-frame"><i class="fa-solid fa-chair"></i> <span>Seats</span></a>
-        <a href="reports.html" target="content-frame"><i class="fa-solid fa-chart-line"></i> <span>Reports</span></a>
-      </nav>
-    </aside>
+      toggleButton.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
 
-    <!-- ===== MAIN CONTENT AREA (IFRAME) ===== -->
-    <main class="main-content">
-      <iframe name="content-frame" src="dashboard.html" frameborder="0" class="content-frame"></iframe>
-    </main>
-
-  </div>
-
-  <!-- ===== JS FOR SIDEBAR TOGGLE ===== -->
-  <script>
-    const toggleButton = document.getElementById('toggleSidebar');
-    const sidebar = document.getElementById('sidebar');
-    const menuLinks = sidebar.querySelectorAll('.menu a span');
-
-    toggleButton.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-
-      // hide or show the text labels
-      menuLinks.forEach(span => {
-        span.style.display = sidebar.classList.contains('collapsed') ? 'none' : 'inline';
+        // hide or show the text labels
+        menuLinks.forEach((span) => {
+          span.style.display = sidebar.classList.contains("collapsed")
+            ? "none"
+            : "inline";
+        });
       });
-    });
-  </script>
-
-</body>
+    </script>
+  </body>
 </html>

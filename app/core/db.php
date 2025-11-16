@@ -1,12 +1,14 @@
 <?php
-class Database {
+class Database
+{
     private $host = "localhost";
     private $db_name = "moviease_db";
     private $username = "root";
     private $password = "MandoMando_11";
     private $port = 3306;
 
-    public function getConnection() {
+    public function getConnection()
+    {
         $conn = new mysqli(
             $this->host,
             $this->username,

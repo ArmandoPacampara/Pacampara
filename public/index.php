@@ -1,72 +1,55 @@
 <?php
-require_once '../app/model/Login.php';
-?>
+require_once __DIR__ . "/../app/core/Router.php";
+require_once __DIR__ . "/../app/controller/LoginController.php";
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoviEase Login</title>
-  <link rel="stylesheet" href="../public/styles/css/Login.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
-<body>
+$router = new Router();
 
-  <div class="wrapper">
-    <div class="poster-container">
-      <img src="https://cdn.myanimelist.net/images/anime/1806/126216.jpg" alt="Chainsaw Man Poster">
-    </div>
+$router->add("", function () {
+  require __DIR__ . '/../app/view/pages/Login.php';
+});
 
-    <div class="container">
-      <div class="logo">
-      <img src="../public/assets/images/movies_icon.png" alt="logo">
-        <h1>MoviEase</h1>
-      </div>
+$router->add("register", function () {
+  require __DIR__ . '/../app/view/pages/Signup.php';
+});
 
-      <h2>Log In to your Account</h2>
+$router->add("home", function () {
+  require __DIR__ . '/../app/view/pages/HomePage.php';
+});
 
-      <div class="divider"></div>
+$router->add("movies", function () {
+  require __DIR__ . '/../app/view/pages/MoviesPage.php';
+});
 
-<form method="POST" action="">
-    <?php if (isset($_SESSION['error'])): ?>
-        <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
-            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
-        </div>
-    <?php endif; ?>
+$router->add("cinemas", function () {
+  require __DIR__ . '/../app/view/pages/CinemasPage.php';
+});
 
-    <center>
-      <div class="input-group">
-        <img src="../public/assets/images/mail_icon.png" class="email" alt="email">
-        <input type="email" placeholder="Email" required name="email">
-      </div>
+$router->add("buy", function () {
+  require __DIR__ . '/../app/view/pages/BuyPage.php';
+});
 
-      <div class="input-group">
-        <img src="../public/assets/images/lock_icon.png" class="pass" alt="password">
-        <input type="password" placeholder="Password" required name="password">
-      </div>
+$router->add("schedule", function () {
+  require __DIR__ . '/../app/view/pages/SchedulePage.php';
+});
 
-      <div class="options">
-        <label><input type="checkbox" name="remember-me"> Remember me</label>
-        <a href="#" name="forgot-password"><b>Forgot Password?</b></a>
-      </div>
+$router->add("checkout", function () {
+  require __DIR__ . '/../app/view/pages/CheckoutPage.php';
+});
 
-      <br>
+$router->add("account", function () {
+  require __DIR__ . '/../app/view/pages/AccPage.html';
+});
 
-      <button type="submit" class="login-btn" name="login">LOGIN</button>
+$router->add("admin", function () {
+  require __DIR__ . '/../app/view/pages/AdminPage.html';
+});
 
-      <div class="signup">
-        Don’t have an account? &nbsp;&nbsp;<a href="../app/view/pages/Customer/Signup.php"> Create an account</a>
-      </div>
-    </center>
-</form>
+$router->add("admin/user", function () {
+  require __DIR__ . '/../app/view/pages/UsersPage.html';
+});
 
+$router->add("admin/movies", function () {
+  require __DIR__ . '/../app/view/pages/MoviesPageA.html';
+});
 
-    </div>
-  </div>
-
-
-
-
-</body>
-</html>
+$router->handleRequest();
