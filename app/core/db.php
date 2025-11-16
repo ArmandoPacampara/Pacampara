@@ -4,8 +4,8 @@ class Database
     private $host = "localhost";
     private $db_name = "moviease_db";
     private $username = "root";
-    private $password = "MandoMando_11";
-    private $port = 3306;
+    private $password = "";
+    private $port = 3307;
 
     public function getConnection()
     {

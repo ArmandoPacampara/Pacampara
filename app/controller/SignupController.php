@@ -11,17 +11,8 @@ class SignupController
             $this->userModel = new UserModel($db);
     }
 
-<<<<<<< HEAD
-    public function register($name, $email, $contact, $password, $confirmPassword): ?string {
-=======
-    // public function index()
-    // {
-    //     require __DIR__ . '/../view/pages/Signup.php';
-    // }
-
-    public function register($name, $email, $contact, $password, $recoveryEmail, $roleID)
+    public function register($name, $email, $contact, $password, $confirmPassword): ?string
     {
->>>>>>> staging
 
         // Password match check
         if ($password !== $confirmPassword) {
@@ -44,16 +35,8 @@ class SignupController
             $passwordHash
         );
 
-<<<<<<< HEAD
         if ($created) {
             return null; // success
-=======
-        if ($result) {
-            header('Location: ');
-            exit;
-        } else {
-            return "Failed to register user. Please try again.";
->>>>>>> staging
         }
 
         return "Registration failed. Please try again.";

@@ -13,27 +13,27 @@ $router->add("register", function () {
 });
 
 $router->add("home", function () {
-  require __DIR__ . '/../app/view/pages/HomePage.php';
+  require __DIR__ . '/../app/view/pages/customer/HomePage.php';
 });
 
 $router->add("movies", function () {
-  require __DIR__ . '/../app/view/pages/MoviesPage.php';
+  require __DIR__ . '/../app/view/pages/customer/MoviesPage.php';
 });
 
 $router->add("cinemas", function () {
-  require __DIR__ . '/../app/view/pages/CinemasPage.php';
+  require __DIR__ . '/../app/view/pages/customer/CinemasPage.php';
 });
 
 $router->add("buy", function () {
-  require __DIR__ . '/../app/view/pages/BuyPage.php';
+  require __DIR__ . '/../app/view/pages/customer/BuyPage.php';
 });
 
 $router->add("schedule", function () {
-  require __DIR__ . '/../app/view/pages/SchedulePage.php';
+  require __DIR__ . '/../app/view/pages/customer/SchedulePage.php';
 });
 
 $router->add("checkout", function () {
-  require __DIR__ . '/../app/view/pages/CheckoutPage.php';
+  require __DIR__ . '/../app/view/pages/customer/CheckoutPage.php';
 });
 
 $router->add("account", function () {
@@ -41,15 +41,15 @@ $router->add("account", function () {
 });
 
 $router->add("admin", function () {
-  require __DIR__ . '/../app/view/pages/AdminPage.html';
+  require __DIR__ . '/../app/view/pages/admin/AdminPage.html';
 });
 
 $router->add("admin/user", function () {
-  require __DIR__ . '/../app/view/pages/UsersPage.html';
+  require __DIR__ . '/../app/view/pages/admin/UsersPage.html';
 });
 
 $router->add("admin/movies", function () {
-  require __DIR__ . '/../app/view/pages/MoviesPageA.html';
+  require __DIR__ . '/../app/view/pages/admin/MoviesPageA.html';
 });
 
 $router->handleRequest();
