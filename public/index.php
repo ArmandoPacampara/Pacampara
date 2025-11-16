@@ -8,6 +8,10 @@ $router->add("", function () {
   require __DIR__ . '/../app/view/pages/Login.php';
 });
 
+$router->add("account_sample", function () {
+  require __DIR__ . '/../app/view/pages/AccPage.php';
+});
+
 $router->add("register", function () {
   require __DIR__ . '/../app/view/pages/Signup.php';
 });
