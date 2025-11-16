@@ -1,39 +1,44 @@
 <?php
-require_once __DIR__ . '/../../config/db.php';
 
 class UserModel {
-    private $conn;
+    private $con;
 
-    public function __construct($db = null) {
-        $this->conn = $db ?? require __DIR__ . '/../config/db.php';
-    }
-
-    public function getAllUsers() {
-        $query = "SELECT * FROM users";
-        return $this->conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
+    public function __construct($db) {
+        $this->con = $db;
     }
 
     public function getUserByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_Email = ?");
-        $stmt->execute([$email]);
-        return $stmt->fetch();
+        $stmt = $this->con->prepare("SELECT * FROM users WHERE user_Email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
-    public function getUserById($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_ID = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    public function createUser($name, $email, $contact, $passwordHash, $avatar = null) {
+        $roleID = 2; // Customer
+        $recoveryEmail = $email; // Default recovery email
 
-    public function createUser($data) {
-        $query = "INSERT INTO users (user_Name, user_Email, user_contact, user_Password, email_Recovery, role_ID)
-                  VALUES (:name, :email, :contact, :password, :recovery, :role)";
-        $stmt = $this->conn->prepare($query);
-        return $stmt->execute($data);
-    }
+        if ($avatar === null) {
+            $avatar = "account_icon.png";
+        }
 
-    public function deleteUser($id) {
-        $stmt = $this->conn->prepare("DELETE FROM users WHERE user_ID = ?");
-        return $stmt->execute([$id]);
+        $stmt = $this->con->prepare("
+            INSERT INTO users (role_ID, user_Name, user_Email, user_contact, user_Password, email_Recovery, user_avatar)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmt->bind_param(
+            "issssss",
+            $roleID,
+            $name,
+            $email,
+            $contact,
+            $passwordHash,
+            $recoveryEmail,
+            $avatar
+        );
+
+        return $stmt->execute();
     }
 }
+?>

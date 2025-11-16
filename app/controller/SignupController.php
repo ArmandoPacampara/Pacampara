@@ -11,6 +11,9 @@ class SignupController
             $this->userModel = new UserModel($db);
     }
 
+<<<<<<< HEAD
+    public function register($name, $email, $contact, $password, $confirmPassword): ?string {
+=======
     // public function index()
     // {
     //     require __DIR__ . '/../view/pages/Signup.php';
@@ -18,29 +21,42 @@ class SignupController
 
     public function register($name, $email, $contact, $password, $recoveryEmail, $roleID)
     {
+>>>>>>> staging
 
-        if ($this->userModel->getUserByEmail($email)) {
-            return "Email is already registered.";
+        // Password match check
+        if ($password !== $confirmPassword) {
+            return "Passwords do not match.";
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        // Duplicate email check
+        if ($this->userModel->getUserByEmail($email)) {
+            return "Email already exists.";
+        }
 
-        $userData = [
-            'name' => $name,
-            'email' => $email,
-            'contact' => $contact,
-            'password' => $hashedPassword,
-            'recoveryEmail' => $recoveryEmail,
-            'roleID' => $roleID
-        ];
-        $result = $this->userModel->createUser($userData);
+        // Hash password
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
+        // Create user (no recoveryEmail, no role param)
+        $created = $this->userModel->createUser(
+            $name,
+            $email,
+            $contact,
+            $passwordHash
+        );
+
+<<<<<<< HEAD
+        if ($created) {
+            return null; // success
+=======
         if ($result) {
             header('Location: ');
             exit;
         } else {
             return "Failed to register user. Please try again.";
+>>>>>>> staging
         }
+
+        return "Registration failed. Please try again.";
     }
 }
 ?>

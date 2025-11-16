@@ -56,24 +56,24 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_Status='Y
   <!-- NOW SHOWING -->
   <div class="w-[95%] h-fit mb-10 mt-10">
     <span class="flex flex-row w-[100%] justify-between items-center">
-      <h1 class="text-2xl text-red-600 font-bold underline">NOW SHOWING</h1>
+      <h1 class="text-2xl text-red-600 font-bold underline mb-[10px]">NOW SHOWING</h1>
     </span>
     <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
       <?php while ($movie = $now_showing_result->fetch_assoc()) { ?>
-        <div
-          class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_Name']); ?>" data-hours="<?= $movie['movie_Hours']; ?>"
-          data-price="<?= $movie['price']; ?>" data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>">
-          <div class="h-[300px] mb-5">
-            <img class="rounded-2xl object-cover w-full h-full"
-              src="assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>" />
-          </div>
-          <h1 class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center">
-            <?= htmlspecialchars($movie['movie_Name']); ?>
-          </h1>
-        </div>
-      <?php } ?>
-    </div>
+          <div
+            class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
+            data-name="<?= htmlspecialchars($movie['movie_Name']); ?>" data-hours="<?= $movie['movie_Hours']; ?>"
+            data-price="<?= $movie['price']; ?>" data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>">
+            <div class="h-[300px] mb-5">
+              <img class="rounded-2xl object-cover w-full h-full"
+                src="assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>" />
+            </div>
+            <h1 class="flex justify-center items-center text-white font-bold text-xl w-[100%] text-center">
+              <?= htmlspecialchars($movie['movie_Name']); ?>
+        </h1>
+      </div>
+    <?php } ?>
+  </div>
   </div>
 
 

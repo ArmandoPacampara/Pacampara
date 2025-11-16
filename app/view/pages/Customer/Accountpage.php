@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Account - MoviEase</title>
+  <link rel="stylesheet" href="../../../public/styles/css/AccPage.css">
+</head>
+<body>
+  <div class="account-container">
+    
+    <div class="profile-header">
+      <div class="profile-info-centered">
+        <img src="../../../public/assets/images/account_icon.png" alt="Profile Picture" class="profile-img">
+        <div class="name-role">
+          <h1>User Name Holder</h1>
+          <p class="role">CUSTOMER</p>
+        </div>
+      </div>
+      <div class="edit-icon">
+        <i class="fas fa-pen"></i>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-column">
+        <label>Email</label>
+        <input type="text" placeholder="Enter Email">
+
+        <label>Phone</label>
+        <input type="text" placeholder="Enter Phone Number">
+      </div>
+
+      <div class="info-column">
+        <label>Genre</label>
+        <input type="text" placeholder="Favorite Genre">
+
+        <label>Address</label>
+        <input type="text" placeholder="Enter Address">
+      </div>
+    </div>
+
+    <!-- Booking Section -->
+    <div class="records-section">
+      <div class="record-box">
+        <div class="record-header">Current Booking</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Schedule</th>
+              <th>Qty</th>
+              <th>Movie Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="3" class="actions">
+                <h2>No Current Booking</h2>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="record-box">
+        <div class="record-header">Past Records</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Schedule</th>
+              <th>Qty</th>
+              <th>Movie Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="3" class="actions">
+                <h2>No Past Records</h2>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Font Awesome for icon -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
