@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase</title>
-  <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
+  <link rel="stylesheet" href="styles/css/HomepageStyle.css">
   <style>
-    html, body {
+    html,
+    body {
       height: 100%;
       margin: 0;
       padding: 0;
@@ -36,33 +38,35 @@
     }
 
     .navbar a:hover {
-      color: #f87171; /* hover effect */
+      color: #f87171;
+      /* hover effect */
     }
   </style>
 </head>
+
 <body>
 
   <div class="nav-holder">
     <nav class="navbar">
       <div class="nav-left">
-        <img src="../../../public/assets/images/logo_icon.jpg" alt="Logo" class="logo">
+        <img src="assets/images/logo_icon.jpg" alt="Logo" class="logo">
         <span class="site-name">MoviEase</span>
       </div>
 
       <div class="nav-links">
         <!-- We use data-page attributes to identify which page to load -->
-        <a href="MoviesPage.php" class="nav-link" target="main-frame">MOVIES</a>
-        <a href="SchedulePage.php" class="nav-link" target="main-frame">SCHEDULE</a>
-        <a href="CinemasPage.php" class="nav-link" target="main-frame">CINEMAS</a>
+        <a href="/movies" class="nav-link" target="main-frame">MOVIES</a>
+        <a href="/schedule" class="nav-link" target="main-frame">SCHEDULE</a>
+        <a href="/cinemas" class="nav-link" target="main-frame">CINEMAS</a>
       </div>
 
       <div class="nav-right">
-        <img src="../../../public/assets/images/account_icon.png" alt="Account" class="account-icon">
+        <img src="assets/images/account_icon.png" alt="Account" class="account-icon">
       </div>
     </nav>
   </div>
 
-  <iframe name="main-frame" id="mainFrame" src="CinemasPage.php"></iframe>
+  <iframe name="main-frame" id="mainFrame" src="/cinemas"></iframe>
 
   <script>
     // const navLinks = document.querySelectorAll(".nav-link");
@@ -78,4 +82,5 @@
   </script>
 
 </body>
+
 </html>

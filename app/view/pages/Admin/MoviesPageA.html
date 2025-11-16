@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moviease - Movies</title>
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="styles/css/MoviesPageA.css" />
+  </head>
+
+  <body>
+    <!-- ===== HEADER ===== -->
+    <header class="page-header">
+      <div class="logo-section">
+        <i class="fa-solid fa-clapperboard"></i>
+        <h1>Moviease</h1>
+      </div>
+    </header>
+
+    <!-- ===== SEARCH + FILTER ===== -->
+    <section class="controls">
+      <div class="search-bar">
+        <input type="text" placeholder="Search a movie" />
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="filter">
+        <select>
+          <option selected>Show all genres</option>
+          <option>Action</option>
+          <option>Comedy</option>
+          <option>Thriller</option>
+          <option>Romance</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ===== MOVIE LIST ===== -->
+    <section class="movie-list" id="movieList">
+      <!-- Add Card -->
+      <div class="movie-card add-card" id="addMovieBtn">
+        <span>+</span>
+      </div>
+
+      <!-- Movie 1 -->
+      <div class="movie-card">
+        <img src="../src/movie_image.jpg" />
+        <h3>GOOD BOY</h3>
+      </div>
+
+      <!-- Movie 2 -->
+      <div class="movie-card">
+        <img src="../src/movie_image.jpg" />
+        <h3>ROOFMAN</h3>
+      </div>
+
+      <!-- Movie 3 -->
+      <div class="movie-card">
+        <img src="../src/movie_image.jpg" />
+        <h3>TRON ARES</h3>
+      </div>
+    </section>
+
+    <!-- ===== POPUP MODAL ===== -->
+    <div class="modal-bg" id="modalBg">
+      <div class="modal-box">
+        <h2>Add New Movie</h2>
+
+        <label>Movie Title</label>
+        <input type="text" id="movieTitle" />
+
+        <label>Movie Image URL</label>
+        <input type="text" id="movieImage" />
+
+        <div class="modal-actions">
+          <button id="cancelBtn">Cancel</button>
+          <button id="saveBtn">Add Movie</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../scripts/MoviesPageA.js"></script>
+  </body>
+</html>

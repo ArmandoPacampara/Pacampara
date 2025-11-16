@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoviEase Signup</title>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <style>
+/* ===== Global Styles ===== */
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #a31212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  margin-right: 50px;
+  font-size: 16px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  color: #999;
+  margin-bottom: -15px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+.divider span {
+  font-size: 14px;
+}
+
+/* ===== Layout ===== */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.poster-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  width: 380px;
+  height: 520px;
+  margin-right: -260px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.poster-container:hover {
+  transform: translateY(-8px);
+}
+
+.poster-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.container {
+  position: unset;
+  background-color: #fff;
+  border-radius: 25px;
+  height: 609px;
+  width: 920px;
+  padding-top: 70px;
+  padding-bottom: 110p8x;
+  padding-right: 80px;
+  padding-left: 310px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Logo Section ===== */
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo img {
+  width: 42px;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
+.logo h1 {
+  color: #a31212;
+  font-size: 38px;
+  font-weight: 700;
+  margin-right: 50px;
+}
+
+/* ===== Input Fields (icon outside input) ===== */
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 92%;
+}
+
+.input-icon {
+  width: 28px;
+  height: 28px;
+  margin-right: 15px; 
+  flex-shrink: 0;
+}
+
+form .input-group input[type="text"] {
+  width: 80%;
+  margin-top: 3px;
+  padding: 12px 16px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  color: #333 !important;
+  background-color: #fff6f6;
+  transition: all 0.3s ease;
+}
+
+.input-group input,
+.input-group select {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #870e0e;
+}
+
+/* ===== Buttons ===== */
+.next-btn {
+  width: 120px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #fff;
+  margin-right: 100px;
+}
+
+.back-btn,.signup-btn {
+  width: 120px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-right: 10px;
+}
+
+.signup-btn {
+  margin-right: 100px;
+}
+
+.next-btn,
+.signup-btn {
+  background-color: #a31212;
+}
+
+.next-btn:hover,
+.signup-btn:hover {
+  background-color: #870e0e;
+}
+
+.back-btn {
+  background-color: #666;
+}
+
+.back-btn:hover {
+  background-color: #555;
+}
+
+/* ===== Step Buttons Container ===== */
+.button-container {
+  display: flex;
+  justify-content: right;
+  margin-top: 10px;
+  padding-left: 260px;
+}
+
+.step-2-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  padding-left: 130px;
+}
+
+/* ===== Step Transition ===== */
+.container2 {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+  padding-left: 40px;
+  padding-right: 60px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ===== Dots Indicator ===== */
+.dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-right: 55px;
+  color: #a31212;
+}
+
+.dots span {
+  height: 8px;
+  width: 8px;
+  background-color: #a31212;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 4px;
+  transition: opacity 0.3s;
+}
+
+.dots span:nth-child(2) {
+  opacity: 0.6;
+}
+
+/* ===== Genre Checkbox Section ===== */
+.genre-group {
+  margin-bottom: 20px;
+  width: 80%;
+}
+
+.genre-label {
+  display: block;
+  color: #a31212;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.genres-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 20px 20px; /* row and column spacing */
+  width: 80%;
+  margin: 0 auto;
+  margin-left: 10px;
+}
+
+.genres-container label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.genres-container input[type="checkbox"] {
+  accent-color: #a31212; /* red checkbox theme */
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.checkbox-label:hover {
+  background-color: #f5f5f5;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #a31212;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .poster-container {
+    width: 70%;
+    height: 300px;
+  }
+
+  .container {
+    width: 80%;
+    padding-left: 40px;
+  }
+}
+
+/* Center the captcha container */
+#g-recaptcha {
+  display: block;
+  margin: 0 auto; /* Center horizontally */
+  text-align: center; /* Make sure the elements inside are centered */
+  width: 100%; /* Ensure the reCAPTCHA takes full width available */
+  max-width: 500px; /* You can adjust this width based on preference */
+}
+
+#captchaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px; /* Same as the width above */
+  margin: 0 auto; /* Center horizontally */
+}
+
+/* ===== Profile Upload Section ===== */
+.profile-upload {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  margin-right: 200px;
+}
+
+.profile-upload label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 50%;
+  border: 2px solid #a31212;
+  border-color: #870e0e;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.profile-upload label:hover {
+  transform: scale(1.05);
+}
+
+.profile-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  background-color: #fff6f6;
+}
+
+.upload-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 35%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-upload label:hover .upload-overlay {
+  opacity: 1;
+}
+
+/* LOCATION DESIGN */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  width: 380px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #a31212;
+  border-radius: 8px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-btn {
+  background: #a31212;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: gray;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="poster-container">
+      <img src="https://cdn.myanimelist.net/images/anime/1806/126216.jpg" alt="Chainsaw Man Poster">
+    </div>
+
+    <div class="container">
+      <div class="logo">
+      <img src="/public/assets/images/movies_icon.png" alt="logo">
+        <h1>MoviEase</h1>
+      </div>
+
+      <h2>Sign Up your Account</h2>
+      <div class="divider"></div>
+
+      <form>
+        <center>
+          <div class="container2">
+            <div class="profile-upload">
+              <label for="profileImageInput">
+                <img id="profilePreview" src="/public/assets/images/default_user.png" alt="Profile Preview">
+                <div class="upload-overlay">
+                  <i id="uploadIcon" class="fas fa-camera"></i>
+                </div>
+              </label>
+              <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="input-group">
+              <img src="/public/assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
+              <input type="text" placeholder="Name" required name="name">
+            </div>
+
+            <div class="input-group">
+              <img src="/public/assets/images/location_icon.png" class="input-icon">
+
+              <input type="text" id="locationDisplay" placeholder="Select Location" readonly required>
+
+              <button type="button" onclick="openLocationModal()" 
+                      style="margin-left:10px; padding:8px 12px; background:#a31212; border:none; color:white; border-radius:6px; cursor:pointer;">
+                Choose
+              </button>
+            </div>
+
+            <div class="input-group">
+              <img src="/public/assets/images/phone_icon.png" alt="phone_icon" class="input-icon">
+              <input type="text" placeholder="Phone Number" required name="phone-number">
+            </div>
+          </div>
+
+          <div class="dots">
+            <span></span>
+            <span></span>
+          </div>
+
+          <div class="button-container">
+            <button type="button" class="next-btn" onclick="goToStep2()">NEXT</button>
+          </div>
+        </center>
+      </form>
+    </div>
+  </div>
+
+    <!-- reCAPTCHA script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script>
+  // Multi-step form functionality
+  let currentStep = 1;
+
+  const step1Content = `
+    <div class="profile-upload">
+      <label for="profileImageInput">
+        <img id="profilePreview" src="/public/assets/images/default_user.png" alt="Profile Preview">
+        <div class="upload-overlay">
+          <i class="fas fa-camera"></i>
+        </div>
+      </label>
+      <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
+      <input type="text" placeholder="Name" required name="name">
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/location_icon.png" class="input-icon">
+
+      <input type="text" id="locationDisplay" placeholder="Select Location" readonly required>
+
+      <button type="button" onclick="openLocationModal()" 
+              style="margin-left:10px; padding:8px 12px; background:#a31212; border:none; color:white; border-radius:6px; cursor:pointer;">
+        Choose
+      </button>
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/phone_icon.png" alt="phone_icon" class="input-icon">
+      <input type="text" placeholder="Phone Number" required name="phone-number">
+    </div>
+  `;
+
+  const step2Content = `
+    <div class="genre-group">
+      <label class="genre-label">Choose Your Favorite Genres:</label>
+      <div class="genres-container">
+        ${['Action','Adventure','Comedy','Drama','Horror','Romance','Sci-Fi','Fantasy','Thriller','Animation','Documentary','Musical']
+          .map(genre => `
+            <label>
+              <input type="checkbox" name="genre" value="${genre}"> ${genre}
+            </label>`).join('')}
+      </div>
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
+      <input type="email" placeholder="Email" required name="email">
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
+      <input type="password" placeholder="Password" required name="password">
+    </div>
+
+    <div class="input-group">
+      <img src="/public/assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
+      <input type="password" placeholder="Confirm Password" required name="confirm_password">
+    </div>
+
+    <div id="captchaContainer" class="g-recaptcha"></div>
+  `;
+
+  function updateDots() {
+    const dots = document.querySelectorAll('.dots span');
+    dots.forEach((dot, i) => dot.style.opacity = (i + 1 === currentStep) ? '1' : '0.6');
+  }
+
+  function updateButton() {
+    const buttonContainer = document.querySelector('.button-container');
+    if (currentStep === 1) {
+      buttonContainer.innerHTML = '<button type="button" class="next-btn" onclick="goToStep2()">NEXT</button>';
+    } else {
+      buttonContainer.innerHTML = `
+        <button type="button" class="back-btn" onclick="goToStep1()">BACK</button>
+        <button type="submit" class="signup-btn">SIGN UP</button>
+      `;
+    }
+  }
+
+function initProfilePreview() {
+  const profileInput = document.getElementById('profileImageInput');
+  const profilePreview = document.getElementById('profilePreview');
+  const uploadIcon = document.getElementById('uploadIcon');
+
+  if (profileInput && profilePreview && uploadIcon) {
+    profileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Show preview immediately
+      const reader = new FileReader();
+      reader.onload = () => {
+        profilePreview.src = reader.result;
+        uploadIcon.className = 'fas fa-check'; // Change icon to check
+      };
+      reader.readAsDataURL(file);
+
+      // Upload to server
+      uploadProfile(file);
+    });
+  }
+}
+
+function uploadProfile(file) {
+  const formData = new FormData();
+  formData.append('profileImage', file);
+
+  fetch('/upload-profile', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Profile uploaded successfully:', data.filePath);
+      // Optionally, store filePath in a hidden input for final signup submission
+      let hiddenInput = document.getElementById('profilePathInput');
+      if (!hiddenInput) {
+        hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.id = 'profilePathInput';
+        hiddenInput.name = 'profilePath';
+        document.querySelector('form').appendChild(hiddenInput);
+      }
+      hiddenInput.value = data.filePath;
+    } else {
+      console.error('Upload failed');
+      uploadIcon.className = 'fas fa-exclamation-triangle'; // show error icon
+    }
+  })
+  .catch(err => {
+    console.error('Error uploading profile:', err);
+    uploadIcon.className = 'fas fa-exclamation-triangle';
+  });
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initProfilePreview);
+
+
+  function renderCaptcha() {
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.render('captchaContainer', {
+        sitekey: '6LcWAgwsAAAAALl4FSBG6_2tVBB8msJpmc88e8KR'
+      });
+    } else {
+      setTimeout(renderCaptcha, 100); // wait until grecaptcha is loaded
+    }
+  }
+
+  function goToStep2() {
+    const container2 = document.querySelector('.container2');
+    container2.style.opacity = '0';
+    container2.style.transform = 'translateX(-20px)';
+    setTimeout(() => {
+      container2.innerHTML = step2Content;
+      currentStep = 2;
+      updateDots();
+      updateButton();
+      container2.style.opacity = '1';
+      container2.style.transform = 'translateX(0)';
+      renderCaptcha(); // render captcha after content is loaded
+    }, 300);
+  }
+
+  function goToStep1() {
+    const container2 = document.querySelector('.container2');
+    container2.style.opacity = '0';
+    container2.style.transform = 'translateX(20px)';
+    setTimeout(() => {
+      container2.innerHTML = step1Content;
+      currentStep = 1;
+      updateDots();
+      updateButton();
+      container2.style.opacity = '1';
+      container2.style.transform = 'translateX(0)';
+      initProfilePreview(); // reinitialize profile preview after step 1 reload
+    }, 300);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container2 = document.querySelector('.container2');
+    container2.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    updateButton();
+    updateDots();
+    initProfilePreview(); // initialize step 1 profile upload
+  });
+ 
+</script>
+
+<div id="locationModal" class="modal">
+  <div class="modal-content">
+
+    <h3>Select Location</h3>
+
+    <label>Country</label>
+    <select id="countrySelect" onchange="loadProvinces()">
+      <option value="">Select Country</option>
+      <option value="Philippines">Philippines</option>
+    </select>
+
+    <label>Province</label>
+    <select id="provinceSelect" onchange="loadCities()" disabled>
+      <option value="">Select Province</option>
+    </select>
+
+    <label>City</label>
+    <select id="citySelect" onchange="loadBarangays()" disabled>
+      <option value="">Select City</option>
+    </select>
+
+    <label>Barangay</label>
+    <select id="barangaySelect" disabled>
+      <option value="">Select Barangay</option>
+    </select>
+
+    <div class="modal-buttons">
+      <button class="cancel-btn" onclick="closeLocationModal()">Cancel</button>
+      <button class="confirm-btn" onclick="confirmLocation()">Confirm</button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

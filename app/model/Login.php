@@ -1,38 +1,39 @@
 <?php
 session_start();
 require_once __DIR__ . '/../core/db.php';
+require_once __DIR__ . '/../controller/LoginController.php';
 
 $database = new Database();
 $con = $database->getConnection();
 
+$loginController = new LoginController($con);
+
 if (isset($_POST['login'])) {
 
-    /** CAPTCHA CHECK **/
-    $captcha = $_POST['g-recaptcha-response'];
+    /** CAPTCHA Check **/
+    $captcha = $_POST['g-recaptcha-response'] ?? null;
 
     if (!$captcha) {
         $_SESSION['error'] = "Please verify that you're not a robot.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 
-
-    $secretKey = "6LcWAgwsAAAAACPtasWSo-ZcrS97WmngAu9_sJxQ";
-
-
+    $secretKey = "YOUR_SECRET_KEY";
     $verifyURL = "https://www.google.com/recaptcha/api/siteverify";
-    $response = file_get_contents($verifyURL . "?secret=" . $secretKey . "&response=" . $captcha);
+
+    $response = file_get_contents($verifyURL . "?secret=$secretKey&response=$captcha");
     $responseKeys = json_decode($response, true);
 
     if (!$responseKeys["success"]) {
         $_SESSION['error'] = "Captcha verification failed. Please try again.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 
-    /** ORIGINAL LOGIN LOGIC **/
-    $email = mysqli_real_escape_string($con, $_POST['email']);
-    $password = mysqli_real_escape_string($con, $_POST['password']);
+    /** SECURE LOGIN **/
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
 
     $query = "SELECT * FROM users WHERE user_Email = '$email' LIMIT 1";
     $result = mysqli_query($con, $query);
@@ -64,12 +65,12 @@ if (isset($_POST['login'])) {
 
         } else {
             $_SESSION['error'] = "Incorrect email or password.";
-            header("Location: index.php");
+            header("Location: ");
             exit;
         }
     } else {
         $_SESSION['error'] = "Incorrect email or password.";
-        header("Location: index.php");
+        header("Location: ");
         exit;
     }
 }
