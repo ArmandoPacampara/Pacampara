@@ -37,7 +37,7 @@ $router->add("schedule", function () {
 });
 
 $router->add("checkout", function () {
-  require __DIR__ . '/../app/view/pages/customer/CheckoutPage.php';
+  require __DIR__ . '/../app/view/pages/customer/Checkout.php';
 });
 
 $router->add("account", function () {

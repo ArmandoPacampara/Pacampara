@@ -84,7 +84,7 @@
       <button id="nextBtn">Next</button>
     </div>
   </div>
-  <script src="../../../app/controller/Checkout.js"></script>
+  <script src="js/Checkout.js"></script>
 </body>
 
 </html>
