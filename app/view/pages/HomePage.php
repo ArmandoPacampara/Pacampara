@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/../../core/session_check.php';
+// ... rest of your page content
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,40 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase</title>
   <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
 
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .nav-holder {
-      flex-shrink: 0;
-    }
-
-    iframe {
-      flex-grow: 1;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: white;
-      padding: 10px 15px;
-      font-weight: 600;
-    }
-
-    .navbar a:hover {
-      color: #f87171; /* hover effect */
-    }
-  </style>
 </head>
 <body>
 
@@ -75,6 +47,36 @@
     //     iframe.src = page;
     //   });
     // });
+
+    // Match the server-side timeout (120 seconds)
+    const INACTIVITY_TIMEOUT_SECONDS = 3; 
+    let timeoutTimer;
+
+    function resetTimer() {
+        // Clear any existing timer
+        clearTimeout(timeoutTimer);
+
+        // Set a new timer
+        timeoutTimer = setTimeout(autoLogout, INACTIVITY_TIMEOUT_SECONDS * 1000);
+    }
+
+    function autoLogout() {
+        // Log the user out by redirecting to a dedicated logout endpoint
+        // You should create a simple logout.php file that destroys the session.
+        window.location.href = '/moviease/logout.php?reason=timeout'; 
+    }
+
+    // --- Event Listeners to Detect User Activity ---
+
+    // List of events to monitor
+    const activityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
+
+    activityEvents.forEach(event => {
+        document.addEventListener(event, resetTimer, true);
+    });
+
+    // Start the timer when the page loads
+    resetTimer();
   </script>
 
 </body>
