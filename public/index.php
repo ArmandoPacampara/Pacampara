@@ -1,5 +1,5 @@
 <?php
-require_once 'app/model/Login.php';
+require_once '../app/model/Login.php';
 ?>
 
 <!DOCTYPE html>
