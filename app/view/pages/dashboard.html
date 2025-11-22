@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinemas</title>
+    <link rel="stylesheet" href="../css/HomePageStyle.css">
+
+    <script>
+        function handleVisitClick(cinema) {
+            // Tell the parent page to change the iframe
+            window.parent.loadCinema(cinema);
+        }
+    </script>
+</head>
+<style> 
+    /* ===== GENERAL STYLES ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #a10000;
+  color: #fff;
+  padding: 10px 30px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  margin-left: -8px;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.navbar-left i {
+  font-size: 1.3rem;
+}
+
+#toggleSidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.navbar-center {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  display: flex;
+  margin-top: 65px; 
+  height: calc(100vh - 65px);
+  transition: all 0.3s ease;
+}
+
+.sidebar {
+  width: 280px;
+  height: 100%;
+  margin-top: -3.5px;
+  background-color: #f2e4e2;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu a {
+  color: #ab1f1f;
+  padding: 17px 25px;
+  padding-left: 25px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-weight: bold;
+  font-size: 1.25rem;
+  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid #ddd;
+}
+
+.menu a i {
+  width: 25px;
+  text-align: center;
+}
+
+/* ===== ACTIVE MENU AND HOVER STYLES ===== */
+.menu a:hover,
+.menu a.active { /* Add this to keep hover color when active */
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
+.menu a.active {
+  background-color: #d93333; /* Same hover color to keep when active */
+  color: #fff; /* Keep the text white */
+}
+
+/* ===== MAIN CONTENT / IFRAME ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  margin-top: -3.5px;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+Armando
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #fff;
+  color: #2b2b2b;
+  line-height: 1.6;
+}
+
+.nav-holder {
+  width: 100%;
+  height: 8%;
+  background-color: #9c0000;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 40px;
+  color: #fff;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.site-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cinema-dropdown {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.account-icon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+
+.container {
+  max-width: 1000px;
+  margin: 10px auto;
+  text-align: center;
+  padding: 0 1px;
+  margin-top: 50px;
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+p {
+  font-size: 17px;
+
+}
+
+.cinema-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.cinema-card {
+  width: 300px;
+  text-align: center;
+  margin-bottom: 30px;
+  margin: 0px 5px;
+}
+
+.cinema-card img {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 10px;
+}
+
+.cinema-card h3 {
+  color: #b30000;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.visit-btn {
+  display: inline-block;
+  background-color: #861c1c;
+  color: white;
+  padding: 12px 40px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.visit-btn:hover {
+  background-color: #b32626;
+  transform: scale(1.05);
+}
+
+iframe {
+  height: 89.92vh;
+  width: 99.79vw;;
+}
+</style>
+<body>
+    <div class="container">
+        <h2>MoviEase is an online movie ticket reservation system that makes booking faster, easier, and more convenient.</h2>
+
+        <p>It allows users to check movie schedules, view available seats, and buy tickets securely from anywhere.</p>
+
+        <p>
+            With MoviEase, you can easily reserve your seats for cinemas in SM, Robinsons, and Ayala Malls, all in one platform.
+            No more long lines — just smooth, real-time booking and instant digital tickets for a hassle-free movie experience.
+        </p>
+
+        <div class="cinema-container">
+
+            <!-- SM -->
+            <div class="cinema-card">
+                <img src="../smlogo.png" alt="SM Logo">
+                <h3>SM</h3>
+                <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('SM')">VISIT</a>
+            </div>
+
+            <!-- ROBINSON -->
+            <div class="cinema-card">
+                <img src="../robinl.jpg" alt="Robinsons Logo">
+                <h3>ROBINSON</h3>
+                <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('Robinson')">VISIT</a>
+            </div>
+
+            <!-- AYALA -->
+            <div class="cinema-card">
+                <img src="../ayalamlogo.png" alt="Ayala Logo">
+                <h3>AYALA</h3>
+                <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('Ayala')">VISIT</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

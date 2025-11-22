@@ -49,7 +49,7 @@ require_once __DIR__ . '/../../core/session_check.php';
     // });
 
     // Match the server-side timeout (120 seconds)
-    const INACTIVITY_TIMEOUT_SECONDS = 3; 
+    const INACTIVITY_TIMEOUT_SECONDS = 120; 
     let timeoutTimer;
 
     function resetTimer() {
