@@ -10,9 +10,7 @@
 
     <link rel="stylesheet" href="../../../public/styles/css/Signup.css"> 
 </head>
-<style>
- 
-</style>
+
 <body>
 
     <div class="wrapper">
@@ -22,7 +20,7 @@
 
         <div class="container">
             <div class="logo">
-                <img src="assets/images/movies_icon.png" alt="logo">
+                <img src="../../../public/assets/images/MoviEase_logo (2).png" alt="logo">
                 <h1>MoviEase</h1>
             </div>
 
@@ -107,21 +105,14 @@
     </div>
 
         <!-- Error Modal -->
-<div id="errorModal" class="error-modal">
-        <div class="error-modal-content">
-            <h3>Error</h3>
-            <ul id="errorList"></ul>
-            <button onclick="closeErrorModal()" class="error-modal-btn">Close</button>
-        </div>
-    </div>
-
-    <div id="cookieConsent" class="cookie-consent">
-        <p>
-            We use cookies to enhance your experience. By continuing to use this site, you agree to our 
-            <a href="#" target="_blank" onclick="showPrivacyPolicy()">Privacy Policy</a> and cookie use.
-        </p>
-        <button onclick="acceptCookies()">Accept</button>
+    <div id="errorModal" class="error-modal">
+        <div class="error-modal-content">
+            <h3>Error</h3>
+            <ul id="errorList"></ul>
+            <button onclick="closeErrorModal()" class="error-modal-btn">Close</button>
+        </div>
     </div>
+
 
 <script>
     // Multi-step form functionality for MoviEase signup
@@ -476,60 +467,34 @@ const step1Content = `
         <img src="assets/images/lock_icon.png" class="input-icon">
         <input id="age" type="number" readonly>
     </div>
-
-    <div class="wrapper">
-                </div>
-    </div>
-
-            <div id="errorModal" class="error-modal">
-            </div>
-
     `;
 
-    
 
-// ... (inside the <script> block)
-
-// Step 3: account credentials (updated with eye icon and error display)
-const step3Content = `
+    // Step 3: account credentials (updated with eye icon and error display)
+    const step3Content = `
     <div class="step3-wrapper">
         
         <div class="input-group">
-            <img src="assets/images/profile_icon.png" alt="Email Icon" class="input-icon">
+            <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
             <input id="emailInput" type="email" placeholder="Email" required name="email">
         </div>
 
         <div class="input-group password-group"> 
-            <img src="assets/images/lock_icon.png" alt="Lock Icon" class="input-icon">
+            <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="passwordInput" type="password" placeholder="Password" required name="password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('passwordInput')"></i>
         </div>
 
         <div class="input-group password-group"> 
-            <img src="assets/images/lock_icon.png" alt="Lock Icon" class="input-icon">
+            <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" required name="confirm_password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmPasswordInput')"></i>
         </div>
 
-        <div id="passwordError" class="password-error-message"></div>
+        <div id="passwordError" style="color: #a31212; margin-top: -10px; margin-bottom: 20px; font-size: 14px; text-align: left; padding-left: 55px; min-height: 20px;"></div>
         
-        <div class="policy-group">
-            <label>
-                <input type="checkbox" id="privacyPolicyCheck" required>
-                I agree to the <a href="#" target="_blank" onclick="showPrivacyPolicy(event)">Privacy Policy</a> and Terms of Use.
-            </label>
-        </div>
-        
-        <input type="hidden" name="name" id="hiddenName">
-        <input type="hidden" name="location" id="hiddenLocation">
-        <input type="hidden" name="phone-number" id="hiddenPhone">
-        <input type="hidden" name="birthdate" id="hiddenBirthdate">
-        <input type="hidden" name="age" id="hiddenAge">
-        <input type="hidden" name="genres" id="hiddenGenres">
-
     </div>
     `;
-// ...
 
 
     function updateDots() {
@@ -593,89 +558,25 @@ const step3Content = `
         }, 300);
     }
 
-// ... (inside the <script> block)
+    function goToStep3() {
+        saveStepData(); // Save Step 2 data
+        const container2 = document.querySelector('.container2');
+        container2.style.opacity = '0';
+        container2.style.transform = 'translateX(-20px)';
 
-function goToStep3() {
-    saveStepData(); // Save Step 2 data
-    const container2 = document.querySelector('.container2');
-    container2.style.opacity = '0';
-    container2.style.transform = 'translateX(-20px)';
+        setTimeout(() => {
+            container2.innerHTML = step3Content; // Use the updated content string
+            currentStep = 3;
+            updateDots();
+            updateButton();
+            loadStepData(); // Load Step 3 data
+            container2.style.opacity = '1';
+            container2.style.transform = 'translateX(0)';
 
-    setTimeout(() => {
-        container2.innerHTML = step3Content; // Use the updated content string
-        currentStep = 3;
-        updateDots();
-        updateButton();
-        loadStepData(); // Load Step 3 data
-        container2.style.opacity = '1';
-        container2.style.transform = 'translateX(0)';
-
-        // 💡 Populate hidden fields immediately upon loading Step 3
-        populateHiddenFields(); 
-    }, 300);
-}
-
-function populateHiddenFields() {
-    // This function populates the hidden fields based on collected formData
-    document.getElementById('hiddenName').value = formData.name || '';
-    document.getElementById('hiddenLocation').value = formData.province || '';
-    document.getElementById('hiddenPhone').value = formData.phone || '';
-    document.getElementById('hiddenBirthdate').value = formData.birthdate || '';
-    document.getElementById('hiddenAge').value = formData.age || '';
-    document.getElementById('hiddenGenres').value = formData.genres ? formData.genres.join(',') : '';
-}
- 
-// Validation function for Step 3 (Passwords)
-// Validation function for Step 3 (Passwords)
-function validateAndSubmit() {
-    const errors = [];
-
-    // STEP 1 VALIDATION
-    // ... (Your existing Step 1 validation logic) ...
-
-    // STEP 2 VALIDATION
-    // ... (Your existing Step 2 validation logic) ...
-
-    // STEP 3 VALIDATION
-    const email = document.getElementById("emailInput").value;
-    const password = document.getElementById("passwordInput").value;
-    const confirmPassword = document.getElementById("confirmPasswordInput").value;
-    const privacyPolicyCheck = document.getElementById('privacyPolicyCheck'); // Get the new element
-
-    if (!email || !email.includes("@")) {
-        errors.push("Please enter a valid email address.");
+            // fill review info from inputs (currently disabled in populateSummary)
+            populateSummary();
+        }, 300);
     }
-
-    const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (!password) {
-        errors.push("Password cannot be empty.");
-    } else if (!complexityRegex.test(password)) {
-        errors.push("Password must be 8+ characters, with uppercase, lowercase, and numbers.");
-    }
-
-    if (password !== confirmPassword) {
-        errors.push("Passwords do not match.");
-    }
-
-    // --- NEW: Privacy Policy Check ---
-    if (privacyPolicyCheck && !privacyPolicyCheck.checked) {
-        errors.push("You must agree to the Privacy Policy and Terms of Use.");
-    }
-
-
-    // IF ERRORS FOUND → SHOW MODAL
-    if (errors.length > 0) {
-        showErrorModal(errors);
-        return;
-    }
-
-    // NO ERRORS → SUBMIT 🎉
-    populateHiddenFields();
-    document.getElementById("signupForm").submit();
-}
-
-// ...
     
     // Function to check password complexity
     function checkPasswordComplexity(password) {
@@ -913,97 +814,6 @@ function validateAndSubmit() {
 function closeErrorModal() {
     document.getElementById("errorModal").style.display = "none";
 }
-
-function showPrivacyPolicy() {
-    alert("--- MoviEase Privacy Policy ---\n\n1. Data Collected: Name, Email, Phone, Location, Genres, Birthdate, IP Address.\n2. Purpose: Account setup, personalized recommendations, booking fulfillment.\n3. Data Retention: Data is kept as long as the account is active.\n4. Cookies: We use essential session cookies and optional analytics cookies (requires consent).\n\n(In a real application, this link would go to a full legal document.)");
-    // Prevent the default link navigation
-    event.preventDefault(); 
-}
-
-
-/**
- * Cookie Consent Management
- */
-
-function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-}
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i=0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-    }
-    return null;
-}
-
-function acceptCookies() {
-    // Set a cookie indicating consent, valid for 365 days
-    setCookie('moviEaseCookieConsent', 'accepted', 365);
-    // Hide the banner
-    document.getElementById('cookieConsent').classList.remove('show');
-}
-
-// Initial check to display the banner
-function checkCookieConsent() {
-    if (!getCookie('moviEaseCookieConsent')) {
-        // Show the banner if the cookie is not found
-        setTimeout(() => {
-            document.getElementById('cookieConsent').classList.add('show');
-        }, 1000); // Small delay for visibility
-    }
-}
-
-// --- Validation Function Update ---
-// Added check for the Privacy Policy checkbox
-
-function validateAndSubmit() {
-    const errors = [];
-    const passwordInput = document.getElementById("passwordInput");
-    const confirmPasswordInput = document.getElementById("confirmPasswordInput");
-    const privacyPolicyCheck = document.getElementById('privacyPolicyCheck'); // New element
-
-    // ... (All existing STEP 1 & 2 validation logic remains here) ...
-    
-    // ... (All existing STEP 3 password validation logic remains here) ...
-    
-    // --- FINAL POLICY CHECK ---
-    if (currentStep === 3 && privacyPolicyCheck && !privacyPolicyCheck.checked) {
-        errors.push("You must agree to the Privacy Policy and Terms of Use.");
-    }
-
-    // IF ERRORS FOUND → SHOW MODAL
-    if (errors.length > 0) {
-        showErrorModal(errors);
-        return;
-    }
-    
-    // NO ERRORS → SUBMIT 🎉
-    populateHiddenFields(); 
-    document.getElementById("signupForm").submit();
-}
-
-
-// --- Initial Load Update ---
-// Call the cookie checker when the page loads
-// initial attach
-document.addEventListener('DOMContentLoaded', () => {
-    updateButton();
-    updateDots();
-    attachProfileImageHandlerIfNeeded();
-    // Load initial data if any (though usually empty on first load)
-    loadStepData();
-    checkCookieConsent(); // <-- NEW: Check for cookie consent
-});
 
 
 </script>
