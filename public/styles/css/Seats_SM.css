@@ -1,0 +1,314 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+
+/* OPEN BUTTON */
+#openPopup {
+    padding: 10px 20px;
+    background: #d60000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
+/* MODAL BACKGROUND */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    padding-top: 60px;
+}
+
+
+/* POPUP BOX */
+.modal-content {
+    background: white;
+    margin: auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 10px;
+    position: relative;
+}
+
+
+/* CLOSE BUTTON */
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+
+/* LEGEND */
+.legend {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.legend-item {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin: 0 10px;
+    border-radius: 3px;
+
+
+}
+.available { background: #555; }
+.selected { background: #d60000; }
+.taken   { background: #bbb; }
+
+
+
+
+/* SCREEN BAR */
+.screen {
+    background: #d60000;
+    color: white;
+    padding: 6px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+
+/* SEAT GRID */
+.seat-container {
+    display: grid;
+    grid-template-columns: repeat(18, 30px);
+    gap: 5px;
+    justify-content: center;
+}
+
+
+/* SEAT STYLES */
+.seat {
+    width: 30px;
+    height: 30px;
+    background: #555;
+    color: white;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+.seat.booked {
+    background: #d0d0d0;
+    cursor: not-allowed;
+    color: #666;
+}
+
+
+.seat.selected {
+    background: #d60000;
+}
+
+
+.seat-limit-warning {
+    color: #d60000;
+    font-weight: bold;
+}
+
+
+/* EACH ROW = left label + 18 seats + right label */
+.seat-row {
+    display: grid;
+    grid-template-columns: 30px repeat(19, 30px) 30px;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+
+
+
+/* Row letters left and right */
+.row-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+
+
+
+/* Seat grid wrapper (row labels + seats) */
+.seat-wrapper {
+    display: grid;
+    grid-template-columns: 30px auto 30px; /* left letters — seats — right letters */
+    column-gap: 10px;
+    margin: 0 auto;
+}
+
+
+/* Seat container is now centered inside wrapper */
+.seat-container {
+    display: grid;
+    grid-template-columns: repeat(18, 30px);
+    gap: 5px;
+    justify-content: center;
+}
+
+
+/* Seat box (numbers only) */
+.seat {
+    width: 30px;
+    height: 30px;
+    background: #555;
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* SAVE BUTTON AREA */
+.bottom-items{
+    padding-top: 10px;
+}
+/* Save Button */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -40px;
+}
+
+
+#saveSeatsBtn {
+    padding: 10px 20px;
+    background: #d60000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+
+#saveSeatsBtn:hover {
+    background: #b30000;
+}
+
+
+
+
+/* -------------------------------------------------- */
+/*  EXTRA CSS (for popup seat details)                */
+/* -------------------------------------------------- */
+
+
+/* Seat text inside popup */
+.popup-seat-info {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: center;
+    color: #333;
+}
+
+
+/* Optional: styled row letter + seat number */
+.popup-row {
+    font-size: 26px;
+    color: #d60000;
+    font-weight: bold;
+}
+
+
+.popup-number {
+    font-size: 26px;
+    color: #333;
+    font-weight: bold;
+}
+
+
+/* CONFIRMATION MODAL */
+.confirm-content {
+    background: white;
+    margin: auto;
+    padding: 25px 35px;
+    width: 60%;
+    max-width: 450px;
+    border-radius: 12px;
+    position: relative;
+    text-align: center;
+    margin-top: 250px;
+}
+
+
+.confirm-text {
+    font-size: 18px;
+    margin: 15px 0 25px 0;
+}
+
+
+.close-confirm {
+    padding: 10px 25px;
+    background: #d60000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+.close-confirm:hover {
+    background: #b30000;
+}
+
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+.confirm-final {
+    padding: 10px 25px;
+    background: #008000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+.confirm-final:hover {
+    background: #007e30;
+}
+
+
+
+
+
+
+
