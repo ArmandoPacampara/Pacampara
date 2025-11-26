@@ -38,13 +38,13 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_status='Y
     </span>
     <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
       <?php while($movie = $you_might_like_result->fetch_assoc()) { ?>
-        <div
-          class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
-          data-hours="<?= $movie['movie_hours']; ?>"
-          data-price="<?= $movie['price']; ?>"
-          data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
-        >
+<div
+  class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
+  data-id="<?= $movie['movie_id']; ?>" data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+  data-hours="<?= $movie['movie_hours']; ?>"
+  data-price="<?= $movie['price']; ?>"
+  data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
+>
           <div class="h-[300px] mb-5">
             <img
               class="rounded-2xl object-cover w-full h-full"
@@ -68,13 +68,13 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_status='Y
     </span>
     <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
       <?php while($movie = $now_showing_result->fetch_assoc()) { ?>
-        <div
-          class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
-          data-hours="<?= $movie['movie_hours']; ?>"
-          data-price="<?= $movie['price']; ?>"
-          data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
-        >
+<div
+  class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
+  data-id="<?= $movie['movie_id']; ?>" data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+  data-hours="<?= $movie['movie_hours']; ?>"
+  data-price="<?= $movie['price']; ?>"
+  data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
+>
           <div class="h-[300px] mb-5">
             <img
               class="rounded-2xl object-cover w-full h-full"
@@ -98,13 +98,13 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_status='Y
     </span>
     <div class="flex flex-wrap gap-3 justify-start w-full h-fit p-3">
       <?php while($movie = $coming_soon_result->fetch_assoc()) { ?>
-        <div
-          class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
-          data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
-          data-hours="<?= $movie['movie_hours']; ?>"
-          data-price="<?= $movie['price']; ?>"
-          data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
-        >
+<div
+  class="movie-card bg-red-900 h-[400px] w-[260px] rounded-2xl p-2 hover:cursor-pointer hover:scale-105 hover:bg-red-800 duration-200"
+  data-id="<?= $movie['movie_id']; ?>" data-name="<?= htmlspecialchars($movie['movie_name']); ?>"
+  data-hours="<?= $movie['movie_hours']; ?>"
+  data-price="<?= $movie['price']; ?>"
+  data-poster="<?= htmlspecialchars($movie['movie_poster']); ?>"
+>
           <div class="h-[300px] mb-5">
             <img
               class="rounded-2xl object-cover w-full h-full"
@@ -135,38 +135,44 @@ $you_might_like_result = $con->query("SELECT * FROM movies WHERE movie_status='Y
     });
 
     // Attach click event to ALL movie cards
-    const movieCards = document.querySelectorAll(".movie-card");
-    movieCards.forEach((card) => {
-      card.addEventListener("click", () => {
-        const name = card.getAttribute("data-name");
-        const hours = card.getAttribute("data-hours");
-        const price = card.getAttribute("data-price");
-        const poster = card.getAttribute("data-poster");
+// --- Start of JavaScript Block Change ---
+// Attach click event to ALL movie cards
+const movieCards = document.querySelectorAll(".movie-card");
+movieCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    // 1. Get the movie_id
+    const id = card.getAttribute("data-id"); 
+    const name = card.getAttribute("data-name");
+    const hours = card.getAttribute("data-hours");
+    const price = card.getAttribute("data-price");
+    const poster = card.getAttribute("data-poster");
 
-        popUpContent.innerHTML = `
-          <div class="h-full rounded-3xl">
-            <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
-          </div>
-          <div class="flex flex-col w-[70%] h-full">
-            <div class="h-[70%]">
-              <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
-            </div>
-            <div class="flex flex-row justify-between items-center w-full h-full p-5">
-              <h1 class="text-red-700 font-bold text-3xl">${hours}</h1>
-              <span class="flex flex-nowrap items-center gap-5 w-fit h-fit">
-                <h1 class="text-3xl">P ${price}</h1>
-                <a class="flex justify-center items-center bg-red-700 rounded-xl text-white font-bold p-3 w-[150px] hover:bg-red-600 duration-200" href="BuyPage.php">
-                  BUY TICKETS
-                </a>
-              </span>
-            </div>
-          </div>
-        `;
+    popUpContent.innerHTML = `
+      <div class="h-full rounded-3xl">
+        <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
+      </div>
+      <div class="flex flex-col w-[70%] h-full">
+        <div class="h-[70%]">
+          <img class="rounded-3xl object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
+        </div>
+        <div class="flex flex-row justify-between items-center w-full h-full p-5">
+          <h1 class="text-red-700 font-bold text-3xl">${hours}</h1>
+          <span class="flex flex-nowrap items-center gap-5 w-fit h-fit">
+            <h1 class="text-3xl">P ${price}</h1>
+            <a class="flex justify-center items-center bg-red-700 rounded-xl text-white font-bold p-3 w-[150px] hover:bg-red-600 duration-200" 
+               href="BuyPage.php?movie_id=${id}"> 
+               BUY TICKETS
+            </a>
+          </span>
+        </div>
+      </div>
+    `;
 
-        popUp.classList.remove("hidden");
-        popUp.classList.add("flex");
-      });
-    });
+    popUp.classList.remove("hidden");
+    popUp.classList.add("flex");
+  });
+});
+// --- End of JavaScript Block Change ---
   </script>
 </body>
 </html>
