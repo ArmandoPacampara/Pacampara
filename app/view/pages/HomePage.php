@@ -63,7 +63,7 @@ require_once __DIR__ . '/../../core/session_check.php';
     function autoLogout() {
         // Log the user out by redirecting to a dedicated logout endpoint
         // You should create a simple logout.php file that destroys the session.
-        window.location.href = '/moviease/logout.php?reason=timeout'; 
+        window.location.href = '../../../public/index.php'; 
     }
 
     // --- Event Listeners to Detect User Activity ---
