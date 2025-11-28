@@ -16,6 +16,10 @@ $router->add("register", function () {
   require __DIR__ . '/../app/view/pages/Signup.php';
 });
 
+$router->add("forgetpass", function () {
+  require __DIR__ . '/../app/view/pages/Forgetpass.php';
+});
+
 $router->add("home", function () {
   require __DIR__ . '/../app/view/pages/customer/HomePage.php';
 });

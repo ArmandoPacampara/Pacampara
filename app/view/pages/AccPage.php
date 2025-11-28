@@ -7,7 +7,7 @@
   <title>User Account - MoviEase</title>
 
   <!-- External CSS -->
-  <link rel="stylesheet" href="styles/css/AccPage.css" />
+  <link rel="stylesheet" href="/public/styles/css/AccPage.css" />
 </head>
 
 <body>

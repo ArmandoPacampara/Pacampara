@@ -1,0 +1,148 @@
+/* ===== GENERAL STYLES ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #fff;
+  color: #333;
+  margin-top: -4px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #a10000;
+  color: #fff;
+  padding: 10px 30px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  margin-left: -8px;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.navbar-left i {
+  font-size: 1.3rem;
+}
+
+#toggleSidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.navbar-center {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  display: flex;
+  margin-top: 65px;
+  height: calc(100vh - 65px);
+  transition: all 0.3s ease;
+}
+
+.sidebar {
+  width: 280px;
+  height: 100%;
+  background-color: #f2e4e2;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  border-radius: 0px 15px 15px 0px;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+/* Hide text when collapsed */
+.sidebar.collapsed .menu a span {
+  display: none;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+
+.menu a {
+  color: #ab1f1f;
+  padding: 20px 25px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.menu a i {
+  min-width: 25px;
+  font-size: 20px;
+  text-align: center;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+/* ===== ACTIVE MENU AND HOVER STYLES ===== */
+.menu a:hover,
+.menu a.active {
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
+.menu a.active {
+  background-color: #d93333;
+  color: #fff;
+}
+
+/* ===== MAIN CONTENT / IFRAME ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0; /* Allow iframe to shrink properly */
+}
+
+.content-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
