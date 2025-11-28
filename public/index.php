@@ -275,7 +275,7 @@ input[type="checkbox"] {
       </div>
 
       <div class="input-group">
-        <img src="../../public/assets/images/lock_icon.png" class="pass" alt="password">
+        <img src="../public/assets/images/lock_icon.png" class="pass" alt="password">
         <input type="password" placeholder="Password" required name="password">
       </div>
 

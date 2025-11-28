@@ -251,17 +251,7 @@ if ($current_step == 1) {
                 
                 <label class="payment-option">
                     <input type="radio" name="payment_method" value="GCash" checked>
-                    <span class="font-bold">GCash</span>
-                </label>
-
-                <label class="payment-option">
-                    <input type="radio" name="payment_method" value="PayPal">
-                    <span class="font-bold">PayPal</span>
-                </label>
-
-                <label class="payment-option">
-                    <input type="radio" name="payment_method" value="Credit Card">
-                    <span class="font-bold">Credit / Debit Card</span>
+                    <span class="font-bold">Pay Online with Paymongo</span>
                 </label>
             </form>
           </div>

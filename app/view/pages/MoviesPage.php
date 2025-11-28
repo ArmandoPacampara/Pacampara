@@ -25,7 +25,6 @@ if ($user_id > 0) {
 
     $db_genre_string = $pref_res['user_genre'] ?? '';
     
-    // Convert "Action, Horror" -> Array ['Action', 'Horror']
     $preferred_genres = [];
     if (!empty($db_genre_string)) {
         $preferred_genres = array_map('trim', explode(',', $db_genre_string));
@@ -53,7 +52,7 @@ if ($user_id > 0) {
         }
         $sql_genre_part = implode(' OR ', $genre_clauses);
 
-        // Include both Now Showing and Coming Soon in recommendations
+        // Include both Now Showing and Coming Soon
         $rec_sql = "SELECT * FROM movies 
                     WHERE ($sql_genre_part) 
                     AND movie_id NOT IN ($booked_ids_str)
@@ -117,6 +116,10 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
                <?= htmlspecialchars($movie['movie_name']); ?>
              </h1>
              <p class="text-gray-300 text-xs text-center mt-1"><?= htmlspecialchars($movie['genre']); ?></p>
+             
+             <?php if ($movie['movie_status'] === 'Coming Soon'): ?>
+                <span class="block text-center text-yellow-400 text-xs font-bold mt-1">COMING SOON</span>
+             <?php endif; ?>
           </div>
         </div>
       <?php } ?>
@@ -206,7 +209,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
       card.addEventListener("click", () => {
         const id = card.getAttribute("data-id"); 
         const name = card.getAttribute("data-name");
-        const genre = card.getAttribute("data-genre"); // Get Genre
+        const genre = card.getAttribute("data-genre"); 
         const hours = card.getAttribute("data-hours");
         const price = card.getAttribute("data-price");
         const poster = card.getAttribute("data-poster");
