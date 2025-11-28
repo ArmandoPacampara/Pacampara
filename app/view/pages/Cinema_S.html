@@ -155,6 +155,14 @@
     .mall-images{
         margin-left: 30px;
     }
+
+        /* Right Side Empty Placeholder */
+    .empty-box {
+        flex: 1;
+        background: #f1f1f1;
+        border-radius: 12px;
+        
+    }
 </style>
 
 
@@ -164,7 +172,7 @@
 
 <!-- Banner -->
 <div class="banner">
-    <img src="../back.png" class="back-icon" onclick="window.parent.goBackToDashboard()">
+    <img src="../../../public/assets/images/back.png" class="back-icon" onclick="window.parent.goBackToDashboard()">
 
 
     <h1>MEGA & BRIGHT<br>WORLD OF CHRISTMAS WONDER</h1>
@@ -186,9 +194,9 @@
 
 
         <div class="mall-images" style="display:flex; gap:10px;">
-            <img src="../sm1.jpg" alt="SM Megamall 1" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
-            <img src="../sm2.jpg" alt="SM Megamall 2" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
-            <img src="../sm3.jpg" alt="SM Megamall 3" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+            <img src="../../../public/assets/images/sm1.jpg" alt="SM Megamall 1" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+            <img src="../../../public/assets/images/sm2.jpg" alt="SM Megamall 2" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+            <img src="../../../public/assets/images/sm3.jpg" alt="SM Megamall 3" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
         </div>
     </div>
 
@@ -218,18 +226,19 @@
 
 
         <!-- Right Placeholder -->
-        <div class="empty-box">
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.837398972214!2d121.102692!3d14.594496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c8e9d730c0e9%3A0xb71e9c30f0cb4e8!2sSM%20City%20East%20Ortigas!5e0!3m2!1sen!2sph!4v1700000000000"
-                width="100%"
-                height="100%"
-                border-radius
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
+<div class="empty-box">
+    <iframe 
+        width="100%" 
+        height="100%" 
+        id="gmap_canvas" 
+        src="https://maps.google.com/maps?q=SM%20City%20East%20Ortigas&z=15&output=embed" 
+        frameborder="0" 
+        scrolling="no" 
+        marginheight="0" 
+        marginwidth="0" 
+        style="border:0;">
+    </iframe>
+</div>
     </div>
 </div>
 

@@ -11,14 +11,22 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $message = "";
 
-// --- 2. HANDLE FORM SUBMISSION (UPDATE PROFILE) ---
+// --- 2. HANDLE FORM SUBMISSION ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     $new_username = trim($_POST['username']);
     $new_contact  = trim($_POST['phone']);
     
+    // CAPTURE GENRES (Array -> String)
+    // If checkboxes are checked, $_POST['genre'] will be an array.
+    $new_genre_string = "";
+    if (isset($_POST['genre']) && is_array($_POST['genre'])) {
+        $new_genre_string = implode(', ', $_POST['genre']); 
+    }
+    
+    // Handle Profile Image
     $avatar_sql = "";
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === 0) {
-        $upload_dir = '../../../public/assets/uploads/'; 
+        $upload_dir = '../../../public/assets/images/'; 
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
         
         $file_name = time() . '_' . $_FILES['profile_img']['name'];
@@ -29,8 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         }
     }
 
-    $update_stmt = $con->prepare("UPDATE users SET user_name = ?, user_contact = ? $avatar_sql WHERE user_id = ?");
-    $update_stmt->bind_param("ssi", $new_username, $new_contact, $user_id);
+    $update_stmt = $con->prepare("
+        UPDATE users 
+        SET user_name = ?, user_contact = ?, user_genre = ? $avatar_sql 
+        WHERE user_id = ?
+    ");
+    $update_stmt->bind_param("sssi", $new_username, $new_contact, $new_genre_string, $user_id);
     
     if ($update_stmt->execute()) {
         $message = "Profile updated successfully!";
@@ -43,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
 // --- 3. FETCH USER DETAILS ---
 $user_stmt = $con->prepare("
-    SELECT u.user_name, u.user_email, u.user_contact, u.user_avatar, r.user_role 
+    SELECT u.user_name, u.user_email, u.user_contact, u.user_avatar, u.user_genre, r.user_role 
     FROM users u 
     JOIN roles r ON u.role_id = r.role_id 
     WHERE u.user_id = ?
@@ -59,28 +71,30 @@ $phone    = htmlspecialchars($user['user_contact'] ?? '');
 $role     = htmlspecialchars($user['user_role']);
 $avatar   = !empty($user['user_avatar']) ? "/public/assets/uploads/" . htmlspecialchars($user['user_avatar']) : "/public/assets/account_icon.png";
 
+// Genre Logic: Convert DB string back to Array for checkboxes
+$db_genre_string = $user['user_genre'] ?? '';
+$user_genres = array_map('trim', explode(',', $db_genre_string)); // e.g. ['Action', 'Horror']
+
+// Standard Genre List
+$all_genres = ['Action', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller', 'Animation'];
+
+// Placeholders
 $age     = "N/A"; 
 $address = "N/A"; 
-$genre   = "N/A"; 
 
-// --- 4. FETCH BOOKING RECORDS (WITH PAGINATION) ---
-
-// A. Configuration
-$records_per_page = 10; // How many rows to show
+// --- 4. PAGINATION LOGIC (Bookings) ---
+$records_per_page = 5; 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-if ($page < 1) $page = 1; // Safety check
+if ($page < 1) $page = 1; 
 $offset = ($page - 1) * $records_per_page;
 
-// B. Count Total Records for this User
 $count_stmt = $con->prepare("SELECT COUNT(*) as total FROM booking WHERE user_id = ?");
 $count_stmt->bind_param("i", $user_id);
 $count_stmt->execute();
-$total_result = $count_stmt->get_result()->fetch_assoc();
-$total_records = $total_result['total'];
+$total_records = $count_stmt->get_result()->fetch_assoc()['total'];
 $total_pages = ceil($total_records / $records_per_page);
 $count_stmt->close();
 
-// C. Fetch Records for Current Page
 $booking_stmt = $con->prepare("
     SELECT b.ticket_id, b.schedule, b.status, m.movie_name 
     FROM booking b
@@ -102,34 +116,43 @@ $bookings_result = $booking_stmt->get_result();
   <title>User Account - MoviEase</title>
   <link rel="stylesheet" href="../../../public/styles/css/AccountPage.css" />
   <style>
-      /* Simple Pagination Styles */
-      .pagination {
-          display: flex;
-          justify-content: center;
-          margin-top: 20px;
+      .pagination { display: flex; justify-content: center; margin-top: 20px; gap: 10px; }
+      .pagination a { text-decoration: none; padding: 8px 12px; border: 1px solid #ddd; color: #333; border-radius: 4px; transition: background-color 0.3s; }
+      .pagination a:hover { background-color: #f0f0f0; }
+      .pagination a.active { background-color: #d60000; color: white; border-color: #d60000; }
+      .pagination a.disabled { pointer-events: none; color: #ccc; border-color: #eee; }
+
+      /* CHECKBOX STYLES */
+      .genre-checkboxes {
+          display: none; /* Hidden by default */
+          flex-wrap: wrap;
           gap: 10px;
+          margin-top: 5px;
+          background: #fff;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
       }
-      .pagination a {
-          text-decoration: none;
-          padding: 8px 12px;
-          border: 1px solid #ddd;
-          color: #333;
-          border-radius: 4px;
-          transition: background-color 0.3s;
+      .genre-checkboxes label {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 14px;
+          cursor: pointer;
+          width: 45%; /* 2 columns */
       }
-      .pagination a:hover {
-          background-color: #f0f0f0;
+      .genre-checkboxes input[type="checkbox"] {
+          accent-color: #d60000;
+          transform: scale(1.1);
       }
-      .pagination a.active {
-          background-color: #d60000; /* Your theme red */
-          color: white;
-          border-color: #d60000;
-      }
-      .pagination a.disabled {
-          pointer-events: none;
-          color: #ccc;
-          border-color: #eee;
-      }
+
+      body {
+            margin: 50px;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #fdecec;
+            height: 59.92vh;
+        }
   </style>
 </head>
 
@@ -167,7 +190,7 @@ $bookings_result = $booking_stmt->get_result();
             <div class="detail-row">
               <label class="label">EMAIL</label>
               <div>
-                <input type="text" class="field-input" value="<?= $email ?>" disabled style="background:#eee; cursor:not-allowed;" title="Email cannot be changed" />
+                <input type="text" class="field-input" value="<?= $email ?>" disabled style="background:#eee; cursor:not-allowed;" />
               </div>
             </div>
 
@@ -182,23 +205,31 @@ $bookings_result = $booking_stmt->get_result();
             <div class="detail-row">
               <label class="label">AGE</label>
               <div>
-                <input type="text" class="field-input" id="age" value="<?= $age ?>" disabled />
-                <p class="error-msg"></p>
+                <input type="text" class="field-input" id="age" value="<?= $age ?>" disabled style="background:#eee;" />
               </div>
             </div>
 
             <div class="detail-row">
               <label class="label">ADDRESS</label>
               <div>
-                <input type="text" class="field-input" id="address" value="<?= $address ?>" disabled />
-                <p class="error-msg"></p>
+                <input type="text" class="field-input" id="address" value="<?= $address ?>" disabled style="background:#eee;" />
               </div>
             </div>
 
             <div class="detail-row">
               <label class="label">GENRE</label>
               <div>
-                <input type="text" class="field-input" id="genre" value="<?= $genre ?>" disabled />
+                <input type="text" class="field-input" id="genreDisplayInput" value="<?= htmlspecialchars($db_genre_string) ?>" disabled />
+                
+                <div class="genre-checkboxes" id="genreCheckboxes">
+                    <?php foreach ($all_genres as $g): ?>
+                        <label>
+                            <input type="checkbox" name="genre[]" value="<?= $g ?>" 
+                                <?= in_array($g, $user_genres) ? 'checked' : '' ?>>
+                            <?= $g ?>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
                 <p class="error-msg"></p>
               </div>
             </div>
@@ -208,7 +239,6 @@ $bookings_result = $booking_stmt->get_result();
 
     <div class="records-container">
       <h1>BOOKING RECORDS</h1>
-
       <div class="bookings">
         <div class="table-container">
           <div class="record-header">All Bookings (Page <?= $page ?> of <?= max(1, $total_pages) ?>)</div>
@@ -232,9 +262,7 @@ $bookings_result = $booking_stmt->get_result();
                   </tr>
                   <?php endwhile; ?>
               <?php else: ?>
-                  <tr>
-                      <td colspan="4" style="text-align:center;">No booking history found.</td>
-                  </tr>
+                  <tr><td colspan="4" style="text-align:center;">No booking history found.</td></tr>
               <?php endif; ?>
             </tbody>
           </table>
@@ -242,26 +270,13 @@ $bookings_result = $booking_stmt->get_result();
 
         <?php if ($total_pages > 1): ?>
         <div class="pagination">
-            <?php if ($page > 1): ?>
-                <a href="?page=<?= $page - 1 ?>">Previous</a>
-            <?php else: ?>
-                <a href="#" class="disabled">Previous</a>
-            <?php endif; ?>
-
+            <?php if ($page > 1): ?><a href="?page=<?= $page - 1 ?>">Previous</a><?php else: ?><a href="#" class="disabled">Previous</a><?php endif; ?>
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>">
-                    <?= $i ?>
-                </a>
+                <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>"><?= $i ?></a>
             <?php endfor; ?>
-
-            <?php if ($page < $total_pages): ?>
-                <a href="?page=<?= $page + 1 ?>">Next</a>
-            <?php else: ?>
-                <a href="#" class="disabled">Next</a>
-            <?php endif; ?>
+            <?php if ($page < $total_pages): ?><a href="?page=<?= $page + 1 ?>">Next</a><?php else: ?><a href="#" class="disabled">Next</a><?php endif; ?>
         </div>
         <?php endif; ?>
-
       </div>
     </div>
   </div>
@@ -270,7 +285,6 @@ $bookings_result = $booking_stmt->get_result();
     <div class="popup-box">
       <h2>Save Changes?</h2>
       <p>Are you sure you want to save the updated information?</p>
-
       <div class="popup-buttons">
         <button id="cancelSave" class="cancel-btn">Cancel</button>
         <button id="confirmSave" class="confirm-btn">Save</button>
@@ -282,8 +296,12 @@ $bookings_result = $booking_stmt->get_result();
     document.addEventListener("DOMContentLoaded", () => {
       const editBtn = document.getElementById("editBtn");
       const editIcon = document.getElementById("editIcon");
-      // Select only inputs inside the user-details that correspond to DB fields we allow editing
-      const phoneInput = document.getElementById("phone"); 
+      const phoneInput = document.getElementById("phone");
+      
+      // Genre Elements
+      const genreDisplay = document.getElementById("genreDisplayInput");
+      const genreCheckboxes = document.getElementById("genreCheckboxes");
+
       const profileImg = document.getElementById("profileImg");
       const profileInput = document.getElementById("profileInput");
       const usernameDisplay = document.getElementById("usernameDisplay");
@@ -291,61 +309,54 @@ $bookings_result = $booking_stmt->get_result();
       const form = document.getElementById("profileForm");
 
       let editing = false;
-      let tempProfileSrc = profileImg.src;
 
       editBtn.addEventListener("click", () => {
         editing = !editing;
 
         if (editing) {
-          // Enable Phone Input
+          // --- ENTER EDIT MODE ---
+          
+          // Enable Inputs
           phoneInput.disabled = false;
           phoneInput.classList.add("editing");
           
-          // Toggle Username
+          // Toggle Genre: Hide text input, Show checkboxes
+          genreDisplay.style.display = "none";
+          genreCheckboxes.style.display = "flex";
+
+          // Username Toggle
           usernameDisplay.style.display = "none";
           usernameInput.style.display = "inline-block";
           usernameInput.classList.add("editing");
           
-          // Change Icon
           editIcon.src = "../../../public/assets/save_btn.png";
         } else {
-          // VALIDATION BEFORE SAVING
+          // --- CLICKED SAVE (Validation) ---
           if (!validateFields()) {
-            editing = true; // Stay in edit mode if invalid
+            editing = true;
             return;
           }
-
-          // Show Confirmation Popup
           document.getElementById("savePopup").style.display = "flex";
         }
       });
 
-      // Handle Popup Confirmation
-      document.getElementById("confirmSave").onclick = () => {
-          form.submit(); // Submit the form to PHP
-      };
-
+      document.getElementById("confirmSave").onclick = () => form.submit();
       document.getElementById("cancelSave").onclick = () => {
-          editing = true; // Revert state variable
+          editing = true;
           document.getElementById("savePopup").style.display = "none";
-          // We stay in edit mode so user can correct or continue
       };
 
       function validateFields() {
         let isValid = true;
         document.querySelectorAll(".error-msg").forEach((e) => (e.textContent = ""));
         phoneInput.classList.remove("input-error");
-        usernameInput.classList.remove("input-error");
 
-        // Validate Username
         if (usernameInput.value.trim().length < 2) {
           alert("Username must be at least 2 characters long.");
           isValid = false;
         }
 
-        // Validate Phone (Basic Check)
         const phoneVal = phoneInput.value.trim();
-        // Allow empty or strictly 11 digits starting with 09
         if (phoneVal !== "" && !/^09\d{9}$/.test(phoneVal)) {
              phoneInput.classList.add("input-error");
              phoneInput.nextElementSibling.textContent = "Invalid PH mobile number (e.g. 09123456789).";
@@ -355,19 +366,12 @@ $bookings_result = $booking_stmt->get_result();
         return isValid;
       }
 
-      // Profile Image Click
-      profileImg.addEventListener("click", () => {
-        if (editing) profileInput.click();
-      });
-
-      // Profile Image Preview
+      profileImg.addEventListener("click", () => { if (editing) profileInput.click(); });
       profileInput.addEventListener("change", () => {
         const file = profileInput.files[0];
         if (file) {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            profileImg.src = e.target.result;
-          };
+          reader.onload = (e) => { profileImg.src = e.target.result; };
           reader.readAsDataURL(file);
         }
       });

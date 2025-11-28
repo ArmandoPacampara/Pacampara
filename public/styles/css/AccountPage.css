@@ -1,9 +1,12 @@
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #fdecec;
-      margin: 0;
-      padding: 0;
+      margin: 50px;
+      padding: 0px;
+      height: 89.92vh;
     }
+
+
 
 
     .page-wrapper {
@@ -15,14 +18,18 @@
     }
 
 
+
+
     .account-container {
-      width: 580px;
-      height: 750px;
+      width: 500px;
+      height: 550px;
       background: white;
       border-radius: 15px;
       padding: 30px 60px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
+
+
 
 
     /* PROFILE SECTION */
@@ -31,6 +38,8 @@
       text-align: center;
       margin-top: 20px;
     }
+
+
 
 
     .profile-img {
@@ -45,10 +54,14 @@
     }
 
 
+
+
     .profile-img-wrapper {
       position: relative;
       display: inline-block;
     }
+
+
 
 
     .profile-img:hover {
@@ -56,9 +69,13 @@
     }
 
 
+
+
     #profileInput {
       display: none;
     }
+
+
 
 
     .username {
@@ -68,6 +85,8 @@
       margin-top: 10px;
       margin-bottom: 5px;
     }
+
+
 
 
     .username-input {
@@ -86,9 +105,13 @@
     }
 
 
+
+
     .username-input.editing {
       background-color: #ffffff;
     }
+
+
 
 
     .user-role {
@@ -97,6 +120,8 @@
       margin-top: 5px;
       margin-bottom: 20px;
     }
+
+
 
 
     /* USER DETAILS SECTION */
@@ -109,6 +134,8 @@
     }
 
 
+
+
     .detail-row {
       display: grid;
       grid-template-columns: 120px 1fr;
@@ -119,12 +146,16 @@
     }
 
 
+
+
     .label {
       font-weight: 600;
       font-size: 1.2rem;
       height: 50px;
       margin-top: 5px;
     }
+
+
 
 
     .field-input {
@@ -140,6 +171,8 @@
     }
 
 
+
+
     .field-input:focus {
       background: #ffffff;
       box-shadow: 0 0 0 2px #ffffff;
@@ -147,10 +180,14 @@
     }
 
 
+
+
     .field-input.editing {
       border: 1px solid #000000;
       background-color: #f1f1f1;
     }
+
+
 
 
     .edit-btn {
@@ -166,6 +203,8 @@
     }
 
 
+
+
     .edit-btn img {
       width: 26px;
       height: 26px;
@@ -173,14 +212,20 @@
     }
 
 
+
+
     .edit-btn:focus {
       outline: none;
     }
 
 
+
+
     .edit-btn:hover {
       transform: scale(1.1);
     }
+
+
 
 
     /* Popup Overlay */
@@ -198,6 +243,8 @@
     }
 
 
+
+
     .popup-box {
       background: white;
       padding: 30px 40px;
@@ -208,10 +255,14 @@
     }
 
 
+
+
     .popup-box h2 {
       margin-bottom: 10px;
       color: #7a0000;
     }
+
+
 
 
     .popup-buttons {
@@ -220,6 +271,8 @@
       gap: 20px;
       margin-top: 20px;
     }
+
+
 
 
     .confirm-btn {
@@ -232,6 +285,8 @@
     }
 
 
+
+
     .cancel-btn {
       background: #ccc;
       padding: 10px 20px;
@@ -241,14 +296,20 @@
     }
 
 
+
+
     .confirm-btn:hover {
       background: #b30000;
     }
 
 
+
+
     .cancel-btn:hover {
       background: #b3b3b3;
     }
+
+
 
 
     /* Error Messages */
@@ -260,10 +321,14 @@
     }
 
 
+
+
     .input-error {
       border: 2px solid #b30000 !important;
       background: #ffe0e0 !important;
     }
+
+
 
 
     .field-input:disabled {
@@ -273,10 +338,12 @@
     }
 
 
+
+
     /* RECORDS CONTAINER */
     .records-container {
-      width: 1000px;
-      height: 750px;
+      width: 800px;
+      height: 550px;
       background: white;
       border-radius: 15px;
       padding: 30px 50px;
@@ -285,9 +352,13 @@
     }
 
 
+
+
     .bookings {
       margin-top: 30px;
     }
+
+
 
 
     .table-container {
@@ -295,6 +366,8 @@
       border-radius: 15px;
       overflow: hidden;
     }
+
+
 
 
     .record-header {
@@ -307,11 +380,15 @@
     }
 
 
+
+
     table {
       width: 100%;
       border-collapse: collapse;
       background: white;
     }
+
+
 
 
     th {
@@ -322,6 +399,8 @@
     }
 
 
+
+
     td {
       padding: 12px;
       background: #ffe5e5;
@@ -329,9 +408,13 @@
     }
 
 
+
+
     tr:nth-child(even) td {
       background: #f2e0e0;
     }
+
+
 
 
     .empty-row td {
@@ -341,6 +424,8 @@
       font-size: 25px;
       padding: 20px;
     }
+
+
 
 
     .view-btn {
@@ -353,9 +438,13 @@
     }
 
 
+
+
     .view-btn:hover {
       background-color: #b30000;
     }
+
+
 
 
     .table-page {
@@ -366,10 +455,19 @@
     }
 
 
+
+
     .table-page.active {
       opacity: 1;
       transform: translateY(0);
       display: block;
     }
+
+
+
+
+
+
+
 
 
