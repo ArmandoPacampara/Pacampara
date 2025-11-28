@@ -17,8 +17,6 @@ $discount_amount = isset($_REQUEST['discount_amount']) ? floatval($_REQUEST['dis
 $final_price     = isset($_REQUEST['final_price']) ? floatval($_REQUEST['final_price']) : 0;
 
 // Determine Current Step
-// 1 = Tickets, 3 = Vouchers, 4 = Payment
-// (Step 2 is handled by SeatsPage.php externally)
 $current_step = isset($_REQUEST['step']) ? intval($_REQUEST['step']) : 1;
 
 // Auto-detect step based on data if 'step' param is missing
@@ -103,7 +101,7 @@ if ($current_step == 1) {
                     $discount_amount = ($subtotal * $voucher['discount_value']) / 100;
                 }
                 $discount_amount = min($discount_amount, $subtotal);
-                $voucher_id = $voucher['voucher_id']; // Store to pass to Step 4
+                $voucher_id = $voucher['voucher_id']; 
                 $voucher_message = "<span class='text-green-600 font-bold'>Voucher Applied!</span>";
             } else {
                 $voucher_message = "<span class='text-red-600'>Min spend ₱" . number_format($voucher['min_spend']) . " required.</span>";
@@ -114,7 +112,6 @@ if ($current_step == 1) {
     }
     $final_price = $subtotal - $discount_amount;
 } 
-// Step 4 logic is mostly UI rendering using the data passed from Step 3
 ?>
 
 <!DOCTYPE html>
@@ -126,11 +123,9 @@ if ($current_step == 1) {
   <link rel="stylesheet" href="../../../public/styles/css/checkout.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-      /* Extra styles for Payment Options */
       .payment-option { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
       .payment-option:hover { background: #f9f9f9; border-color: #aaa; }
       .payment-option input { margin-right: 15px; transform: scale(1.2); accent-color: #d60000; }
-      .payment-logo { height: 25px; margin-left: auto; }
       .summary-box { background: #fdfdfd; padding: 15px; border: 1px dashed #ccc; border-radius: 8px; margin-bottom: 20px; }
   </style>
 </head>
@@ -198,9 +193,7 @@ if ($current_step == 1) {
                 <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
 
                 <div class="flex gap-2 items-center mt-2">
-                    <input type="text" name="voucher_code" value="<?= htmlspecialchars($voucher_code) ?>" 
-                           placeholder="Enter Code (e.g. WELCOME50)" 
-                           class="border p-2 rounded w-1/2">
+                    <input type="text" name="voucher_code" value="<?= htmlspecialchars($voucher_code) ?>" placeholder="Enter Code" class="border p-2 rounded w-1/2">
                     <button type="submit" name="apply_voucher" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">Apply</button>
                 </div>
                 <p class="text-sm mt-1"><?= $voucher_message ?></p>
@@ -244,7 +237,7 @@ if ($current_step == 1) {
                 </div>
             </div>
 
-            <form action="BookingSuccess.php" method="POST" id="paymentForm">
+            <form action="ProcessPayment.php" method="POST" id="paymentForm">
                 <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
                 <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
                 <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
@@ -259,7 +252,7 @@ if ($current_step == 1) {
                 <label class="payment-option">
                     <input type="radio" name="payment_method" value="GCash" checked>
                     <span class="font-bold">GCash</span>
-                    </label>
+                </label>
 
                 <label class="payment-option">
                     <input type="radio" name="payment_method" value="PayPal">
@@ -270,8 +263,7 @@ if ($current_step == 1) {
                     <input type="radio" name="payment_method" value="Credit Card">
                     <span class="font-bold">Credit / Debit Card</span>
                 </label>
-
-                </form>
+            </form>
           </div>
 
       <?php endif; ?>
