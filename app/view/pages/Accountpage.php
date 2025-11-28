@@ -4,7 +4,7 @@ require_once '../../../app/core/db.php';
 
 // --- 1. AUTHENTICATION CHECK ---
 if (!isset($_SESSION['user_id'])) {
-    header("Location: LoginPage.php"); // Redirect if not logged in
+    header("Location: LoginPage.php"); 
     exit;
 }
 
@@ -15,15 +15,10 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     $new_username = trim($_POST['username']);
     $new_contact  = trim($_POST['phone']);
-    // Note: Email, Age, Address, Genre are not in your users table schema provided earlier.
-    // Assuming 'user_contact' maps to PHONE.
-    // For Age, Address, Genre to be saved, you would need to add columns to your 'users' table.
-    // I will update the available fields: user_name and user_contact.
     
-    // Handle Profile Image Upload
     $avatar_sql = "";
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === 0) {
-        $upload_dir = '../../../public/assets/uploads/'; // Ensure this directory exists
+        $upload_dir = '../../../public/assets/uploads/'; 
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
         
         $file_name = time() . '_' . $_FILES['profile_img']['name'];
@@ -39,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     
     if ($update_stmt->execute()) {
         $message = "Profile updated successfully!";
-        // Refresh session name if changed
         $_SESSION['user_name'] = $new_username;
     } else {
         $message = "Error updating profile.";
@@ -59,28 +53,43 @@ $user_stmt->execute();
 $user = $user_stmt->get_result()->fetch_assoc();
 $user_stmt->close();
 
-// Set defaults if null
 $username = htmlspecialchars($user['user_name']);
 $email    = htmlspecialchars($user['user_email']);
 $phone    = htmlspecialchars($user['user_contact'] ?? '');
 $role     = htmlspecialchars($user['user_role']);
 $avatar   = !empty($user['user_avatar']) ? "/public/assets/uploads/" . htmlspecialchars($user['user_avatar']) : "/public/assets/account_icon.png";
 
-// Note: Your DB schema does not have Age, Address, or Genre columns in 'users'.
-// I will use placeholders or you can add these columns to your DB.
-$age     = "N/A"; // Placeholder
-$address = "N/A"; // Placeholder
-$genre   = "N/A"; // Placeholder
+$age     = "N/A"; 
+$address = "N/A"; 
+$genre   = "N/A"; 
 
-// --- 4. FETCH BOOKING RECORDS ---
+// --- 4. FETCH BOOKING RECORDS (WITH PAGINATION) ---
+
+// A. Configuration
+$records_per_page = 10; // How many rows to show
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1; // Safety check
+$offset = ($page - 1) * $records_per_page;
+
+// B. Count Total Records for this User
+$count_stmt = $con->prepare("SELECT COUNT(*) as total FROM booking WHERE user_id = ?");
+$count_stmt->bind_param("i", $user_id);
+$count_stmt->execute();
+$total_result = $count_stmt->get_result()->fetch_assoc();
+$total_records = $total_result['total'];
+$total_pages = ceil($total_records / $records_per_page);
+$count_stmt->close();
+
+// C. Fetch Records for Current Page
 $booking_stmt = $con->prepare("
     SELECT b.ticket_id, b.schedule, b.status, m.movie_name 
     FROM booking b
     JOIN movies m ON b.movie_id = m.movie_id
     WHERE b.user_id = ?
     ORDER BY b.date_booked DESC
+    LIMIT ? OFFSET ?
 ");
-$booking_stmt->bind_param("i", $user_id);
+$booking_stmt->bind_param("iii", $user_id, $records_per_page, $offset);
 $booking_stmt->execute();
 $bookings_result = $booking_stmt->get_result();
 ?>
@@ -92,6 +101,36 @@ $bookings_result = $booking_stmt->get_result();
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Account - MoviEase</title>
   <link rel="stylesheet" href="../../../public/styles/css/AccountPage.css" />
+  <style>
+      /* Simple Pagination Styles */
+      .pagination {
+          display: flex;
+          justify-content: center;
+          margin-top: 20px;
+          gap: 10px;
+      }
+      .pagination a {
+          text-decoration: none;
+          padding: 8px 12px;
+          border: 1px solid #ddd;
+          color: #333;
+          border-radius: 4px;
+          transition: background-color 0.3s;
+      }
+      .pagination a:hover {
+          background-color: #f0f0f0;
+      }
+      .pagination a.active {
+          background-color: #d60000; /* Your theme red */
+          color: white;
+          border-color: #d60000;
+      }
+      .pagination a.disabled {
+          pointer-events: none;
+          color: #ccc;
+          border-color: #eee;
+      }
+  </style>
 </head>
 
 <body>
@@ -172,7 +211,7 @@ $bookings_result = $booking_stmt->get_result();
 
       <div class="bookings">
         <div class="table-container">
-          <div class="record-header">All Bookings</div>
+          <div class="record-header">All Bookings (Page <?= $page ?> of <?= max(1, $total_pages) ?>)</div>
           <table>
             <thead>
               <tr>
@@ -200,6 +239,29 @@ $bookings_result = $booking_stmt->get_result();
             </tbody>
           </table>
         </div>
+
+        <?php if ($total_pages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?= $page - 1 ?>">Previous</a>
+            <?php else: ?>
+                <a href="#" class="disabled">Previous</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a href="?page=<?= $i ?>" class="<?= ($i == $page) ? 'active' : '' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
+
+            <?php if ($page < $total_pages): ?>
+                <a href="?page=<?= $page + 1 ?>">Next</a>
+            <?php else: ?>
+                <a href="#" class="disabled">Next</a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
       </div>
     </div>
   </div>
@@ -221,7 +283,6 @@ $bookings_result = $booking_stmt->get_result();
       const editBtn = document.getElementById("editBtn");
       const editIcon = document.getElementById("editIcon");
       // Select only inputs inside the user-details that correspond to DB fields we allow editing
-      // Currently only 'phone' and 'username' are editable in this PHP logic
       const phoneInput = document.getElementById("phone"); 
       const profileImg = document.getElementById("profileImg");
       const profileInput = document.getElementById("profileInput");

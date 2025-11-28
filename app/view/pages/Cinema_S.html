@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SM Megamall</title>
+
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+
+    /* Header Banner */
+    .banner {
+        background: url('banner.png') no-repeat center/cover;
+        background-color: #15155e; /* fallback color */
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+        padding-bottom: 45px;
+        margin-top: -25px;
+    }
+
+
+    /* Main Layout */
+    .container {
+        width: 90%;
+        margin: auto;
+        margin-top: -50px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px ;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+
+    /* Mall Header Section */
+    .header-section {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 20px;
+    }
+
+
+    .logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #0038a8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+
+    .mall-info h1 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+
+    .location {
+        margin-top: 5px;
+        font-size: 15px;
+        color: #444;
+    }
+
+
+    /* Content Section */
+    .content {
+        display: flex;
+        margin-top: 30px;
+        gap: 20px;
+    }
+
+
+    /* Mall Hours Box */
+    .hours-box {
+        width: 40%;
+        background: #eef2ff;
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+
+    .hours-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    .hours-header h3 {
+        margin: 0;
+    }
+
+
+    .open-tag {
+        background: #32d451;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+
+    .hours-list {
+        margin-top: 20px;
+        font-size: 15px;
+    }
+
+
+    .hours-list div {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+
+
+    /* Right Side Empty Placeholder */
+    .empty-box {
+        flex: 1;
+        background: #f1f1f1;
+        border-radius: 12px;
+    }
+
+
+        .back-icon {
+        width: 25px;
+        height: 35px;
+        cursor: pointer;
+        margin-top: 5px;
+        margin-bottom: -60px;
+        margin-left: -160vh;
+        transition: 0.2s;
+    }
+
+
+    .back-icon:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+
+    .mall-images{
+        margin-left: 30px;
+    }
+</style>
+
+
+</head>
+<body>
+
+
+<!-- Banner -->
+<div class="banner">
+    <img src="../back.png" class="back-icon" onclick="window.parent.goBackToDashboard()">
+
+
+    <h1>MEGA & BRIGHT<br>WORLD OF CHRISTMAS WONDER</h1>
+</div>
+
+
+<!-- Container -->
+<div class="container">
+
+
+    <!-- Mall Header Section -->
+    <div class="header-section">
+        <div class="logo">SM</div>
+        <div class="mall-info">
+            <h1>SM City East Ortigas</h1>
+            <p class="location">📍 A. Sandoval Avenue, Santa Lucia, Pasig City,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1610 Metro Manila</p>
+        </div>
+
+
+        <div class="mall-images" style="display:flex; gap:10px;">
+            <img src="../sm1.jpg" alt="SM Megamall 1" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+            <img src="../sm2.jpg" alt="SM Megamall 2" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+            <img src="../sm3.jpg" alt="SM Megamall 3" style="width:180px; height:90px; object-fit:cover; border-radius:8px;">
+        </div>
+    </div>
+
+
+    <!-- Content Boxes -->
+    <div class="content">
+
+
+        <!-- Mall Hours -->
+        <div class="hours-box">
+            <div class="hours-header">
+                <h3>MALL HOURS</h3>
+                <span class="open-tag">OPEN</span>
+            </div>
+
+
+            <div class="hours-list">
+                <div><span>Sunday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Monday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Tuesday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Wednesday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Thursday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Friday</span><span>10:00 AM – 10:00 PM</span></div>
+                <div><span>Saturday</span><span>10:00 AM – 10:00 PM</span></div>
+            </div>
+        </div>
+
+
+        <!-- Right Placeholder -->
+        <div class="empty-box">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.837398972214!2d121.102692!3d14.594496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c8e9d730c0e9%3A0xb71e9c30f0cb4e8!2sSM%20City%20East%20Ortigas!5e0!3m2!1sen!2sph!4v1700000000000"
+                width="100%"
+                height="100%"
+                border-radius
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+function initMap() {
+
+
+    // Default location (SM East Ortigas)
+    const cinemaLocation = { lat: X, lng: Y };
+
+
+    // Initialize map
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: smLocation
+    });
+
+
+    // SM marker
+    new google.maps.Marker({
+        position: smLocation,
+        map: map,
+        title: "SM City East Ortigas"
+    });
+
+
+    // Try to get user's location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+
+                // Add marker for user
+                new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    title: "You are here",
+                    icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                });
+
+
+                // Center map on user
+                map.setCenter(userLocation);
+            },
+            function () {
+                alert("Location permission denied.");
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+</script>
+
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+
+
+</body>
+</html>
+
+
+
