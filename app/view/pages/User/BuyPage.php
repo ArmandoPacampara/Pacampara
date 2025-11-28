@@ -1,7 +1,7 @@
 <?php
 // BuyPage.php
 // Connect to the database
-include '../../../app/core/db.php'; 
+include '../../../../app/core/db.php'; 
 
 // --- 1. Get Movie ID from URL ---
 // The movie_id is passed from the MoviesPage.php pop-up link: BuyPage.php?movie_id=X
@@ -97,7 +97,7 @@ function format_date_header($date_string) {
       <div class="h-[400px] p-5">
         <img
           class="rounded-2xl object-cover w-full h-full"
-          src="../../../public/assets/images/<?= $movie_poster ?>"
+          src="../../../../public/assets/images/<?= $movie_poster ?>"
           alt="<?= $movie_name ?> Poster"
         />
       </div>

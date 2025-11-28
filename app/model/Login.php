@@ -110,11 +110,11 @@ if (isset($_POST['login'])) {
 
             // Redirection
             if ($role === 'Admin') {
-                header("Location: /moviease/app/view/pages/AdminPage.html"); // Updated path
+                header("Location: /moviease/app/view/pages/Admin/AdminPage.html"); // Updated path
             } elseif ($role === 'Staff') {
-                header("Location: /moviease/app/view/pages/StaffDashboard.php"); // Assuming this path
+                header("Location: /moviease/app/view/pages/Staff/StaffPage.html"); // Assuming this path
             } else {
-                header("Location: /moviease/app/view/pages/HomePage.php"); // Updated path
+                header("Location: /moviease/app/view/pages/User/HomePage.php"); // Updated path
             }
             exit;
 

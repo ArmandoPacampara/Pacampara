@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../../app/core/db.php';
+include '../../../../app/core/db.php';
 
 // ------------------------------
 // 1. CAPTURE DATA & DETERMINE STEP
@@ -120,7 +120,7 @@ if ($current_step == 1) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase Booking</title>
-  <link rel="stylesheet" href="../../../public/styles/css/checkout.css">
+  <link rel="stylesheet" href="../../../../public/styles/css/checkout.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
       .payment-option { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
@@ -134,7 +134,7 @@ if ($current_step == 1) {
   <div class="booking-container">
     
     <div class="movie-header">
-      <img src="../../../public/assets/images/<?= $movie_data['movie_poster'] ?>" alt="Poster" class="movie-poster">
+      <img src="../../../../public/assets/images/<?= $movie_data['movie_poster'] ?>" alt="Poster" class="movie-poster">
       <div class="movie-info">
         <h2 class="movie-title"><?= $movie_data['movie_name'] ?></h2>
         <div class="address"><p><?= $cinema_data['cinema_address'] ?></p></div>

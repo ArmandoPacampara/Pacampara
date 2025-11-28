@@ -1,7 +1,7 @@
 <?php
 // SeatsPage.php
 session_start();
-include '../../../app/core/db.php';
+include '../../../../app/core/db.php';
 
 // ------------------------------
 // 1. GET PARAMETERS FROM URL
@@ -58,7 +58,7 @@ $stmt->close();
     <title>Select Seats - <?= htmlspecialchars($cinema_name) ?></title>
     
     <?php if ($is_robinsons_cinema): ?>
-        <link rel="stylesheet" href="../../../public/styles/Seats_Robinson.css" />
+        <link rel="stylesheet" href="../../../../public/styles/Seats_Robinson.css" />
         <style>
             /* ROBINSONS SPECIFIC CSS */
             body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }

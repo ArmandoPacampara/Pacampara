@@ -1,7 +1,7 @@
 <?php
 // SchedulePage.php
 // Connect to the database
-include '../../../app/core/db.php'; 
+include '../../../../app/core/db.php'; 
 
 // --- 1. Fetch All Schedules ---
 // Query to get all movies, cinemas, and showtimes, sorted by movie name, cinema name, and then time.
@@ -96,7 +96,7 @@ if ($schedule_query && $schedule_query->num_rows > 0) {
                 <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-12 border border-gray-100">
                     <div class="flex items-center p-6 bg-red-800 text-white">
                         <img 
-                            src="../../../public/assets/images/<?= htmlspecialchars($movie['poster']) ?>" 
+                            src="../../../../public/assets/images/<?= htmlspecialchars($movie['poster']) ?>" 
                             alt="<?= htmlspecialchars($movie['name']) ?> Poster"
                             class="w-16 h-20 object-cover rounded-md shadow-lg mr-6"
                             onerror="this.onerror=null;this.src='https://placehold.co/64x80/2f3640/white?text=Poster';"

@@ -1,0 +1,244 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+
+.notif-page {
+    padding: 20px;
+}
+
+
+.notif-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+.notif-list {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+
+/* Gmail-style row */
+.notif-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.15s ease;
+    margin-bottom: 5px;
+}
+
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+
+/* Hover highlight */
+.notif-item:hover {
+    background: #f6f6f6;
+}
+
+
+/* Left side */
+.notif-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+
+/* Star icon */
+.star {
+    font-size: 18px;
+    color: #b6b6b6;
+    user-select: none;
+}
+
+
+.star:hover {
+    color: #ffa800;
+}
+
+
+/* Notification label (sender-like text) */
+.notif-label {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* Preview text */
+.notif-text {
+    color: #555;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 360px;
+}
+
+
+/* Date on right */
+.notif-date {
+    color: #666;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+
+/* Unread = bold, like Gmail */
+.unread .notif-label,
+.unread .notif-text {
+    font-weight: bold;
+    color: black;
+}
+
+
+/* Highlight unread notifications */
+.notif-item.unread {
+    background-color: #e6f2ff; /* Light blue background */
+    font-weight: 600;          /* Slightly bolder text */
+    border-left: 5px solid #3399ff; /* Blue accent line on left */
+}
+
+
+/* Keep the hover effect subtle */
+.notif-item.unread:hover {
+    background-color: #cce6ff;
+}
+
+
+/* ========== POPUP MODAL ========== */
+.notif-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+
+.notif-modal.active {
+    display: flex;
+}
+
+
+.modal-box {
+    background: white;
+    width: 600px;
+    max-width: 90vw;
+    height: 400px;
+    max-height: 80vh;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    padding: 25px 30px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+
+/* Popup header for title and close button */
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #222;
+}
+
+
+/* Popup title */
+.popup-title {
+    user-select: none;
+}
+
+
+/* Close button styling */
+.popup-close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+
+.popup-close-btn:hover {
+    color: #000;
+}
+
+
+/* Add a scroll for content inside the popup if it overflows */
+.popup-content {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+
+/* Buttons styling */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+.modal-actions button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #d93535;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+
+.modal-actions button:hover {
+    background: #b22b2b;
+}
+
+
+.modal-actions .delete {
+    background: #444;
+}
+
+
+.modal-actions .delete:hover {
+    background: #222;
+}
+
+
+/* ⭐ Starred style */
+.star.starred {
+    color: #ffa800;
+}
+
+
+
+
+

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinemas</title>
-    <link rel="stylesheet" href="../../../public/styles/css/CinemasPage.css">
+    <link rel="stylesheet" href="../../../../public/styles/css/CinemasPage.css">
 
 
     <script>
@@ -37,7 +37,7 @@
 
             <!-- SM -->
             <div class="cinema-card">
-                <img src="../../../public/assets/images/smlogo.png" alt="SM Logo">
+                <img src="../../../../public/assets/images/smlogo.png" alt="SM Logo">
                 <h3>SM</h3>
                 <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('SM')">VISIT</a>
             </div>
@@ -45,7 +45,7 @@
 
             <!-- ROBINSON -->
             <div class="cinema-card">
-                <img src="../../../public/assets/images/robinl.jpg" alt="Robinsons Logo">
+                <img src="../../../../public/assets/images/robinl.jpg" alt="Robinsons Logo">
                 <h3>ROBINSON</h3>
                 <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('Robinson')">VISIT</a>
             </div>
@@ -53,7 +53,7 @@
 
             <!-- AYALA -->
             <div class="cinema-card">
-                <img src="../../../public/assets/images/ayalamlogo.png" alt="Ayala Logo">
+                <img src="../../../../public/assets/images/ayalamlogo.png" alt="Ayala Logo">
                 <h3>AYALA</h3>
                 <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('Ayala')">VISIT</a>
             </div>

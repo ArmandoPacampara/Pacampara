@@ -1,6 +1,6 @@
 <?php
 // Correct path: HomePage.php → customer → pages → view → app → core
-require_once __DIR__ . '/../../core/session_check.php';
+require_once __DIR__ . '/../../../core/session_check.php';
 ?>
 
 
@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../core/session_check.php';
 
 
   <!-- Correct path to CSS (3 levels up + styles/css/) -->
-  <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
+  <link rel="stylesheet" href="../../../../public/styles/css/HomepageStyle.css">
 </head>
 
 
@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../core/session_check.php';
   <div class="nav-holder">
     <nav class="navbar">
       <div class="nav-left">
-          <img src="../../../public/assets/images/logo_icon.jpg" alt="Logo" class="logo">
+          <img src="../../../../public/assets/images/logo_icon.jpg" alt="Logo" class="logo">
         </a>
         <span class="site-name">MoviEase</span>
       </div>
@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../core/session_check.php';
 
       <div class="nav-right">
         <a href="AccountPage.php" class="nav-link" target="main-frame">
-          <img src="../../../public/assets/images/account_icon.png" alt="Account" class="account-icon">
+          <img src="../../../../public/assets/images/account_icon.png" alt="Account" class="account-icon">
         </a>
       </div>
     </nav>

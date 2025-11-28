@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Movie Management</title>
+    <link rel="stylesheet" href="../../../public/styles/css/StaffMoviesPage.css">
+</head>
+<body>
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('movies')">Movie List</button>
+            </div>
+
+
+            <!-- Movie List Tab -->
+            <div id="movies" class="tab-content active">
+                <div class="card">
+                    <h2>Available Movies</h2>
+                   
+                    <div class="search-bar">
+                        <input type="text" id="movieSearch" placeholder="Search movies by title, genre, or director..." onkeyup="searchMovies()">
+                        <button class="btn">Search</button>
+                    </div>
+
+
+                    <div class="filter-options">
+                        <button class="filter-btn active" onclick="filterByGenre('All')">All</button>
+                        <button class="filter-btn" onclick="filterByGenre('Action')">Action</button>
+                        <button class="filter-btn" onclick="filterByGenre('Comedy')">Comedy</button>
+                        <button class="filter-btn" onclick="filterByGenre('Drama')">Drama</button>
+                        <button class="filter-btn" onclick="filterByGenre('Sci-Fi')">Sci-Fi</button>
+                        <button class="filter-btn" onclick="filterByGenre('Horror')">Horror</button>
+                    </div>
+
+
+                    <div class="movie-grid" id="movieGrid">
+                        <div class="movie-item add-movie-item" onclick="openAddMovieModal()">
+                            <div class="movie-poster add-movie-poster">
+                                <div class="add-icon">+</div>
+                                <div class="add-text">Add Movie</div>
+                            </div>
+                            <div class="movie-title">Add Movie</div>
+                            <div class="movie-info">Add a movie from admin's library</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Movie Details Modal -->
+        <div id="movieDetailsModal" class="modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3 id="movieDetailsTitle">Movie Details</h3>
+                    <button class="close-btn" onclick="closeMovieDetails()">&times;</button>
+                </div>
+
+
+                <div class="movie-details-container">
+                    <!-- Movie Info Section -->
+                    <div class="movie-info-section">
+                        <div class="movie-poster-large" id="moviePosterLarge">🎥</div>
+                        <div class="movie-meta">
+                            <h2 id="movieMetaTitle">Movie Title</h2>
+                            <p id="movieMetaInfo" class="meta-info"></p>
+                            <p id="movieMetaDirector" class="meta-director"></p>
+                        </div>
+                    </div>
+
+
+                    <!-- Tabs for Schedules and Pricing -->
+                    <div class="details-tabs">
+                        <button class="details-tab-btn active" onclick="switchDetailsTab('schedules')">Schedules</button>
+                        <!-- <button class="details-tab-btn" onclick="switchDetailsTab('pricing')">Pricing</button> -->
+                    </div>
+
+
+                    <!-- Schedules Tab -->
+                    <div id="schedules" class="details-tab-content active">
+                        <div class="section-header">
+                            <h3>Movie Schedules</h3>
+                            <button class="btn btn-add" onclick="openScheduleForm()">+ Add Schedule</button>
+                        </div>
+
+
+                        <div id="schedulesList" class="schedules-list">
+                            <p class="empty-state">No schedules yet. Click "Add Schedule" to create one.</p>
+                        </div>
+                    </div>
+
+
+                    <!-- Pricing Tab -->
+                    <div id="pricing" class="details-tab-content">
+                        <div class="section-header">
+                            <h3>Ticket Pricing</h3>
+                            <button class="btn btn-add" onclick="openPricingForm()">+ Add Pricing</button>
+                        </div>
+
+
+                        <div id="pricingList" class="pricing-list">
+                            <p class="empty-state">No pricing rules yet. Click "Add Pricing" to create one.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Schedule Form Modal -->
+        <div id="scheduleFormModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="scheduleFormTitle">Add Schedule</h3>
+                    <button class="close-btn" onclick="closeScheduleForm()">&times;</button>
+                </div>
+
+
+                <form id="scheduleForm" onsubmit="saveSchedule(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleDate">Date *</label>
+                            <input type="date" id="scheduleDate" required>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="scheduleHall">Cinema *</label>
+                            <select id="scheduleHall" required>
+                                <option value="">Select Cinema</option>
+                                <option value="Cinema 1">Cinema 1</option>
+                                <option value="Cinema 2">Cinema 2</option>
+                                <option value="Cinema 3">Cinema 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleStartTime">Start Time *</label>
+                            <input type="time" id="scheduleStartTime" required>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="scheduleEndTime">End Time *</label>
+                            <input type="time" id="scheduleEndTime" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schedulePrice">Ticket Price (₱) *</label>
+                            <input type="number" id="schedulePrice" required placeholder="250.00" min="0" step="0.01">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="scheduleStatus">Status *</label>
+                            <select id="scheduleStatus" required>
+                                <option value="Available">Available</option>
+                                <option value="Upcoming">Upcoming</option>
+                                <option value="Sold Out">Sold Out</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn" style="flex: 1;">Save Schedule</button>
+                        <button type="button" class="btn btn-cancel" style="flex: 1;" onclick="closeScheduleForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Pricing Form Modal -->
+        <div id="pricingFormModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="pricingFormTitle">Add Pricing Rule</h3>
+                    <button class="close-btn" onclick="closePricingForm()">&times;</button>
+                </div>
+
+
+                <form id="pricingForm" onsubmit="savePricing(event)">
+                    <div class="form-group">
+                        <label for="priceCategory">Category Name *</label>
+                        <input type="text" id="priceCategory" required placeholder="e.g., Regular, Student, Senior">
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priceDayType">Day Type *</label>
+                            <select id="priceDayType" required>
+                                <option value="">Select Day Type</option>
+                                <option value="Weekday">Weekday</option>
+                                <option value="Weekend">Weekend</option>
+                                <option value="All Days">All Days</option>
+                                <option value="Holiday">Holiday</option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="priceTimeSlot">Time Slot *</label>
+                            <select id="priceTimeSlot" required>
+                                <option value="">Select Time Slot</option>
+                                <option value="Matinee (Before 5 PM)">Matinee (Before 5 PM)</option>
+                                <option value="Prime Time (After 5 PM)">Prime Time (After 5 PM)</option>
+                                <option value="All Day">All Day</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priceAmount">Base Price (₱) *</label>
+                            <input type="number" id="priceAmount" required placeholder="200.00" min="0" step="0.01">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="priceCinemaType">Cinema Type *</label>
+                            <select id="priceCinemaType" required>
+                                <option value="">Select Cinema Type</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Premium">Premium</option>
+                                <option value="IMAX">IMAX</option>
+                                <option value="4DX">4DX</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn" style="flex: 1;">Save Pricing</button>
+                        <button type="button" class="btn btn-cancel" style="flex: 1;" onclick="closePricingForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Add Movie Modal -->
+        <div id="addMovieModal" class="modal">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h3>Add Movie from Admin's Library</h3>
+                    <button class="close-btn" onclick="closeAddMovieModal()">&times;</button>
+                </div>
+
+
+                <div class="search-bar" style="margin-top: 20px;">
+                    <input type="text" id="adminMovieSearch" placeholder="Search admin's movies..." onkeyup="filterAdminMovies()">
+                </div>
+
+
+                <div class="movie-selection-grid" id="adminMoviesGrid"></div>
+
+
+                <div class="info-banner" style="margin-top: 20px;">
+                    <strong>Note:</strong> Movies already in your list are not shown here.
+                </div>
+
+
+                <button type="button" class="btn btn-cancel" style="width: 100%; margin-top: 15px;" onclick="closeAddMovieModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+// Data Storage
+let movies = [
+    {
+        id: 1,
+        title: 'The Matrix Resurrections',
+        genre: 'Sci-Fi',
+        year: 2021,
+        duration: 148,
+        director: 'Lana Wachowski',
+        schedules: [
+            {
+                id: 1,
+                date: '2025-11-27',
+                startTime: '14:00',
+                endTime: '16:30',
+                cinema: 'Cinema 1',
+                price: 250,
+                status: 'Available'
+            },
+            {
+                id: 2,
+                date: '2025-11-28',
+                startTime: '19:00',
+                endTime: '21:30',
+                cinema: 'Cinema 2',
+                price: 300,
+                status: 'Upcoming'
+            }
+        ],
+        pricing: [
+            {
+                id: 1,
+                category: 'Regular',
+                dayType: 'Weekday',
+                timeSlot: 'Matinee (Before 5 PM)',
+                price: 200,
+                cinemaType: 'Standard'
+            },
+            {
+                id: 2,
+                category: 'Student',
+                dayType: 'Weekday',
+                timeSlot: 'All Day',
+                price: 150,
+                cinemaType: 'Standard'
+            }
+        ]
+    },
+    {
+        id: 2,
+        title: 'Dune: Part Two',
+        genre: 'Sci-Fi',
+        year: 2024,
+        duration: 166,
+        director: 'Denis Villeneuve',
+        schedules: [],
+        pricing: []
+    },
+    {
+        id: 3,
+        title: 'Barbie',
+        genre: 'Comedy',
+        year: 2023,
+        duration: 114,
+        director: 'Greta Gerwig',
+        schedules: [],
+        pricing: []
+    },
+    {
+        id: 4,
+        title: 'Oppenheimer',
+        genre: 'Drama',
+        year: 2023,
+        duration: 180,
+        director: 'Christopher Nolan',
+        schedules: [],
+        pricing: []
+    },
+    {
+        id: 5,
+        title: 'Spider-Man: No Way Home',
+        genre: 'Action',
+        year: 2021,
+        duration: 148,
+        director: 'Jon Watts',
+        schedules: [],
+        pricing: []
+    },
+    {
+        id: 6,
+        title: 'Everything Everywhere All at Once',
+        genre: 'Comedy',
+        year: 2022,
+        duration: 139,
+        director: 'Daniels',
+        schedules: [],
+        pricing: []
+    }
+];
+
+
+const adminMovies = [
+    { id: 101, title: 'The Godfather', genre: 'Drama', year: 1972, duration: 175, director: 'Francis Ford Coppola' },
+    { id: 102, title: 'Inception', genre: 'Sci-Fi', year: 2010, duration: 148, director: 'Christopher Nolan' },
+    { id: 103, title: 'The Dark Knight', genre: 'Action', year: 2008, duration: 152, director: 'Christopher Nolan' },
+    { id: 104, title: 'Pulp Fiction', genre: 'Crime', year: 1994, duration: 154, director: 'Quentin Tarantino' },
+    { id: 105, title: 'Interstellar', genre: 'Sci-Fi', year: 2014, duration: 169, director: 'Christopher Nolan' },
+    { id: 106, title: 'Parasite', genre: 'Thriller', year: 2019, duration: 132, director: 'Bong Joon-ho' }
+];
+
+
+let currentMovie = null;
+let currentScheduleId = null;
+let currentPricingId = null;
+let currentFilter = 'All';
+
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    renderMovies();
+});
+
+
+// Render movies grid
+function renderMovies() {
+    const grid = document.getElementById('movieGrid');
+    const addButton = grid.querySelector('.add-movie-item');
+   
+    // Clear existing movies (keep add button)
+    Array.from(grid.children).forEach(child => {
+        if (!child.classList.contains('add-movie-item')) {
+            child.remove();
+        }
+    });
+   
+    movies.forEach(movie => {
+        if (currentFilter === 'All' || movie.genre === currentFilter) {
+            const movieCard = createMovieCard(movie);
+            addButton.after(movieCard);
+        }
+    });
+}
+
+
+function createMovieCard(movie) {
+    const div = document.createElement('div');
+    div.className = 'movie-item';
+    div.setAttribute('data-genre', movie.genre);
+    div.onclick = () => openMovieDetails(movie.id);
+   
+    div.innerHTML = `
+        <div class="movie-poster">🎥</div>
+        <div class="movie-title">${movie.title}</div>
+        <div class="movie-info">${movie.genre} • ${movie.year} • ${movie.duration} min</div>
+        <div class="movie-info">Director: ${movie.director}</div>
+    `;
+   
+    return div;
+}
+
+
+// Tab Switching
+function switchTab(tabName) {
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+   
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+   
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+
+// Filter by genre
+function filterByGenre(genre) {
+    currentFilter = genre;
+   
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+   
+    renderMovies();
+}
+
+
+// Search movies
+function searchMovies() {
+    const searchValue = document.getElementById('movieSearch').value.toLowerCase();
+    const movieItems = document.querySelectorAll('.movie-item:not(.add-movie-item)');
+   
+    movieItems.forEach(item => {
+        const title = item.querySelector('.movie-title').textContent.toLowerCase();
+        const info = item.querySelector('.movie-info').textContent.toLowerCase();
+       
+        if (title.includes(searchValue) || info.includes(searchValue)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+
+// Movie Details Modal
+function openMovieDetails(movieId) {
+    currentMovie = movies.find(m => m.id === movieId);
+    if (!currentMovie) return;
+   
+    document.getElementById('movieDetailsTitle').textContent = currentMovie.title;
+    document.getElementById('movieMetaTitle').textContent = currentMovie.title;
+    document.getElementById('movieMetaInfo').textContent =
+        `${currentMovie.genre} • ${currentMovie.year} • ${currentMovie.duration} min`;
+    document.getElementById('movieMetaDirector').textContent =
+        `Director: ${currentMovie.director}`;
+   
+    renderSchedules();
+    renderPricing();
+   
+    document.getElementById('movieDetailsModal').classList.add('active');
+}
+
+
+function closeMovieDetails() {
+    document.getElementById('movieDetailsModal').classList.remove('active');
+    currentMovie = null;
+}
+
+
+function switchDetailsTab(tabName) {
+    const contents = document.querySelectorAll('.details-tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+   
+    const buttons = document.querySelectorAll('.details-tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+   
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+
+// Schedules Management
+function renderSchedules() {
+    const container = document.getElementById('schedulesList');
+   
+    if (!currentMovie.schedules || currentMovie.schedules.length === 0) {
+        container.innerHTML = '<p class="empty-state">No schedules yet. Click "Add Schedule" to create one.</p>';
+        return;
+    }
+   
+    container.innerHTML = '';
+    currentMovie.schedules.forEach(schedule => {
+        const card = createScheduleCard(schedule);
+        container.appendChild(card);
+    });
+}
+
+
+function createScheduleCard(schedule) {
+    const div = document.createElement('div');
+    div.className = 'schedule-card';
+   
+    const date = new Date(schedule.date);
+    const formattedDate = date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    });
+   
+    const statusClass = schedule.status === 'Available' ? 'status-available' :
+                       schedule.status === 'Upcoming' ? 'status-upcoming' : 'status-sold-out';
+   
+    div.innerHTML = `
+        <div class="schedule-info">
+            <h4>${formattedDate}</h4>
+            <div class="schedule-details">
+                <div class="detail-item">
+                    <span class="detail-label">Time:</span>
+                    <span>${convertTo12Hour(schedule.startTime)} - ${convertTo12Hour(schedule.endTime)}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Cinema:</span>
+                    <span>${schedule.cinema}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Price:</span>
+                    <span>₱${schedule.price.toFixed(2)}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="status-badge ${statusClass}">${schedule.status}</span>
+                </div>
+            </div>
+        </div>
+        <div class="schedule-actions">
+            <button class="btn-small btn-edit" onclick="editSchedule(${schedule.id})">Edit</button>
+            <button class="btn-small btn-delete" onclick="deleteSchedule(${schedule.id})">Delete</button>
+        </div>
+    `;
+   
+    return div;
+}
+
+
+function openScheduleForm() {
+    currentScheduleId = null;
+    document.getElementById('scheduleFormTitle').textContent = 'Add Schedule';
+    document.getElementById('scheduleForm').reset();
+    document.getElementById('scheduleFormModal').classList.add('active');
+}
+
+
+function editSchedule(scheduleId) {
+    currentScheduleId = scheduleId;
+    const schedule = currentMovie.schedules.find(s => s.id === scheduleId);
+    if (!schedule) return;
+   
+    document.getElementById('scheduleFormTitle').textContent = 'Edit Schedule';
+    document.getElementById('scheduleDate').value = schedule.date;
+    document.getElementById('scheduleHall').value = schedule.cinema;
+    document.getElementById('scheduleStartTime').value = schedule.startTime;
+    document.getElementById('scheduleEndTime').value = schedule.endTime;
+    document.getElementById('schedulePrice').value = schedule.price;
+    document.getElementById('scheduleStatus').value = schedule.status;
+   
+    document.getElementById('scheduleFormModal').classList.add('active');
+}
+
+
+function saveSchedule(event) {
+    event.preventDefault();
+   
+    const scheduleData = {
+        date: document.getElementById('scheduleDate').value,
+        startTime: document.getElementById('scheduleStartTime').value,
+        endTime: document.getElementById('scheduleEndTime').value,
+        cinema: document.getElementById('scheduleHall').value,
+        price: parseFloat(document.getElementById('schedulePrice').value),
+        status: document.getElementById('scheduleStatus').value
+    };
+   
+    if (currentScheduleId) {
+        // Edit existing
+        const schedule = currentMovie.schedules.find(s => s.id === currentScheduleId);
+        Object.assign(schedule, scheduleData);
+    } else {
+        // Add new
+        scheduleData.id = Date.now();
+        currentMovie.schedules.push(scheduleData);
+    }
+   
+    renderSchedules();
+    closeScheduleForm();
+    alert('Schedule saved successfully!');
+}
+
+
+function deleteSchedule(scheduleId) {
+    if (!confirm('Are you sure you want to delete this schedule?')) return;
+   
+    currentMovie.schedules = currentMovie.schedules.filter(s => s.id !== scheduleId);
+    renderSchedules();
+    alert('Schedule deleted successfully!');
+}
+
+
+function closeScheduleForm() {
+    document.getElementById('scheduleFormModal').classList.remove('active');
+    currentScheduleId = null;
+}
+
+
+// Pricing Management
+function renderPricing() {
+    const container = document.getElementById('pricingList');
+   
+    if (!currentMovie.pricing || currentMovie.pricing.length === 0) {
+        container.innerHTML = '<p class="empty-state">No pricing rules yet. Click "Add Pricing" to create one.</p>';
+        return;
+    }
+   
+    container.innerHTML = '';
+    currentMovie.pricing.forEach(pricing => {
+        const card = createPricingCard(pricing);
+        container.appendChild(card);
+    });
+}
+
+
+function createPricingCard(pricing) {
+    const div = document.createElement('div');
+    div.className = 'pricing-card';
+   
+    div.innerHTML = `
+        <div class="pricing-info">
+            <h4>${pricing.category}</h4>
+            <div class="pricing-details">
+                <div class="detail-item">
+                    <span class="detail-label">Day:</span>
+                    <span>${pricing.dayType}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Time:</span>
+                    <span>${pricing.timeSlot}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Price:</span>
+                    <span>₱${pricing.price.toFixed(2)}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Cinema:</span>
+                    <span>${pricing.cinemaType}</span>
+                </div>
+            </div>
+        </div>
+        <div class="pricing-actions">
+            <button class="btn-small btn-edit" onclick="editPricing(${pricing.id})">Edit</button>
+            <button class="btn-small btn-delete" onclick="deletePricing(${pricing.id})">Delete</button>
+        </div>
+    `;
+   
+    return div;
+}
+
+
+function openPricingForm() {
+    currentPricingId = null;
+    document.getElementById('pricingFormTitle').textContent = 'Add Pricing Rule';
+    document.getElementById('pricingForm').reset();
+    document.getElementById('pricingFormModal').classList.add('active');
+}
+
+
+function editPricing(pricingId) {
+    currentPricingId = pricingId;
+    const pricing = currentMovie.pricing.find(p => p.id === pricingId);
+    if (!pricing) return;
+   
+    document.getElementById('pricingFormTitle').textContent = 'Edit Pricing Rule';
+    document.getElementById('priceCategory').value = pricing.category;
+    document.getElementById('priceDayType').value = pricing.dayType;
+    document.getElementById('priceTimeSlot').value = pricing.timeSlot;
+    document.getElementById('priceAmount').value = pricing.price;
+    document.getElementById('priceCinemaType').value = pricing.cinemaType;
+   
+    document.getElementById('pricingFormModal').classList.add('active');
+}
+
+
+function savePricing(event) {
+    event.preventDefault();
+   
+    const pricingData = {
+        category: document.getElementById('priceCategory').value,
+        dayType: document.getElementById('priceDayType').value,
+        timeSlot: document.getElementById('priceTimeSlot').value,
+        price: parseFloat(document.getElementById('priceAmount').value),
+        cinemaType: document.getElementById('priceCinemaType').value
+    };
+   
+    if (currentPricingId) {
+        // Edit existing
+        const pricing = currentMovie.pricing.find(p => p.id === currentPricingId);
+        Object.assign(pricing, pricingData);
+    } else {
+        // Add new
+        pricingData.id = Date.now();
+        currentMovie.pricing.push(pricingData);
+    }
+   
+    renderPricing();
+    closePricingForm();
+    alert('Pricing saved successfully!');
+}
+
+
+function deletePricing(pricingId) {
+    if (!confirm('Are you sure you want to delete this pricing rule?')) return;
+   
+    currentMovie.pricing = currentMovie.pricing.filter(p => p.id !== pricingId);
+    renderPricing();
+    alert('Pricing deleted successfully!');
+}
+
+
+function closePricingForm() {
+    document.getElementById('pricingFormModal').classList.remove('active');
+    currentPricingId = null;
+}
+
+
+// Add Movie Modal
+function openAddMovieModal() {
+    const grid = document.getElementById('adminMoviesGrid');
+    grid.innerHTML = '';
+   
+    const movieTitles = movies.map(m => m.title);
+    const availableMovies = adminMovies.filter(m => !movieTitles.includes(m.title));
+   
+    if (availableMovies.length === 0) {
+        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: #999; grid-column: 1/-1;">No new movies available from admin.</div>';
+    } else {
+        availableMovies.forEach(movie => {
+            const item = document.createElement('div');
+            item.className = 'movie-select-item';
+            item.setAttribute('data-movie', movie.title);
+            item.onclick = () => addMovieFromAdmin(movie);
+           
+            item.innerHTML = `
+                <div class="movie-poster-small">🎥</div>
+                <div class="movie-select-title">${movie.title}</div>
+                <div class="movie-select-info">${movie.genre} • ${movie.year}</div>
+            `;
+           
+            grid.appendChild(item);
+        });
+    }
+   
+    document.getElementById('addMovieModal').classList.add('active');
+}
+
+
+function closeAddMovieModal() {
+    document.getElementById('addMovieModal').classList.remove('active');
+}
+
+
+function addMovieFromAdmin(adminMovie) {
+    if (!confirm(`Add "${adminMovie.title}" to your movie list?`)) return;
+   
+    const newMovie = {
+        id: Date.now(),
+        title: adminMovie.title,
+        genre: adminMovie.genre,
+        year: adminMovie.year,
+        duration: adminMovie.duration,
+        director: adminMovie.director,
+        schedules: [],
+        pricing: []
+    };
+   
+    movies.push(newMovie);
+    renderMovies();
+    closeAddMovieModal();
+    alert(`${adminMovie.title} has been added successfully!`);
+}
+
+
+function filterAdminMovies() {
+    const searchValue = document.getElementById('adminMovieSearch').value.toLowerCase();
+    const items = document.querySelectorAll('#adminMoviesGrid .movie-select-item');
+   
+    items.forEach(item => {
+        const title = item.querySelector('.movie-select-title').textContent.toLowerCase();
+        const info = item.querySelector('.movie-select-info').textContent.toLowerCase();
+       
+        if (title.includes(searchValue) || info.includes(searchValue)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+
+// Utility Functions
+function convertTo12Hour(time24h) {
+    const [hours, minutes] = time24h.split(':');
+    let h = parseInt(hours);
+    const modifier = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return `${h}:${minutes} ${modifier}`;
+}
+
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target === modal) {
+            modal.classList.remove('active');
+        }
+    });
+}
+    </script>
+</body>
+</html>
+
+
+

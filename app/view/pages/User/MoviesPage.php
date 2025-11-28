@@ -6,7 +6,7 @@ header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache"); 
 header("Expires: 0"); 
 
-include '../../../app/core/db.php'; 
+include '../../../../app/core/db.php'; 
 
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
@@ -107,7 +107,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
           <div class="h-[100%] w-full">
             <img
               class="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-              src="../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
+              src="../../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
               alt="<?= htmlspecialchars($movie['movie_name']); ?>"
             />
           </div>
@@ -144,7 +144,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
           <div class="h-[100%] w-full">
             <img
               class="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-              src="../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
+              src="../../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
             />
           </div>
           <div class="absolute bottom-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent p-4 pt-10">
@@ -176,7 +176,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
           <div class="h-[100%] w-full">
             <img
               class="object-cover w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-              src="../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
+              src="../../../../public/assets/images/<?= htmlspecialchars($movie['movie_poster']); ?>"
             />
           </div>
           <div class="absolute bottom-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent p-4 pt-10">
@@ -216,7 +216,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
 
         popUpContent.innerHTML = `
           <div class="h-full w-[40%] rounded-l-3xl overflow-hidden">
-            <img class="object-cover w-full h-full" src="../../../public/assets/images/${poster}" />
+            <img class="object-cover w-full h-full" src="../../../../public/assets/images/${poster}" />
           </div>
           <div class="flex flex-col w-[60%] h-full bg-white rounded-r-3xl p-8 relative">
             <button onclick="document.getElementById('movie-pop-up').click()" class="absolute top-4 right-6 text-gray-500 hover:text-red-700 font-bold text-2xl">&times;</button>

@@ -1,7 +1,7 @@
 <?php
 // BookingSuccess.php
 session_start();
-include '../../../app/core/db.php';
+include '../../../../app/core/db.php';
 
 if (!isset($_GET['ticket_id'])) {
     die("Invalid Access");
