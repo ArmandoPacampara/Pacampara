@@ -20,7 +20,7 @@
 
         <div class="container">
             <div class="logo">
-                <img src="../../../public/assets/images/MoviEase_logo (2).png" alt="logo">
+                <img src="../../../public/assets/images/movies_icon.png" alt="logo">
                 <h1>MoviEase</h1>
             </div>
 
@@ -36,7 +36,7 @@
                     <div class="container2">
                         <div class="profile-upload">
                             <label for="profileImageInput">
-                                <img id="profilePreview" src="assets/images/default_user.png" alt="Profile Preview">
+                                <img id="profilePreview" src="../../../public/assets/images/default_user.png" alt="Profile Preview">
                                 <div class="upload-overlay">
                                     <i class="fas fa-camera"></i>
                                 </div>
@@ -45,19 +45,19 @@
                         </div>
 
                         <div class="input-group">
-                            <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
+                            <img src="../../../public/assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
                             <input id="nameInput" type="text" placeholder="Name" required name="name">
                         </div>
                         
                         <div class="input-group">
-                            <img src="assets/images/location_icon.png" alt="location_icon" class="input-icon">
+                            <img src="../../../public/assets/images/location_icon.png" alt="location_icon" class="input-icon">
                             <button type="button" class="genre-select-display" id="locationSelectButton" onclick="openLocationPopup()">
                                 <span id="locationDisplayField">Select Location...</span>
                                 <i class="fas fa-chevron-down"></i> 
                             </button>
                         </div>
                         <div class="input-group">
-                            <img src="assets/images/phone_icon.png" alt="phone_icon" class="input-icon">
+                            <img src="../../../public/assets/images/phone_icon.png" alt="phone_icon" class="input-icon">
                             <input id="phoneInput" type="text" placeholder="Phone Number" required name="phone-number">
                         </div>
                     </div>
@@ -428,7 +428,7 @@ const step1Content = `
         <label class="genre-label">Your Favorite Genres:</label>
 
         <div class="input-group genre-input-group">
-            <img src="assets/images/tag_icon.png" alt="genre_icon" class="input-icon">
+            <img src="../../../public/assets/images/movies_icon.png" alt="genre_icon" class="input-icon">
             <button type="button" class="genre-select-display" id="genreSelectButton" onclick="openGenrePopup()">
                 <span id="genreTextField">Select genres...</span>
                 <i class="fas fa-chevron-down"></i> 
@@ -459,12 +459,12 @@ const step1Content = `
     </div>
 
     <div class="input-group">
-        <img src="assets/images/profile_icon.png" class="input-icon">
+        <img src="../../../public/assets/images/profile_icon.png" class="input-icon">
         <input id="birthdate" type="date" required>
     </div>
 
     <div class="input-group">
-        <img src="assets/images/lock_icon.png" class="input-icon">
+        <img src="../../../public/assets/images/profile_icon.png" class="input-icon">
         <input id="age" type="number" readonly>
     </div>
     `;
@@ -475,18 +475,18 @@ const step1Content = `
     <div class="step3-wrapper">
         
         <div class="input-group">
-            <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
+            <img src="../../../public/assets/images/mail_icon.png" alt="profile_icon" class="input-icon">
             <input id="emailInput" type="email" placeholder="Email" required name="email">
         </div>
 
         <div class="input-group password-group"> 
-            <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
+            <img src="../../../public/assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="passwordInput" type="password" placeholder="Password" required name="password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('passwordInput')"></i>
         </div>
 
         <div class="input-group password-group"> 
-            <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
+            <img src="../../../public/assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" required name="confirm_password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmPasswordInput')"></i>
         </div>

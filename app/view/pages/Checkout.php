@@ -270,14 +270,17 @@ if ($current_step == 1) {
 
     </div>
 
-    <div class="buttons">
+<div class="buttons">
       
       <?php if ($current_step == 1): ?>
           <button id="prevBtn" disabled>Previous</button>
           <button id="nextBtn" onclick="window.location.href='SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_id ?>&schedule=<?= urlencode($schedule) ?>&qty='+document.getElementById('ticketQty').value;">Next</button>
       
       <?php elseif ($current_step == 3): ?>
-          <button id="prevBtn" onclick="history.back()">Change Seats</button>
+          <button id="prevBtn" type="button" 
+              onclick="window.location.href='SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_id ?>&schedule=<?= urlencode($schedule) ?>&qty=<?= $qty ?>'">
+              Change Seats
+          </button>
           
           <form method="POST" action="Checkout.php" style="display:inline;">
               <input type="hidden" name="step" value="4">
@@ -294,7 +297,17 @@ if ($current_step == 1) {
           </form>
 
       <?php elseif ($current_step == 4): ?>
-          <button id="prevBtn" onclick="history.back()">Back</button>
+          <form method="POST" action="Checkout.php" style="display:inline;">
+              <input type="hidden" name="step" value="3">
+              <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
+              <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
+              <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
+              <input type="hidden" name="qty" value="<?= $qty ?>">
+              <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
+              <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
+              <button id="prevBtn" type="submit">Back</button>
+          </form>
+
           <button id="nextBtn" onclick="document.getElementById('paymentForm').submit()">Pay & Book</button>
       <?php endif; ?>
 
