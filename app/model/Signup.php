@@ -1,73 +1,52 @@
 <?php
-session_start();
-include 'db.php';
-require '../../../vendor/autoload.php'; 
+require_once __DIR__ . '/../core/db.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+class Signup {
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'];
-    $province = $_POST['province'];
-    $address = $_POST['address'];
-    $city = $_POST['city'];
-    $phone = $_POST['phone-number'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $confirm = $_POST['confirm_password'];
+    private $con;
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("Invalid email address.");
+    public function __construct(){
+        $db = new Database();
+        $this->con = $db->getConnection();
     }
 
-    if ($_POST['password'] !== $_POST['confirm_password']) {
-        die("Passwords do not match.");
+    public function emailExists($email){
+        $stmt = $this->con->prepare("SELECT user_id FROM users WHERE user_email = ? LIMIT 1");
+        $stmt->bind_param("s",$email);
+        $stmt->execute();
+        $stmt->store_result();
+        return $stmt->num_rows > 0;
     }
 
-    $check = $con->prepare("SELECT * FROM users WHERE user_Email = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $result = $check->get_result();
+    public function registerUser($data){
+        $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
 
-    if ($result->num_rows > 0) {
-        die("Email already exists.");
-    }
+        // Handle profile image
+        $avatar = 'account_icon.png';
+        if($data['avatar'] && $data['avatar']['error']===0){
+            $uploadDir = __DIR__ . '/../../public/assets/images/';
+            $avatar = time().'_'.$data['avatar']['name'];
+            move_uploaded_file($data['avatar']['tmp_name'],$uploadDir.$avatar);
+        }
 
-    $otp = rand(100000, 999999);
-    $_SESSION['otp'] = $otp;
-    $_SESSION['signup_data'] = [
-        'name' => $name,
-        'province' => $province,
-        'address' => $address,
-        'city' => $city,
-        'phone' => $phone,
-        'email' => $email,
-        'password' => $password
-    ];
-
-
-    $mail = new PHPMailer(true);
-
-    try {
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'your_email@gmail.com'; 
-        $mail->Password   = 'your_app_password';  
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
-
-        $mail->setFrom('your_email@gmail.com', 'MoviEase');
-        $mail->addAddress($email, $name);
-        $mail->isHTML(true);
-        $mail->Subject = 'MoviEase Email Verification OTP';
-        $mail->Body    = "<h2>Hi $name!</h2><p>Your OTP is: <b>$otp</b></p><p>Enter this code to complete your signup.</p>";
-
-        $mail->send();
-        header("Location: verify_otp.php");
-        exit;
-    } catch (Exception $e) {
-        echo "Error sending OTP: {$mail->ErrorInfo}";
+        $roleId = 2; // Customer
+        $stmt = $this->con->prepare(
+            "INSERT INTO users (role_id,user_name,user_email,user_contact,user_password,user_avatar,birthdate,province,city,address) 
+             VALUES (?,?,?,?,?,?,?,?,?,?)"
+        );
+        $stmt->bind_param(
+            "isssssssss",
+            $roleId,
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $passwordHash,
+            $avatar,
+            $data['birthdate'],
+            $data['province'],
+            $data['city'],
+            $data['address']
+        );
+        $stmt->execute();
     }
 }
-?>

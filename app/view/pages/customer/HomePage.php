@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../core/session_check.php';
+require_once __DIR__ . '/../../../core/session_check.php';
 // ... rest of your page content
 ?>
 

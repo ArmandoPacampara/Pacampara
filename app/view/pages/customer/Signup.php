@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>MoviEase Signup</title>
 
+
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../../../public/styles/css/Signup.css"> 
+
+    <link rel="stylesheet" href="../../../../public/styles/css/Signup.css">
 </head>
 
+
 <body>
+
 
     <div class="wrapper">
         <div class="poster-container">
             <img src="https://cdn.myanimelist.net/images/anime/1806/126216.jpg" alt="Chainsaw Man Poster">
         </div>
+
 
         <div class="container">
             <div class="logo">
@@ -24,13 +30,16 @@
                 <h1>MoviEase</h1>
             </div>
 
+
             <h2>Sign Up your Account</h2>
             <div class="divider"></div>
 
-            <form id="signupForm" 
-                method="POST" 
+
+            <form id="signupForm"
+                method="POST"
                 action="../../Controller/SignupController.php"
                 enctype="multipart/form-data">
+
 
                 <center>
                     <div class="container2">
@@ -44,16 +53,17 @@
                             <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
                         </div>
 
+
                         <div class="input-group">
                             <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
                             <input id="nameInput" type="text" placeholder="Name" required name="name">
                         </div>
-                        
+                       
                         <div class="input-group">
                             <img src="assets/images/location_icon.png" alt="location_icon" class="input-icon">
                             <button type="button" class="genre-select-display" id="locationSelectButton" onclick="openLocationPopup()">
                                 <span id="locationDisplayField">Select Location...</span>
-                                <i class="fas fa-chevron-down"></i> 
+                                <i class="fas fa-chevron-down"></i>
                             </button>
                         </div>
                         <div class="input-group">
@@ -61,27 +71,27 @@
                             <input id="phoneInput" type="text" placeholder="Phone Number" required name="phone-number">
                         </div>
                     </div>
-                    
+                   
                     <div id="locationPopup" class="genre-popup">
                         <div class="genre-popup-content">
                             <h3>Select Your Location</h3>
                             <div class="location-selectors">
-                                
+                               
                                 <label for="provinceSelect" class="location-label">Province:</label>
                                 <select id="provinceSelect" onchange="populateCities()" required>
                                     <option value="" disabled selected>Select Province</option>
                                 </select>
-                                
+                               
                                 <label for="citySelect" class="location-label">City/Municipality:</label>
                                 <select id="citySelect" onchange="populateBarangays()" disabled required>
                                     <option value="" disabled selected>Select City/Municipality</option>
                                 </select>
-                                
+                               
                                 <label for="barangaySelect" class="location-label">Barangay:</label>
                                 <select id="barangaySelect" disabled required>
                                     <option value="" disabled selected>Select Barangay</option>
                                 </select>
-                                
+                               
                                 <input type="hidden" id="provinceInput" name="province">
                             </div>
                             <div class="popup-buttons">
@@ -90,11 +100,13 @@
                         </div>
                     </div>
 
+
                     <div class="dots" aria-hidden="true">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
+
 
                     <div class="button-container">
                         <button type="button" class="next-btn" onclick="goToStep2()">NEXT</button>
@@ -103,6 +115,7 @@
             </form>
         </div>
     </div>
+
 
         <!-- Error Modal -->
     <div id="errorModal" class="error-modal">
@@ -114,12 +127,16 @@
     </div>
 
 
+
+
 <script>
     // Multi-step form functionality for MoviEase signup
     let currentStep = 1;
 
+
     // DATA PERSISTENCE object to store input values
     let formData = {};
+
 
     // ==============================================================
     // NEW LOCATION DATA STRUCTURE FOR CASCADING DROPDOWNS (SAMPLE)
@@ -226,14 +243,16 @@ const locationData = {
     }
 };
 
+
     // ==============================================================
+
 
     // Helper to save current step data before switching
     function saveStepData() {
         if (currentStep === 1) {
             formData.name = document.getElementById('nameInput') ? document.getElementById('nameInput').value : '';
             // Save the final calculated location string
-            formData.province = document.getElementById('provinceInput') ? document.getElementById('provinceInput').value : ''; 
+            formData.province = document.getElementById('provinceInput') ? document.getElementById('provinceInput').value : '';
             formData.phone = document.getElementById('phoneInput') ? document.getElementById('phoneInput').value : '';
         } else if (currentStep === 2) {
             formData.birthdate = document.getElementById('birthdate') ? document.getElementById('birthdate').value : '';
@@ -246,29 +265,32 @@ const locationData = {
         }
     }
 
+
     // Helper to load data after switching
     function loadStepData() {
         if (currentStep === 1) {
             if (document.getElementById('nameInput') && formData.name) document.getElementById('nameInput').value = formData.name;
             if (document.getElementById('phoneInput') && formData.phone) document.getElementById('phoneInput').value = formData.phone;
-            
+           
             // Update location display field if data is present
             const locationDisplayField = document.getElementById('locationDisplayField');
             if (locationDisplayField && formData.province) {
                 locationDisplayField.textContent = formData.province;
             }
 
+
         } else if (currentStep === 2) {
             if (document.getElementById('birthdate') && formData.birthdate) document.getElementById('birthdate').value = formData.birthdate;
             if (document.getElementById('age') && formData.age) document.getElementById('age').value = formData.age;
-            
+           
             if (formData.genres) {
                 const checkboxes = document.querySelectorAll('input[name="popupGenre"]');
                 checkboxes.forEach(cb => {
                     cb.checked = formData.genres.includes(cb.value);
                 });
-                updateGenreField(); 
+                updateGenreField();
             }
+
 
         } else if (currentStep === 3) {
             if (document.getElementById('emailInput') && formData.email) document.getElementById('emailInput').value = formData.email;
@@ -277,26 +299,29 @@ const locationData = {
         }
     }
 
+
     // ==============================================================
     // NEW LOCATION POPUP FUNCTIONS
     // ==============================================================
+
 
     function openLocationPopup() {
         document.getElementById("locationPopup").style.display = "flex";
         populateProvinces();
     }
 
+
     function populateProvinces() {
         const provinceSelect = document.getElementById('provinceSelect');
         provinceSelect.innerHTML = '<option value="" disabled selected>Select Province</option>';
-        
+       
         for (const province in locationData) {
             const option = document.createElement('option');
             option.value = province;
             option.textContent = province;
             provinceSelect.appendChild(option);
         }
-        
+       
         // Reset subsequent dropdowns
         document.getElementById('citySelect').innerHTML = '<option value="" disabled selected>Select City/Municipality</option>';
         document.getElementById('citySelect').disabled = true;
@@ -304,14 +329,16 @@ const locationData = {
         document.getElementById('barangaySelect').disabled = true;
     }
 
+
     function populateCities() {
         const provinceSelect = document.getElementById('provinceSelect');
         const citySelect = document.getElementById('citySelect');
         const selectedProvince = provinceSelect.value;
 
+
         citySelect.innerHTML = '<option value="" disabled selected>Select City/Municipality</option>';
         document.getElementById('barangaySelect').innerHTML = '<option value="" disabled selected>Select Barangay</option>';
-        
+       
         if (selectedProvince && locationData[selectedProvince]) {
             for (const city in locationData[selectedProvince]) {
                 const option = document.createElement('option');
@@ -326,16 +353,18 @@ const locationData = {
         document.getElementById('barangaySelect').disabled = true;
     }
 
+
     function populateBarangays() {
         const provinceSelect = document.getElementById('provinceSelect');
         const citySelect = document.getElementById('citySelect');
         const barangaySelect = document.getElementById('barangaySelect');
-        
+       
         const selectedProvince = provinceSelect.value;
         const selectedCity = citySelect.value;
 
+
         barangaySelect.innerHTML = '<option value="" disabled selected>Select Barangay</option>';
-        
+       
         if (selectedProvince && selectedCity && locationData[selectedProvince][selectedCity]) {
             const barangays = locationData[selectedProvince][selectedCity];
             for (const barangay of barangays) {
@@ -350,38 +379,44 @@ const locationData = {
         }
     }
 
+
     function saveLocationAndClose() {
         const province = document.getElementById('provinceSelect').value;
         const city = document.getElementById('citySelect').value;
         const barangay = document.getElementById('barangaySelect').value;
+
 
         if (!province || !city || !barangay) {
              alert("Please select a Province, City, and Barangay.");
              return;
         }
 
+
         const fullLocation = `${province} / ${city} / ${barangay}`;
-        
+       
         // 1. Update the hidden input field in the form
         document.getElementById('provinceInput').value = fullLocation;
-        
+       
         // 2. Update the display button text
         document.getElementById('locationDisplayField').textContent = fullLocation;
-        
+       
         // 3. Save to formData (for persistence)
         formData.province = fullLocation;
+
 
         // 4. Close the popup
         document.getElementById("locationPopup").style.display = "none";
     }
 
+
     // ==============================================================
     // EXISTING FUNCTIONS (modified for the location input change)
     // ==============================================================
 
+
     // Step 1 content (kept for dynamic replacement when going back)
-    // NOTE: This variable is now OUTDATED. The actual Step 1 content is rendered directly above 
-    // the script block. We keep it as a backup for the goToStep1 function, but ensure 
+    // NOTE: This variable is now OUTDATED. The actual Step 1 content is rendered directly above
+    // the script block. We keep it as a backup for the goToStep1 function, but ensure
     // it reflects the updated structure (without the old location input).
 const step1Content = `
             <div class="profile-upload">
@@ -394,32 +429,37 @@ const step1Content = `
                 <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
             </div>
 
+
             <div class="input-group">
                 <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
                 <input id="nameInput" type="text" placeholder="Name" required name="name">
             </div>
 
+
             <div class="input-group">
                 <img src="assets/images/location_icon.png" alt="location_icon" class="input-icon">
                 <button type="button" class="genre-select-display" id="locationSelectButton" onclick="openLocationPopup()">
                     <span id="locationDisplayField">Select Location...</span>
-                    <i class="fas fa-chevron-down"></i> 
+                    <i class="fas fa-chevron-down"></i>
                 </button>
             </div>
-            
+           
             <div class="input-group">
                 <img src="assets/images/phone_icon.png" alt="phone_icon" class="input-icon">
-                <input 
-                    id="phoneInput" 
-                    type="tel" 
-                    placeholder="Phone Number" 
-                    required 
+                <input
+                    id="phoneInput"
+                    type="tel"
+                    placeholder="Phone Number"
+                    required
                     name="phone-number"
-                    pattern="[0-9]{10,12}" 
+                    pattern="[0-9]{10,12}"
                     title="Please enter a valid 10-12 digit phone number">
+
 
             </div>
     `;
+
+
 
 
     // Step 2: preferences + account credentials
@@ -427,18 +467,21 @@ const step1Content = `
     <div class="genre-group">
         <label class="genre-label">Your Favorite Genres:</label>
 
+
         <div class="input-group genre-input-group">
             <img src="assets/images/tag_icon.png" alt="genre_icon" class="input-icon">
             <button type="button" class="genre-select-display" id="genreSelectButton" onclick="openGenrePopup()">
                 <span id="genreTextField">Select genres...</span>
-                <i class="fas fa-chevron-down"></i> 
+                <i class="fas fa-chevron-down"></i>
             </button>
         </div>
     </div>
 
+
     <div id="genrePopup" class="genre-popup">
         <div class="genre-popup-content">
         <h3>Select Genres</h3>
+
 
         <div class="genres-container-popup">
             ${[
@@ -452,16 +495,19 @@ const step1Content = `
             `).join("")}
         </div>
 
+
         <div class="popup-buttons">
             <button type="button" class="close-popup-btn" onclick="closeGenrePopup()">Done</button>
         </div>
         </div>
     </div>
 
+
     <div class="input-group">
         <img src="assets/images/profile_icon.png" class="input-icon">
         <input id="birthdate" type="date" required>
     </div>
+
 
     <div class="input-group">
         <img src="assets/images/lock_icon.png" class="input-icon">
@@ -470,37 +516,45 @@ const step1Content = `
     `;
 
 
+
+
     // Step 3: account credentials (updated with eye icon and error display)
     const step3Content = `
     <div class="step3-wrapper">
-        
+       
         <div class="input-group">
             <img src="assets/images/profile_icon.png" alt="profile_icon" class="input-icon">
             <input id="emailInput" type="email" placeholder="Email" required name="email">
         </div>
 
-        <div class="input-group password-group"> 
+
+        <div class="input-group password-group">
             <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="passwordInput" type="password" placeholder="Password" required name="password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('passwordInput')"></i>
         </div>
 
-        <div class="input-group password-group"> 
+
+        <div class="input-group password-group">
             <img src="assets/images/lock_icon.png" alt="lock_icon" class="input-icon">
             <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" required name="confirm_password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmPasswordInput')"></i>
         </div>
 
+
         <div id="passwordError" style="color: #a31212; margin-top: -10px; margin-bottom: 20px; font-size: 14px; text-align: left; padding-left: 55px; min-height: 20px;"></div>
-        
+       
     </div>
     `;
+
+
 
 
     function updateDots() {
         const dots = document.querySelectorAll('.dots span');
         dots.forEach((dot, i) => dot.style.opacity = (i + 1 === currentStep) ? '1' : '0.6');
     }
+
 
     function updateButton() {
         const buttonContainer = document.querySelector('.button-container');
@@ -519,11 +573,13 @@ const step1Content = `
         }
     }
 
+
     function goToStep2() {
         saveStepData(); // Save Step 1 data
         const container2 = document.querySelector('.container2');
         container2.style.opacity = '0';
         container2.style.transform = 'translateX(-20px)';
+
 
         setTimeout(() => {
             container2.innerHTML = step2Content;
@@ -534,10 +590,13 @@ const step1Content = `
             container2.style.opacity = '1';
             container2.style.transform = 'translateX(0)';
 
+
             attachProfileImageHandlerIfNeeded();
             attachAgeCalculator(); // <— AGE CALCULATOR ACTIVATED HERE
         }, 300);
     }
+
+
 
 
     function goToStep1() {
@@ -554,15 +613,18 @@ const step1Content = `
             container2.style.opacity = '1';
             container2.style.transform = 'translateX(0)';
 
+
             attachProfileImageHandlerIfNeeded();
         }, 300);
     }
+
 
     function goToStep3() {
         saveStepData(); // Save Step 2 data
         const container2 = document.querySelector('.container2');
         container2.style.opacity = '0';
         container2.style.transform = 'translateX(-20px)';
+
 
         setTimeout(() => {
             container2.innerHTML = step3Content; // Use the updated content string
@@ -573,16 +635,18 @@ const step1Content = `
             container2.style.opacity = '1';
             container2.style.transform = 'translateX(0)';
 
+
             // fill review info from inputs (currently disabled in populateSummary)
             populateSummary();
         }, 300);
     }
-    
+   
     // Function to check password complexity
     function checkPasswordComplexity(password) {
         const minLength = 8;
         // Regex: at least one lowercase, one uppercase, one digit
         const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+
 
         if (password.length < minLength) {
             return "Password must be at least 8 characters long.";
@@ -595,15 +659,17 @@ const step1Content = `
         }
         return ; // Password passed complexity check
     }
-    
+   
     // Validation function for Step 3 (Passwords)
     function validateAndSubmit() {
         const errors = [];
+
 
         // STEP 1 VALIDATION
         const name = formData.name || document.getElementById("nameInput")?.value;
         const phone = formData.phone || document.getElementById("phoneInput")?.value;
         const location = formData.province || document.getElementById("provinceInput")?.value;
+
 
         if (!name || name.trim().length < 2) {
             errors.push("Please enter a valid name.");
@@ -616,10 +682,13 @@ const step1Content = `
         }
 
 
+
+
         // STEP 2 VALIDATION
         const birthdate = formData.birthdate || document.getElementById("birthdate")?.value;
         const age = formData.age || document.getElementById("age")?.value;
         const genres = formData.genres || [];
+
 
         if (!birthdate) {
             errors.push("Please select your birthdate.");
@@ -632,16 +701,21 @@ const step1Content = `
         }
 
 
+
+
         // STEP 3 VALIDATION
         const email = document.getElementById("emailInput").value;
         const password = document.getElementById("passwordInput").value;
         const confirmPassword = document.getElementById("confirmPasswordInput").value;
 
+
         if (!email || !email.includes("@")) {
             errors.push("Please enter a valid email address.");
         }
 
+
         const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
 
         if (!password) {
             errors.push("Password cannot be empty.");
@@ -649,9 +723,12 @@ const step1Content = `
             errors.push("Password must be 8+ characters, with uppercase, lowercase, and numbers.");
         }
 
+
         if (password !== confirmPassword) {
             errors.push("Passwords do not match.");
         }
+
+
 
 
         // IF ERRORS FOUND → SHOW MODAL
@@ -660,20 +737,23 @@ const step1Content = `
             return;
         }
 
+
         // NO ERRORS → SUBMIT 🎉
         document.getElementById("signupForm").submit();
     }
 
-    
+
+   
     /**
      * Toggles the visibility of a password field.
      * @param {string} inputId - The ID of the password input element.
      */
     function togglePasswordVisibility(inputId) {
         const input = document.getElementById(inputId);
-        const icon = document.querySelector(`#${inputId} + .toggle-password`); 
-        
+        const icon = document.querySelector(`#${inputId} + .toggle-password`);
+       
         if (!input || !icon) return;
+
 
         if (input.type === 'password') {
             input.type = 'text';
@@ -687,15 +767,19 @@ const step1Content = `
     }
 
 
+
+
     function populateSummary() {
         // Summary population logic removed as step 3 is now for credentials, not review.
         // If you want a review screen, let me know, and I'll add a Step 4!
     }
 
+
     // attach file preview handler to profile input if it exists in DOM
     function attachProfileImageHandlerIfNeeded() {
         const fileInput = document.getElementById('profileImageInput');
         const preview = document.getElementById('profilePreview');
+
 
         if (fileInput && !fileInput._hasHandler) {
             fileInput.addEventListener('change', (e) => {
@@ -707,12 +791,14 @@ const step1Content = `
             fileInput._hasHandler = true;
         }
 
+
         // treat label clicks to trigger input
         const label = document.querySelector('.profile-upload label');
         if (label && fileInput) {
             label.addEventListener('click', () => fileInput.click());
         }
     }
+
 
     // initial attach
     document.addEventListener('DOMContentLoaded', () => {
@@ -723,6 +809,7 @@ const step1Content = `
         loadStepData();
     });
 
+
     // The form 'submit' listener is redundant now that we use validateAndSubmit() on the button.
     // It's left here but modified to prevent browser default behavior if somehow triggered outside the button click.
     document.getElementById('signupForm').addEventListener('submit', (e) => {
@@ -730,25 +817,33 @@ const step1Content = `
     });
 
 
+
+
     function attachAgeCalculator() {
         const birthdateInput = document.getElementById('birthdate');
         const ageInput = document.getElementById('age');
 
+
         if (!birthdateInput || !ageInput) return;
+
 
         birthdateInput.addEventListener('change', () => {
             // Save current value immediately
             formData.birthdate = birthdateInput.value;
 
+
             const birthdate = new Date(birthdateInput.value);
             const today = new Date();
+
 
             let age = today.getFullYear() - birthdate.getFullYear();
             const monthDiff = today.getMonth() - birthdate.getMonth();
 
+
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
                 age--;
             }
+
 
             ageInput.value = age;
             formData.age = age;
@@ -759,22 +854,26 @@ const step1Content = `
         }
     }
 
+
     function openGenrePopup() {
         document.getElementById("genrePopup").style.display = "flex";
     }
+
 
     function closeGenrePopup() {
         // The genres are already saved/updated by updateGenreField()
         document.getElementById("genrePopup").style.display = "none";
     }
 
+
     // UPDATED: Now uses ' / ' as the separator for selected genres
     function updateGenreField() {
         const checked = Array.from(document.querySelectorAll('input[name="popupGenre"]:checked'))
             .map(i => i.value);
 
+
         const textField = document.getElementById("genreTextField");
-        
+       
         if (textField) {
             if (checked.length > 0) {
                 textField.textContent = checked.join(" / ");
@@ -784,12 +883,14 @@ const step1Content = `
         }
         formData.genres = checked; // Save to data persistence object
     }
-    
+   
     // NOTE: openLocationPopup, populateProvinces, populateCities, populateBarangays,
-    // and saveLocationAndClose are defined above the existing Step 1 content 
+    // and saveLocationAndClose are defined above the existing Step 1 content
     // to ensure they are available when the page loads.
 
+
     const phoneInput = document.getElementById('phoneInput');
+
 
         if (phoneInput) {
             phoneInput.addEventListener('input', function () {
@@ -797,9 +898,11 @@ const step1Content = `
             });
         }
 
+
     function showErrorModal(errors) {
     const modal = document.getElementById("errorModal");
     const list = document.getElementById("errorList");
+
 
     list.innerHTML = ""; // clear old errors
     errors.forEach(err => {
@@ -808,12 +911,19 @@ const step1Content = `
         list.appendChild(li);
     });
 
+
     modal.style.display = "flex";
 }
+
 
 function closeErrorModal() {
     document.getElementById("errorModal").style.display = "none";
 }
 
 
+
+
 </script>
+
+
+

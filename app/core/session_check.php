@@ -1,12 +1,10 @@
 <?php
-// Start the session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Configuration: Set timeout duration (2 minutes = 120 seconds)
 $timeout_duration = 120;
-$login_page = '../../../public/index.php'; // Path to your login page
+$login_page = '../../../public/index.php'; 
 
 // Check if the user is logged in AND if the activity tracker exists
 if (isset($_SESSION['user_id']) && isset($_SESSION['last_activity'])) {

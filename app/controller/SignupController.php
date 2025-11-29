@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $genres = trim($_POST['genres'] ?? ''); // Comma-separated string
     
     // Default values
-    $default_role_id = 2; // Assuming 2 is 'Customer'
+    $default_role_id = 3; // Assuming 2 is 'Customer'
     $email_recovery = $email; 
     
     // Profile Image Handling (Basic)
