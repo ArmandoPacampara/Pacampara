@@ -112,8 +112,8 @@ $payload = [
                 ]
             ],
             'payment_method_types' => ['card', 'gcash', 'paymaya', 'grab_pay'],
-            'success_url' => "http://localhost/moviease/app/view/pages/BookingSuccess.php?ticket_id=$ticket_id",
-            'cancel_url' => "http://localhost/moviease/app/view/pages/Checkout.php",
+            'success_url' => "http://localhost/moviease/app/view/pages/User/BookingSuccess.php?ticket_id=$ticket_id",
+            'cancel_url' => "http://localhost/moviease/app/view/pages/User/Checkout.php",
             'description' => 'Payment for Ticket ID ' . $ticket_id
         ]
     ]

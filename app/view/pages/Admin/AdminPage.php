@@ -175,22 +175,22 @@ body {
           <a href="AdminDashboard.html" target="content-frame">
             <i class="fa-solid fa-gauge"></i> <span>DASHBOARD</span>
           </a>
-          <a href="UsersPage.html" target="content-frame">
+          <a href="UsersPage.php" target="content-frame">
             <i class="fa-solid fa-users" style="font-size: 25px;"></i> <span>USERS</span>
           </a>
-          <a href="cinemas.html" target="content-frame">
+          <a href="cinemas.php" target="content-frame">
             <i class="fa-solid fa-building" style="font-size: 25px;"></i> <span>CINEMAS</span>
           </a>
-          <a href="MoviesPageA.html" target="content-frame">
+          <a href="MoviesPageA.php" target="content-frame">
             <i class="fa-solid fa-film" style="font-size: 25px;"></i> <span>MOVIES</span>
           </a>
-          <a href="schedule.html" target="content-frame">
+          <a href="schedule.php" target="content-frame">
             <i class="fa-solid fa-calendar-days" style="font-size: 25px;"></i> <span>CALENDAR</span>
           </a>
-          <a href="seats.html" target="content-frame">
+          <a href="seats.php" target="content-frame">
             <i class="fa-solid fa-chair" style="font-size: 25px;"></i> <span>SEATS</span>
           </a>
-          <a href="reports.html" target="content-frame">
+          <a href="reports.php" target="content-frame">
             <i class="fa-solid fa-chart-line" style="font-size: 25px;"></i> <span>REPORTS</span>
           </a>
         </nav>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../../../app/core/db.php';
+require_once '../../../../app/core/db.php';
 
 // --- 1. AUTHENTICATION CHECK ---
 if (!isset($_SESSION['user_id'])) {
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     // Handle Profile Image
     $avatar_sql = "";
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === 0) {
-        $upload_dir = '../../../public/assets/images/'; 
+        $upload_dir = '../../../../public/assets/images/'; 
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
         
         $file_name = time() . '_' . $_FILES['profile_img']['name'];
@@ -114,7 +114,7 @@ $bookings_result = $booking_stmt->get_result();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Account - MoviEase</title>
-  <link rel="stylesheet" href="../../../public/styles/css/AccountPage.css" />
+  <link rel="stylesheet" href="../../../../public/styles/css/AccountPage.css" />
   <style>
       .pagination { display: flex; justify-content: center; margin-top: 20px; gap: 10px; }
       .pagination a { text-decoration: none; padding: 8px 12px; border: 1px solid #ddd; color: #333; border-radius: 4px; transition: background-color 0.3s; }
@@ -171,7 +171,7 @@ $bookings_result = $booking_stmt->get_result();
         <div class="account-container">
           <div class="profile-section">
             <button type="button" class="edit-btn" id="editBtn">
-              <img src="../../../public/assets/edit_btn.png" id="editIcon" alt="edit-icon" />
+              <img src="../../../../public/assets/edit_btn.png" id="editIcon" alt="edit-icon" />
             </button>
 
             <div class="profile-img-wrapper">
@@ -329,7 +329,7 @@ $bookings_result = $booking_stmt->get_result();
           usernameInput.style.display = "inline-block";
           usernameInput.classList.add("editing");
           
-          editIcon.src = "../../../public/assets/save_btn.png";
+          editIcon.src = "../../../../public/assets/save_btn.png";
         } else {
           // --- CLICKED SAVE (Validation) ---
           if (!validateFields()) {
