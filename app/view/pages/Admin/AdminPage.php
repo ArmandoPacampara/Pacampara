@@ -160,11 +160,9 @@ body {
       <h2 class="navbar-center">ADMIN DASHBOARD</h2>
       <div class="navbar-right">
         <i class="fa-solid fa-gear" style="font-size: 25px;"></i>
-        <img
-          src="../account_icon.png"
-          alt="Admin"
-          class="profile-pic"
-        />
+        <a href="AdminAccount.php" target="content-frame">
+    <img src="../../../../public/assets/images/account_icon.png" alt="Admin" class="profile-pic" />
+</a>
       </div>
     </header>
 
@@ -172,25 +170,25 @@ body {
 
       <aside class="sidebar" id="sidebar">
         <nav class="menu">
-          <a href="AdminDashboard.html" target="content-frame">
+          <a href="AdminDashboard.php" target="content-frame">
             <i class="fa-solid fa-gauge"></i> <span>DASHBOARD</span>
           </a>
           <a href="UsersPage.php" target="content-frame">
             <i class="fa-solid fa-users" style="font-size: 25px;"></i> <span>USERS</span>
           </a>
-          <a href="cinemas.php" target="content-frame">
+          <a href="CinemasPage.php" target="content-frame">
             <i class="fa-solid fa-building" style="font-size: 25px;"></i> <span>CINEMAS</span>
           </a>
           <a href="MoviesPageA.php" target="content-frame">
             <i class="fa-solid fa-film" style="font-size: 25px;"></i> <span>MOVIES</span>
           </a>
-          <a href="schedule.php" target="content-frame">
+          <a href="SchedulePage.php" target="content-frame">
             <i class="fa-solid fa-calendar-days" style="font-size: 25px;"></i> <span>CALENDAR</span>
           </a>
-          <a href="seats.php" target="content-frame">
+          <a href="SeatsPageA.php" target="content-frame">
             <i class="fa-solid fa-chair" style="font-size: 25px;"></i> <span>SEATS</span>
           </a>
-          <a href="reports.php" target="content-frame">
+          <a href="ReportsPage.php" target="content-frame">
             <i class="fa-solid fa-chart-line" style="font-size: 25px;"></i> <span>REPORTS</span>
           </a>
         </nav>
@@ -200,7 +198,7 @@ body {
         <iframe
           id="adminIframe"
           name="content-frame"
-          src="AdminDashboard.html"
+          src="AdminDashboard.php"
           frameborder="0"
           class="content-frame"
         ></iframe>
@@ -241,7 +239,7 @@ body {
     }
 
     function goBackToDashboard() {
-        document.getElementById("adminIframe").src = "dashboard.html";
+        document.getElementById("adminIframe").src = "AdminDashboard.php";
     }
     </script>
   </body> 
