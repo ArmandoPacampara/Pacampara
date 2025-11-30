@@ -20,11 +20,14 @@
       <h2 class="navbar-center">STAFF DASHBOARD</h2>
       <div class="navbar-right">
         <i class="fa-solid fa-gear" style="font-size: 25px;"></i>
-        <img
-          src="../../../../public/assets/images/account_icon.png"
-          alt="Staff"
-          class="profile-pic"
-        />
+<a href="StaffAccount.php" target="content-frame">
+    <img
+      src="../../../../public/assets/images/account_icon.png"
+      alt="Staff"
+      class="profile-pic"
+      style="cursor: pointer;"
+    />
+  </a>
       </div>
     </header>
 
@@ -33,13 +36,13 @@
       <!-- ===== SIDEBAR ===== -->
       <aside class="sidebar" id="sidebar">
         <nav class="menu">
-          <a href="StaffReports.html" target="content-frame" class="active">
+          <a href="StaffReports.php" target="content-frame" class="active">
             <i class="fa-solid fa-chart-line"></i> <span>REPORTS</span>
           </a>
-          <a href="StaffMoviesPage.html" target="content-frame">
+          <a href="StaffMoviesPage.php" target="content-frame">
             <i class="fa-solid fa-film"></i> <span>MOVIES</span>
           </a>
-          <a href="StaffNotificationPage.html" target="content-frame">
+          <a href="StaffNotificationPage.php" target="content-frame">
             <i class="fa-solid fa-bell"></i> <span>NOTIFICATIONS</span>
           </a>
         </nav>
@@ -51,7 +54,7 @@
         <iframe
           id="staffIframe"
           name="content-frame"
-          src="StaffReports.html"
+          src="StaffReports.php"
           frameborder="0"
           class="content-frame"
         ></iframe>
