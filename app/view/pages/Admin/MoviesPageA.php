@@ -1,11 +1,16 @@
 <?php
 session_start();
 require_once '../../../../app/core/db.php';
-require_once '../../../../app/core/Logger.php'; // 1. Import Logger
+require_once '../../../../app/core/Logger.php'; 
+require_once '../../../../app/core/Csrf.php'; // 1. Import CSRF Helper
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') { die("Access Denied"); }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // 2. VERIFY TOKEN (Protects both Add and Delete actions)
+    Csrf::verifyToken();
+
     if (isset($_POST['add_movie'])) {
         $name = $_POST['name'];
         $hours = $_POST['hours']; // format 02:30:00
@@ -64,6 +69,10 @@ $movies = $con->query("SELECT * FROM movies ORDER BY movie_id DESC");
     <div class="bg-white p-4 rounded shadow mb-6">
         <h3 class="font-bold mb-2">Add New Movie</h3>
         <form method="POST" enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
+            
+            <!-- 3. ADD TOKEN TO ADD FORM -->
+            <?= Csrf::getTokenField() ?>
+
             <input type="text" name="name" placeholder="Movie Title" required class="border p-2 rounded">
             <input type="time" name="hours" step="1" required class="border p-2 rounded">
             <input type="number" name="price" placeholder="Price" step="0.01" required class="border p-2 rounded">
@@ -91,7 +100,11 @@ $movies = $con->query("SELECT * FROM movies ORDER BY movie_id DESC");
                 <p class="text-sm text-gray-600"><?= htmlspecialchars($row['genre']) ?> | <?= htmlspecialchars($row['movie_hours']) ?></p>
                 <div class="flex justify-between items-center mt-2">
                     <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded"><?= htmlspecialchars($row['movie_status']) ?></span>
+                    
                     <form method="POST" onsubmit="return confirm('Are you sure you want to delete this movie?');">
+                        <!-- 4. ADD TOKEN TO DELETE FORM (Inside Loop) -->
+                        <?= Csrf::getTokenField() ?>
+                        
                         <input type="hidden" name="movie_id" value="<?= $row['movie_id'] ?>">
                         <button type="submit" name="delete_movie" class="text-red-600 hover:text-red-800 transition"><i class="fa-solid fa-trash"></i></button>
                     </form>

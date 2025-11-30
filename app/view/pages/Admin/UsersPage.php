@@ -2,17 +2,22 @@
 // UsersPage.php
 session_start();
 require_once '../../../../app/core/db.php';
-require_once '../../../../app/core/Logger.php'; // Import Logger
+require_once '../../../../app/core/Logger.php'; 
+require_once '../../../../app/core/Csrf.php'; // 1. Import CSRF Helper
 
-// --- 1. AUTHENTICATION CHECK (Ensure only Admin can access) ---
-// Assuming you set $_SESSION['role'] = 'Admin' during login
+// --- 1. AUTHENTICATION CHECK ---
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     die("Access Denied: You must be an Administrator to view this page.");
 }
 
 // --- 2. HANDLE DELETE ACTION ---
 if (isset($_POST['delete_user'])) {
+    
+    // 2. VERIFY TOKEN (Blocks attacks here)
+    Csrf::verifyToken(); 
+
     $delete_id = intval($_POST['user_id']);
+    
     // Prevent deleting yourself
     if ($delete_id != $_SESSION['user_id']) {
         $stmt = $con->prepare("DELETE FROM users WHERE user_id = ?");
@@ -36,7 +41,6 @@ if (isset($_POST['delete_user'])) {
 }
 
 // --- 3. FETCH ALL USERS ---
-// We join with 'roles' table to get the role name instead of just ID
 $query = "
     SELECT u.user_id, u.user_name, u.user_email, u.user_contact, r.user_role, u.failed_login_attempts
     FROM users u
@@ -130,6 +134,9 @@ $result = $con->query($query);
                                     </a>
                                     
                                     <form method="POST" action="UsersPage.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        <!-- 3. ADD TOKEN FIELD TO FORM -->
+                                        <?= Csrf::getTokenField() ?>
+                                        
                                         <input type="hidden" name="user_id" value="<?= $row['user_id'] ?>">
                                         <button type="submit" name="delete_user" class="action-btn delete-btn" title="Delete">
                                             <i class="fa-solid fa-trash"></i>
