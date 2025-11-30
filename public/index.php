@@ -290,7 +290,7 @@ input[type="checkbox"] {
       <button type="submit" class="login-btn" name="login">LOGIN</button>
 
       <div class="signup">
-        Don’t have an account? &nbsp;&nbsp;<a href="../app/view/pages/Signup.php"> Create an account</a>
+        Don’t have an account? &nbsp;&nbsp;<a href="../app/view/pages/User/Signup.php"> Create an account</a>
       </div>
     </center>
 </form>

@@ -112,7 +112,7 @@ if (isset($_POST['login'])) {
             if ($role === 'Admin') {
                 header("Location: /moviease/app/view/pages/Admin/AdminPage.php"); // Updated path
             } elseif ($role === 'Staff') {
-                header("Location: /moviease/app/view/pages/Staff/StaffPage.php"); // Assuming this path
+                header("Location: /moviease/app/view/pages/Staff/StaffPage.html"); // Assuming this path
             } else {
                 header("Location: /moviease/app/view/pages/User/HomePage.php"); // Updated path
             }
