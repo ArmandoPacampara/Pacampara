@@ -191,6 +191,9 @@ body {
           <a href="ReportsPage.php" target="content-frame">
             <i class="fa-solid fa-chart-line" style="font-size: 25px;"></i> <span>REPORTS</span>
           </a>
+          <a href="AuditLogPage.php" target="content-frame">
+            <i class="fa-solid fa-shield-halved" style="font-size: 25px;"></i> <span>AUDIT LOGS</span>
+          </a>
         </nav>
       </aside>
 

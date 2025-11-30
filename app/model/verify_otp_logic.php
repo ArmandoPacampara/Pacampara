@@ -1,57 +1,82 @@
 <?php
 session_start();
-require_once __DIR__ . '/../core/db.php'; // Correct path to db.php
+// Adjust path to reach core from app/model/
+require_once __DIR__ . '/../core/db.php';
+require_once __DIR__ . '/../core/Logger.php'; 
 
 $database = new Database();
 $con = $database->getConnection();
 
-if (isset($_POST['verify_otp']) && isset($_SESSION['pending_user_id'])) {
-    // ... (omitted OTP validation logic)
+if (isset($_POST['verify_otp'])) {
     
-    $user_id = $_SESSION['pending_user_id'];
-    $otp_code = $_POST['otp_code'] ?? '';
-    $current_time = date('Y-m-d H:i:s');
+    $input_otp = $_POST['otp_code'];
+    // 1. Check against the OTP stored in SESSION by Signup.php
+    $session_otp = $_SESSION['otp'] ?? null;
 
-    $query = "SELECT u.*, r.user_role FROM users u 
-              JOIN otp_codes otp ON u.user_id = otp.user_id
-              JOIN roles r ON u.role_id = r.role_id
-              WHERE u.user_id = ? AND otp.otp_code = ? AND otp.expires_at > ? LIMIT 1";
-
-    $stmt = $con->prepare($query);
-    $stmt->bind_param("iss", $user_id, $otp_code, $current_time);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    $stmt->close();
-
-    if ($user) {
-        // --- SUCCESS: Log the user in and redirect ---
-        // ... (omitted session setup and OTP deletion)
+    if ($input_otp == $session_otp) {
+        // --- OTP MATCHED: CREATE USER ACCOUNT ---
         
-        // Final Redirection based on Role
-        $role = $user['user_role'];
-        if ($role === 'Admin') {
-             // Redirect from app/model/ to app/view/pages/AdminPage.html
-             header("Location: ../view/pages/AdminPage.html"); 
-        } elseif ($role === 'Staff') {
-             // Redirect from app/model/ to app/view/pages/StaffDashboard.php (assuming this exists)
-             // Using HomePage.php as a placeholder for non-Admin/Staff roles.
-             header("Location: ../view/pages/HomePage.php"); 
+        // Retrieve the temporary data saved in Signup.php
+        $data = $_SESSION['signup_data'];
+        
+        $name = $data['name'];
+        $email = $data['email'];
+        $password = $data['password']; // This is already hashed
+        $phone = $data['phone'];
+        $full_address = $data['province']; // Contains "Province / City / Barangay"
+        
+        // Default Role: Customer (ID 2)
+        $role_id = 2; 
+
+        // Prepare Insert Statement
+        // FIX: Removed 'created_at' and 'NOW()' because the column does not exist in your users table.
+        $stmt = $con->prepare("
+            INSERT INTO users 
+            (role_id, user_name, user_email, user_contact, user_password, user_address, email_recovery, user_avatar) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'account_icon.png')
+        ");
+
+        if ($stmt) {
+            $stmt->bind_param("issssss", $role_id, $name, $email, $phone, $password, $full_address, $email);
+            
+            if ($stmt->execute()) {
+                $new_user_id = $stmt->insert_id;
+
+                // [LOG SUCCESS]
+                Logger::log($con, $new_user_id, "SIGNUP_SUCCESS", "User verified OTP and account was created.");
+
+                // --- LOGIN THE USER DIRECTLY ---
+                $_SESSION['user_id'] = $new_user_id;
+                $_SESSION['user_name'] = $name;
+                $_SESSION['user_email'] = $email;
+                $_SESSION['role'] = 'Customer'; 
+
+                // Clear temporary session data
+                unset($_SESSION['otp']);
+                unset($_SESSION['signup_data']);
+
+                // Redirect to Home Page
+                // Path: app/model/ -> app/view/pages/User/HomePage.php
+                header("Location: ../../public/index.php");
+                exit;
+            } else {
+                die("Database Error: " . $stmt->error);
+            }
+            $stmt->close();
         } else {
-             // Redirect from app/model/ to app/view/pages/HomePage.php
-             header("Location: ../view/pages/HomePage.php");
+            die("Prepare Failed: " . $con->error);
         }
-        exit;
 
     } else {
+        // --- OTP FAILED ---
         $_SESSION['error'] = "Invalid or expired verification code.";
-        // ✅ Correct path from app/model/ to app/view/pages/
-        header("Location: ../view/pages/VerifyOTP.php"); 
+        // Redirect back to VerifyOTP (User view)
+        header("Location: ../view/pages/User/VerifyOTP.php"); 
         exit;
     }
 } else {
-    // If the user lands here without a pending ID, redirect them to the root index
-    header("Location: /moviease/index.php");
+    // If accessed directly without form submission
+    header("Location: ../../public/index.php");
     exit;
 }
 ?>

@@ -1,13 +1,14 @@
 <?php
 session_start();
-require_once __DIR__ . '/../core/db.php'; // Path to your db connection
+require_once __DIR__ . '/../core/db.php'; 
+require_once __DIR__ . '/../core/Logger.php'; // 1. Import Logger
 
 $database = new Database();
-$con = $database->getConnection(); // mysqli connection object
+$con = $database->getConnection(); 
 
 // --- CONSTANTS ---
 const MAX_ATTEMPTS = 3;
-const LOCKOUT_DURATION_MINUTES = 30; // Lockout user for 30 minutes
+const LOCKOUT_DURATION_MINUTES = 30; 
 
 // Check for the login form submission
 if (isset($_POST['login'])) {
@@ -17,7 +18,7 @@ if (isset($_POST['login'])) {
 
     if (empty($captcha)) {
         $_SESSION['error'] = "Please verify that you're not a robot.";
-        header("Location: index.php"); // Updated path
+        header("Location: index.php"); 
         exit;
     }
 
@@ -35,7 +36,7 @@ if (isset($_POST['login'])) {
 
     if (!($responseKeys["success"] ?? false)) {
         $_SESSION['error'] = "Captcha verification failed. Please try again.";
-        header("Location: index.php"); // Updated path
+        header("Location: index.php"); 
         exit;
     }
 
@@ -50,7 +51,7 @@ if (isset($_POST['login'])) {
 
     if (!$stmt) {
         $_SESSION['error'] = "Database error during login. Please try again.";
-        header("Location: index.php"); // Updated path
+        header("Location: index.php");
         exit;
     }
 
@@ -64,19 +65,22 @@ if (isset($_POST['login'])) {
     if ($user) {
         
         // --- LOCKOUT CHECK ---
-        $lockout_time = new DateTime($user['lockout_until']);
+        $lockout_time = $user['lockout_until'] ? new DateTime($user['lockout_until']) : null;
         $now = new DateTime($current_time);
 
         // Check if the user is currently locked out
         if ($user['lockout_until'] !== NULL && $lockout_time > $now) {
-            $remaining_minutes = $now->diff($lockout_time)->i + 1; // Remaining minutes
+            $remaining_minutes = $now->diff($lockout_time)->i + 1; 
+            
+            // [LOG LOCKOUT ATTEMPT]
+            Logger::log($con, $user['user_id'], "LOGIN_BLOCKED", "Locked user tried to login: $email");
+
             $_SESSION['error'] = "Account locked for security. Try again in approximately {$remaining_minutes} minutes.";
-            header("Location: index.php"); // Updated path
+            header("Location: index.php"); 
             exit;
         }
 
         // --- PASSWORD VERIFICATION ---
-        // Using password_verify() (assuming you fixed the hash issue)
         if (password_verify($password, $user['user_password'])) {
             
             // ------------------------------------------
@@ -90,6 +94,9 @@ if (isset($_POST['login'])) {
             $reset_stmt->execute();
             $reset_stmt->close();
             
+            // --- LOGGING SUCCESS ---
+            Logger::log($con, $user['user_id'], "LOGIN_SUCCESS", "User logged in successfully.");
+
             // --- ROLE LOOKUP AND SESSION CREATION ---
             $roleID = $user['role_id'];
             $roleQuery = "SELECT user_role FROM roles WHERE role_id = ?";
@@ -105,16 +112,14 @@ if (isset($_POST['login'])) {
             $_SESSION['user_email'] = $user['user_email'];
             $_SESSION['role'] = $role;
             $_SESSION['last_activity'] = time();
-            $_SESSION['user_id'] = $user['user_id'];
-// ...
 
             // Redirection
             if ($role === 'Admin') {
-                header("Location: /moviease/app/view/pages/Admin/AdminPage.php"); // Updated path
+                header("Location: /moviease/app/view/pages/Admin/AdminPage.php"); 
             } elseif ($role === 'Staff') {
-                header("Location: /moviease/app/view/pages/Staff/StaffPage.php"); // Assuming this path
+                header("Location: /moviease/app/view/pages/Staff/StaffPage.php"); 
             } else {
-                header("Location: /moviease/app/view/pages/User/HomePage.php"); // Updated path
+                header("Location: /moviease/app/view/pages/User/HomePage.php"); 
             }
             exit;
 
@@ -123,6 +128,9 @@ if (isset($_POST['login'])) {
             // B. FAILED LOGIN (Password Mismatch)
             // ------------------------------------------
             
+            // --- LOGGING PASSWORD FAILURE ---
+            Logger::log($con, $user['user_id'], "LOGIN_FAILED", "Incorrect password for email: $email");
+
             $new_attempts = $user['failed_login_attempts'] + 1;
             $lockout_time_sql = NULL;
             $error_message = "Incorrect email or password. Attempt {$new_attempts} of " . MAX_ATTEMPTS . ".";
@@ -134,28 +142,34 @@ if (isset($_POST['login'])) {
                 $lockout_time_sql = $lockout_dt->format('Y-m-d H:i:s');
                 
                 $error_message = "Account locked! Maximum attempts reached. Try again in " . LOCKOUT_DURATION_MINUTES . " minutes.";
+                
+                // [LOG ACCOUNT LOCKOUT]
+                Logger::log($con, $user['user_id'], "ACCOUNT_LOCKED", "Account locked due to too many failed attempts.");
             }
 
             // Update attempts and lockout status in database
             $update_query = "UPDATE users SET failed_login_attempts = ?, lockout_until = ? WHERE user_id = ?";
             $update_stmt = $con->prepare($update_query);
-            
-            // Note: If $lockout_time_sql is NULL, we bind 's' and it works.
             $update_stmt->bind_param("isi", $new_attempts, $lockout_time_sql, $user['user_id']);
             $update_stmt->execute();
             $update_stmt->close();
 
             $_SESSION['error'] = $error_message;
-            header("Location: index.php"); // Updated path
+            header("Location: index.php"); 
             exit;
         }
     } else {
         // ------------------------------------------
         // C. FAILED LOGIN (User Not Found)
         // ------------------------------------------
-        // For security, do not leak whether the user exists.
+        
+        // --- LOGGING INVALID EMAIL ---
+        // Pass 0 or NULL for user_id, but log the email attempted in details
+        Logger::log($con, 0, "LOGIN_FAILED", "Attempted login with non-existent email: $email");
+
         $_SESSION['error'] = "Incorrect email or password.";
-        header("Location: index.php"); // Updated path
+        header("Location: index.php"); 
         exit;
     }
 }
+?>

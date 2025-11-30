@@ -1,3 +1,92 @@
+<?php
+session_start();
+// Adjust paths to match your project structure (app/view/pages/User/)
+require_once '../../../../app/core/db.php';
+require_once '../../../../app/core/Logger.php'; 
+require_once '../../../../vendor/autoload.php'; 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Ensure database connection is established
+// (Depending on your db.php, you might need: $database = new Database(); $con = $database->getConnection();)
+// If db.php creates $con automatically, this line isn't needed. 
+// Based on your ProcessPayment.php, we assume $con exists.
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = $_POST['name'];
+    $province = $_POST['province'];
+    $address = $_POST['address'];
+    $city = $_POST['city'];
+    $phone = $_POST['phone-number'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $confirm = $_POST['confirm_password'];
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die("Invalid email address.");
+    }
+
+    if ($_POST['password'] !== $_POST['confirm_password']) {
+        die("Passwords do not match.");
+    }
+
+    $check = $con->prepare("SELECT * FROM users WHERE user_email = ?"); // Fixed column name to match schema (user_email)
+    $check->bind_param("s", $email);
+    $check->execute();
+    $result = $check->get_result();
+
+    if ($result->num_rows > 0) {
+        // [LOG FAILURE]
+        Logger::log($con, 0, "SIGNUP_FAILED", "Attempted signup with existing email: $email");
+        die("Email already exists.");
+    }
+
+    $otp = rand(100000, 999999);
+    $_SESSION['otp'] = $otp;
+    $_SESSION['signup_data'] = [
+        'name' => $name,
+        'province' => $province,
+        'address' => $address,
+        'city' => $city,
+        'phone' => $phone,
+        'email' => $email,
+        'password' => $password
+    ];
+
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        // SECURITY WARNING: In production, use environment variables for credentials
+        $mail->Username   = 'austrianeon@gmail.com'; 
+        $mail->Password   = 'nghr kpmt blck nkwg'; 
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+
+        $mail->setFrom('austrianeon@gmail.com', 'MoviEase');
+        $mail->addAddress($email, $name);
+        $mail->isHTML(true);
+        $mail->Subject = 'MoviEase Email Verification OTP';
+        $mail->Body    = "<h2>Hi $name!</h2><p>Your OTP is: <b>$otp</b></p><p>Enter this code to complete your signup.</p>";
+
+        $mail->send();
+        
+        // [LOG INITIATION]
+        // We use 0 for user_id because the user isn't in the DB yet
+        Logger::log($con, 0, "SIGNUP_INITIATED", "OTP sent to potential new user: $email");
+
+        // Fixed casing to match file structure 'VerifyOTP.php'
+        header("Location: VerifyOTP.php");
+        exit;
+    } catch (Exception $e) {
+        echo "Error sending OTP: {$mail->ErrorInfo}";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,9 +116,14 @@
             <h2>Sign Up your Account</h2>
             <div class="divider"></div>
 
+            <!-- 
+               CRITICAL FIX: action="" 
+               This ensures the form submits to THIS FILE (Signup.php) so the PHP code at the top runs.
+               If you point to SignupController.php, the PHP code above will be ignored.
+            -->
             <form id="signupForm" 
                 method="POST" 
-                action="../../../Controller/SignupController.php"
+                action=""
                 enctype="multipart/form-data">
 
                 <center>
@@ -597,7 +691,7 @@ const step1Content = `
     }
     
     // Validation function for Step 3 (Passwords)
-    function validateAndSubmit() {
+function validateAndSubmit() {
         const errors = [];
 
         // STEP 1 VALIDATION
@@ -660,9 +754,37 @@ const step1Content = `
             return;
         }
 
+        // --- FIX APPLIED HERE ---
+        // Inject Step 1 data (Name, Phone, Province) as hidden inputs because they are currently removed from the DOM
+        const form = document.getElementById("signupForm");
+        
+        // Map the formData keys to the 'name' attributes your PHP expects
+        const hiddenFields = {
+            'name': formData.name,
+            'province': formData.province,
+            'phone-number': formData.phone 
+        };
+
+        for (const [key, value] of Object.entries(hiddenFields)) {
+            // Only add if value exists to avoid overwriting existing inputs if they somehow exist
+            if (value) {
+                // Check if input already exists to prevent duplicates
+                let input = form.querySelector(`input[name="${key}"]`);
+                if (!input) {
+                    input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = key;
+                    form.appendChild(input);
+                }
+                input.value = value;
+            }
+        }
+        // --- END FIX ---
+
         // NO ERRORS → SUBMIT 🎉
         document.getElementById("signupForm").submit();
     }
+    
 
     
     /**
@@ -726,7 +848,7 @@ const step1Content = `
     // The form 'submit' listener is redundant now that we use validateAndSubmit() on the button.
     // It's left here but modified to prevent browser default behavior if somehow triggered outside the button click.
     document.getElementById('signupForm').addEventListener('submit', (e) => {
-        e.preventDefault();
+        // e.preventDefault(); // allow submission
     });
 
 
@@ -817,3 +939,5 @@ function closeErrorModal() {
 
 
 </script>
+</body>
+</html>

@@ -2,30 +2,31 @@
 // BookingSuccess.php
 session_start();
 include '../../../../app/core/db.php';
+require_once '../../../../app/core/Logger.php'; // 1. Import Logger
 
 if (!isset($_GET['ticket_id'])) {
     die("Invalid Access");
 }
 
 $ticket_id = intval($_GET['ticket_id']);
+// Ensure we have a user ID for the log (defaults to 0 if session expired, though unlikely here)
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
 // 1. UPDATE STATUS TO COMPLETED
 // Ideally, we verify the session ID with PayMongo API here for security, 
 // but for this level, we assume the redirect means success.
 $stmt = $con->prepare("UPDATE booking SET status = 'Completed' WHERE ticket_id = ?");
 $stmt->bind_param("i", $ticket_id);
-$stmt->execute();
+
+if ($stmt->execute()) {
+    // [LOG CONFIRMED PAYMENT]
+    // We log this immediately after the database update succeeds.
+    Logger::log($con, $user_id, "PAYMENT_VERIFIED", "User returned from payment gateway. Ticket #$ticket_id marked as Completed.");
+}
 $stmt->close();
 
 // 2. FETCH DETAILS FOR RECEIPT
-$stmt = $con->prepare("
-    SELECT b.*, m.movie_name, c.cinema_name, c.cinema_address 
-    FROM booking b
-    JOIN movies m ON b.movie_id = m.movie_id
-    JOIN cinemas c ON m.movie_id = m.movie_id -- Note: This join might need adjustment based on your exact cinema logic
-    WHERE b.ticket_id = ?
-");
-// Simpler join for display
+// We fetch details to display them, but we don't need to log again here.
 $stmt = $con->prepare("
     SELECT b.*, m.movie_name, m.movie_poster 
     FROM booking b

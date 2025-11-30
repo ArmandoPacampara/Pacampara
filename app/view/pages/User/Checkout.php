@@ -3,6 +3,61 @@ session_start();
 include '../../../../app/core/db.php';
 
 // ------------------------------
+// 0. RESUME TRANSACTION LOGIC (NEW CODE)
+// ------------------------------
+$is_resumed = false; // Flag to track if we are resuming
+$ticket_id_resume = 0;
+
+if (isset($_GET['resume']) && $_GET['resume'] == 1 && isset($_GET['ticket_id'])) {
+    $ticket_id_resume = intval($_GET['ticket_id']);
+    $user_id = $_SESSION['user_id'];
+
+    // Fetch existing booking details
+    $resume_stmt = $con->prepare("SELECT * FROM booking WHERE ticket_id = ? AND user_id = ? AND status = 'Pending'");
+    $resume_stmt->bind_param("ii", $ticket_id_resume, $user_id);
+    $resume_stmt->execute();
+    $booking_data = $resume_stmt->get_result()->fetch_assoc();
+    $resume_stmt->close();
+
+    if ($booking_data) {
+        $is_resumed = true;
+        
+        // Fetch Seats for this booking to get cinema_id and seat names
+        $seat_query = $con->prepare("
+            SELECT s.seat_number, s.cinema_id 
+            FROM booked_seats bs 
+            JOIN seats s ON bs.seat_id = s.seat_id 
+            WHERE bs.ticket_id = ?
+        ");
+        $seat_query->bind_param("i", $ticket_id_resume);
+        $seat_query->execute();
+        $seat_result = $seat_query->get_result();
+        
+        $seat_arr = [];
+        $cinema_id_fetched = 0;
+        while($row = $seat_result->fetch_assoc()) {
+            $seat_arr[] = $row['seat_number'];
+            $cinema_id_fetched = $row['cinema_id'];
+        }
+        $seat_query->close();
+
+        // MANUALLY POPULATE $_REQUEST so the rest of the script works normally
+        $_REQUEST['movie_id'] = $booking_data['movie_id'];
+        $_REQUEST['cinema_id'] = $cinema_id_fetched;
+        $_REQUEST['schedule'] = $booking_data['schedule'];
+        $_REQUEST['qty'] = count($seat_arr);
+        $_REQUEST['selected_seats'] = implode(', ', $seat_arr);
+        $_REQUEST['voucher_id'] = $booking_data['voucher_id'];
+        $_REQUEST['discount_amount'] = $booking_data['discount_amount'];
+        $_REQUEST['final_price'] = $booking_data['final_price'];
+        $_REQUEST['step'] = 4; // Jump straight to payment
+    } else {
+        echo "<script>alert('Transaction not found or already completed.'); window.location.href='AccountPage.php';</script>";
+        exit;
+    }
+}
+
+// ------------------------------
 // 1. CAPTURE DATA & DETERMINE STEP
 // ------------------------------
 $movie_id       = isset($_REQUEST['movie_id']) ? intval($_REQUEST['movie_id']) : 0;
@@ -20,7 +75,7 @@ $final_price     = isset($_REQUEST['final_price']) ? floatval($_REQUEST['final_p
 $current_step = isset($_REQUEST['step']) ? intval($_REQUEST['step']) : 1;
 
 // Auto-detect step based on data if 'step' param is missing
-if ($current_step == 1 && !empty($selected_seats)) {
+if ($current_step == 1 && !empty($selected_seats) && !$is_resumed) {
     $current_step = 3;
 }
 
@@ -246,6 +301,10 @@ if ($current_step == 1) {
                 <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
                 <input type="hidden" name="discount_amount" value="<?= $discount_amount ?>">
                 <input type="hidden" name="final_price" value="<?= $final_price ?>">
+                
+                <?php if($is_resumed): ?>
+                    <input type="hidden" name="resume_ticket_id" value="<?= $ticket_id_resume ?>">
+                <?php endif; ?>
 
                 <p class="font-bold mb-3">Select Payment Method:</p>
                 
@@ -287,16 +346,20 @@ if ($current_step == 1) {
           </form>
 
       <?php elseif ($current_step == 4): ?>
-          <form method="POST" action="Checkout.php" style="display:inline;">
-              <input type="hidden" name="step" value="3">
-              <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
-              <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
-              <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
-              <input type="hidden" name="qty" value="<?= $qty ?>">
-              <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
-              <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
-              <button id="prevBtn" type="submit">Back</button>
-          </form>
+          <?php if($is_resumed): ?>
+              <button id="prevBtn" onclick="window.location.href='AccountPage.php'">Back</button>
+          <?php else: ?>
+              <form method="POST" action="Checkout.php" style="display:inline;">
+                  <input type="hidden" name="step" value="3">
+                  <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
+                  <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
+                  <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
+                  <input type="hidden" name="qty" value="<?= $qty ?>">
+                  <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
+                  <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
+                  <button id="prevBtn" type="submit">Back</button>
+              </form>
+          <?php endif; ?>
 
           <button id="nextBtn" onclick="document.getElementById('paymentForm').submit()">Pay & Book</button>
       <?php endif; ?>

@@ -2,6 +2,7 @@
 // UsersPage.php
 session_start();
 require_once '../../../../app/core/db.php';
+require_once '../../../../app/core/Logger.php'; // Import Logger
 
 // --- 1. AUTHENTICATION CHECK (Ensure only Admin can access) ---
 // Assuming you set $_SESSION['role'] = 'Admin' during login
@@ -16,7 +17,11 @@ if (isset($_POST['delete_user'])) {
     if ($delete_id != $_SESSION['user_id']) {
         $stmt = $con->prepare("DELETE FROM users WHERE user_id = ?");
         $stmt->bind_param("i", $delete_id);
+        
         if ($stmt->execute()) {
+            // --- LOGGING SUCCESSFUL DELETE ---
+            Logger::log($con, $_SESSION['user_id'], "DELETE_USER", "Deleted User ID: $delete_id");
+            
             $msg = "User deleted successfully.";
             $msg_type = "success";
         } else {

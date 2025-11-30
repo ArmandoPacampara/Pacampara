@@ -146,6 +146,25 @@ $bookings_result = $booking_stmt->get_result();
           transform: scale(1.1);
       }
 
+      /* ACTION BUTTON STYLES */
+      .view-ticket-btn, .continue-btn, .detail-btn {
+          padding: 6px 12px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          color: white;
+          font-size: 13px;
+          text-decoration: none;
+      }
+      .view-ticket-btn { background-color: #28a745; } /* Green */
+      .view-ticket-btn:hover { background-color: #218838; }
+
+      .continue-btn { background-color: #ffc107; color: #333; } /* Yellow/Orange */
+      .continue-btn:hover { background-color: #e0a800; }
+
+      .detail-btn { background-color: #6c757d; } /* Gray */
+      .detail-btn:hover { background-color: #5a6268; }
+
       body {
             margin: 50px;
             padding: 0;
@@ -253,12 +272,36 @@ $bookings_result = $booking_stmt->get_result();
             </thead>
             <tbody id="bookingsBody">
               <?php if ($bookings_result->num_rows > 0): ?>
-                  <?php while($row = $bookings_result->fetch_assoc()): ?>
+                  <?php while($row = $bookings_result->fetch_assoc()): 
+                        $status = htmlspecialchars($row['status']);
+                        $ticket_id = htmlspecialchars($row['ticket_id']);
+                        
+                        $action_link = '#';
+                        $button_text = 'Details';
+                        $button_class = 'detail-btn';
+
+                        if ($status == 'Completed' || $status == 'Booked') {
+                            // Link to Receipt/Ticket page
+                            $action_link = "ReceiptPage.php?ticket_id=" . $ticket_id;
+                            $button_text = "View Ticket";
+                            $button_class = "view-ticket-btn";
+                        } elseif ($status == 'Pending') {
+                            // Link to Checkout/Payment page to resume
+                            // NOTE: Ensure 'resume=1' is handled in your CheckoutPage.php
+                            $action_link = "Checkout.php?ticket_id=" . $ticket_id . "&resume=1";
+                            $button_text = "Continue Payment";
+                            $button_class = "continue-btn";
+                        }
+                  ?>
                   <tr>
                     <td><?= date("M d, Y - g:i A", strtotime($row['schedule'])) ?></td>
                     <td><?= htmlspecialchars($row['movie_name']) ?></td>
-                    <td><?= htmlspecialchars($row['status']) ?></td>
-                    <td><button class="view-btn">View</button></td>
+                    <td><?= $status ?></td>
+                    <td>
+                        <a href="<?= $action_link ?>">
+                            <button class="<?= $button_class ?>"><?= $button_text ?></button>
+                        </a>
+                    </td>
                   </tr>
                   <?php endwhile; ?>
               <?php else: ?>
