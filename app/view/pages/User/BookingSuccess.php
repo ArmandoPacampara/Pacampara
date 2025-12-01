@@ -1,41 +1,47 @@
 <?php
-// BookingSuccess.php
 session_start();
-include '../../../../app/core/db.php';
-require_once '../../../../app/core/Logger.php'; // 1. Import Logger
+// Use __DIR__ with a starting slash to prevent path errors
+require_once __DIR__ . '/../../../../app/core/db.php';
+require_once __DIR__ . '/../../../../app/core/Logger.php'; 
+require_once __DIR__ . '/../../../../app/model/mail_function.php'; 
 
 if (!isset($_GET['ticket_id'])) {
     die("Invalid Access");
 }
 
 $ticket_id = intval($_GET['ticket_id']);
-// Ensure we have a user ID for the log (defaults to 0 if session expired, though unlikely here)
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
 // 1. UPDATE STATUS TO COMPLETED
-// Ideally, we verify the session ID with PayMongo API here for security, 
-// but for this level, we assume the redirect means success.
 $stmt = $con->prepare("UPDATE booking SET status = 'Completed' WHERE ticket_id = ?");
 $stmt->bind_param("i", $ticket_id);
-
 if ($stmt->execute()) {
-    // [LOG CONFIRMED PAYMENT]
-    // We log this immediately after the database update succeeds.
-    Logger::log($con, $user_id, "PAYMENT_VERIFIED", "User returned from payment gateway. Ticket #$ticket_id marked as Completed.");
+    Logger::log($con, $user_id, "PAYMENT_VERIFIED", "Ticket #$ticket_id marked as Completed.");
 }
 $stmt->close();
 
-// 2. FETCH DETAILS FOR RECEIPT
-// We fetch details to display them, but we don't need to log again here.
+// 2. FETCH DETAILS
 $stmt = $con->prepare("
-    SELECT b.*, m.movie_name, m.movie_poster 
+    SELECT 
+        b.*, 
+        MAX(m.movie_name) as movie_name, 
+        MAX(u.user_email) as user_email,
+        MAX(u.user_name) as user_name,
+        MAX(c.cinema_name) as cinema_name
     FROM booking b
     JOIN movies m ON b.movie_id = m.movie_id
+    JOIN users u ON b.user_id = u.user_id
+    LEFT JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+    LEFT JOIN seats s ON bs.seat_id = s.seat_id
+    LEFT JOIN cinemas c ON s.cinema_id = c.cinema_id
     WHERE b.ticket_id = ?
+    GROUP BY b.ticket_id
 ");
+
 $stmt->bind_param("i", $ticket_id);
 $stmt->execute();
 $booking = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
 // Fetch Seats
 $s_stmt = $con->prepare("
@@ -46,8 +52,25 @@ $s_stmt = $con->prepare("
 $s_stmt->bind_param("i", $ticket_id);
 $s_stmt->execute();
 $res = $s_stmt->get_result();
-$seats = [];
-while($row = $res->fetch_assoc()) $seats[] = $row['seat_number'];
+$seatsArr = [];
+while($row = $res->fetch_assoc()) $seatsArr[] = $row['seat_number'];
+$seatsString = implode(', ', $seatsArr);
+
+// 3. SEND EMAIL RECEIPT
+$emailSent = false;
+if ($booking) {
+    $emailData = [
+        'ticket_id'   => $ticket_id,
+        'movie_name'  => $booking['movie_name'],
+        'cinema_name' => $booking['cinema_name'] ?? 'MoviEase Cinema',
+        'schedule'    => $booking['schedule'],
+        'seats'       => $seatsString,
+        'final_price' => $booking['final_price']
+    ];
+    
+    // Call the function from mail_function.php
+    $emailSent = send_ticket_receipt($booking['user_email'], $booking['user_name'], $emailData);
+}
 ?>
 
 <!DOCTYPE html>
@@ -65,17 +88,27 @@ while($row = $res->fetch_assoc()) $seats[] = $row['seat_number'];
         </div>
         
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Payment Successful!</h1>
-        <p class="text-gray-600 mb-6">Your booking has been confirmed.</p>
+        <p class="text-gray-600 mb-6">
+            Your booking has been confirmed.<br>
+            <?php if ($emailSent): ?>
+                <span class="text-sm text-green-600 font-semibold">A receipt has been sent to your email.</span>
+            <?php else: ?>
+                <span class="text-sm text-red-500 font-semibold">Email receipt could not be sent.</span>
+            <?php endif; ?>
+        </p>
 
         <div class="bg-gray-50 p-4 rounded-lg text-left mb-6 border border-gray-200">
             <p><strong>Movie:</strong> <?= htmlspecialchars($booking['movie_name']) ?></p>
             <p><strong>Schedule:</strong> <?= date("M d, Y h:i A", strtotime($booking['schedule'])) ?></p>
-            <p><strong>Seats:</strong> <?= implode(', ', $seats) ?></p>
+            <p><strong>Seats:</strong> <?= $seatsString ?></p>
             <p><strong>Amount Paid:</strong> ₱<?= number_format($booking['final_price'], 2) ?></p>
             <p><strong>Ticket ID:</strong> #<?= $ticket_id ?></p>
         </div>
 
-        <a href="CinemasPage.php" class="block w-full bg-gray-900 text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition">Back to Home</a>
+        <div class="flex flex-col gap-3">
+            <a href="ReceiptPage.php?ticket_id=<?= $ticket_id ?>" class="block w-full border border-gray-800 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-100 transition">View Full Receipt</a>
+            <a href="CinemasPage.php" class="block w-full bg-gray-900 text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition">Back to Home</a>
+        </div>
     </div>
 
 </body>
