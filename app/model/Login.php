@@ -46,7 +46,7 @@ if (isset($_POST['login'])) {
     $current_time = date('Y-m-d H:i:s');
     
     // 2a. Fetch user data including lockout fields
-    $query = "SELECT user_id, user_name, user_email, user_password, role_id, failed_login_attempts, lockout_until FROM users WHERE user_email = ? LIMIT 1";
+    $query = "SELECT user_id, user_name, user_email, user_password, role_id, cinema_id, failed_login_attempts, lockout_until FROM users WHERE user_email = ? LIMIT 1";
     $stmt = $con->prepare($query);
 
     if (!$stmt) {
@@ -111,6 +111,7 @@ if (isset($_POST['login'])) {
             $_SESSION['user_name'] = $user['user_name'];
             $_SESSION['user_email'] = $user['user_email'];
             $_SESSION['role'] = $role;
+            $_SESSION['cinema_id'] = $user['cinema_id'];
             $_SESSION['last_activity'] = time();
 
             // Redirection

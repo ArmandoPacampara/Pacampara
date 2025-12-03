@@ -1,49 +1,69 @@
 <?php
 session_start();
-require_once '../../../core/db.php';
+require_once '../../../../app/core/db.php';
 
 // Auth Check
 if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'Staff' && $_SESSION['role'] !== 'Admin')) {
     die("Access Denied");
 }
 
-// --- 1. FETCH KEY METRICS ---
-// Total Revenue (Completed bookings)
-$revenue_query = "SELECT SUM(final_price) as total FROM booking WHERE status = 'Completed'";
+$staff_id = $_SESSION['user_id'];
+$cinema_id = $_SESSION['cinema_id'] ?? 0;
+
+// --- 1. FETCH KEY METRICS (PHP Logic - Fast & Direct) ---
+
+// Total Revenue
+$revenue_query = "
+    SELECT SUM(b.final_price) as total 
+    FROM booking b
+    JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+    JOIN seats s ON bs.seat_id = s.seat_id
+    WHERE b.status = 'Completed' AND s.cinema_id = $cinema_id
+";
 $revenue = $con->query($revenue_query)->fetch_assoc()['total'] ?? 0;
 
-// Tickets Sold (Completed bookings)
-$tickets_query = "SELECT COUNT(*) as count FROM booking WHERE status = 'Completed'";
+// Tickets Sold
+$tickets_query = "
+    SELECT COUNT(DISTINCT b.ticket_id) as count 
+    FROM booking b
+    JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+    JOIN seats s ON bs.seat_id = s.seat_id
+    WHERE b.status = 'Completed' AND s.cinema_id = $cinema_id
+";
 $tickets_sold = $con->query($tickets_query)->fetch_assoc()['count'] ?? 0;
 
-// Today's Bookings (Any status)
+// Today's Bookings
 $today = date('Y-m-d');
-$today_query = "SELECT COUNT(*) as count FROM booking WHERE DATE(date_booked) = '$today'";
+$today_query = "
+    SELECT COUNT(DISTINCT b.ticket_id) as count 
+    FROM booking b
+    JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+    JOIN seats s ON bs.seat_id = s.seat_id
+    WHERE DATE(b.date_booked) = '$today' AND s.cinema_id = $cinema_id
+";
 $today_bookings = $con->query($today_query)->fetch_assoc()['count'] ?? 0;
 
-// --- 2. FETCH CHART DATA (Last 7 Days Revenue) ---
-$chart_labels = [];
-$chart_data = [];
-
-for ($i = 6; $i >= 0; $i--) {
-    $date = date('Y-m-d', strtotime("-$i days"));
-    $sql = "SELECT SUM(final_price) as total FROM booking WHERE DATE(date_booked) = '$date' AND status = 'Completed'";
-    $res = $con->query($sql)->fetch_assoc()['total'] ?? 0;
+// --- 2. FETCH PYTHON ANALYTICS (Charts) ---
+function getAnalyticsCharts($cinema_id) {
+    // Pass cinema_id to the Python API
+    $api_url = "http://127.0.0.1:5001/get_reports?cinema_id=" . $cinema_id;
     
-    $chart_labels[] = date('M d', strtotime($date));
-    $chart_data[] = $res;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 8); // Slightly longer timeout for image generation
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    if ($http_code === 200 && $response) {
+        return json_decode($response, true);
+    }
+    return null;
 }
 
-// --- 3. FETCH RECENT TRANSACTIONS ---
-$recent_query = "
-    SELECT b.ticket_id, u.user_name, m.movie_name, b.final_price, b.status, b.date_booked 
-    FROM booking b
-    JOIN users u ON b.user_id = u.user_id
-    JOIN movies m ON b.movie_id = m.movie_id
-    ORDER BY b.date_booked DESC 
-    LIMIT 5
-";
-$recent_transactions = $con->query($recent_query);
+$charts = getAnalyticsCharts($cinema_id);
 ?>
 
 <!DOCTYPE html>
@@ -52,165 +72,97 @@ $recent_transactions = $con->query($recent_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Reports - Analytics</title>
-    <!-- Your existing CSS -->
-    <link rel="stylesheet" href="../../../../public/styles/css/StaffPage.css">
-    <!-- FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Chart.js for Visualization -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        /* Page Specific Styles (can be moved to CSS file later) */
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
-        .reports-container { max-width: 1200px; margin: 0 auto; }
-        
-        .page-header { margin-bottom: 25px; }
-        .page-title { font-size: 24px; font-weight: bold; color: #333; }
-        
-        /* Metric Cards */
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; border-left: 5px solid #ccc; }
-        .card-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
-        .card-info p { margin: 0; color: #666; font-size: 14px; }
-        .card-info h3 { margin: 5px 0 0; font-size: 24px; color: #333; }
-
-        .card.blue { border-color: #3498db; }
-        .card.blue .card-icon { background: #ebf5fb; color: #3498db; }
-        
-        .card.green { border-color: #2ecc71; }
-        .card.green .card-icon { background: #eafaf1; color: #2ecc71; }
-
-        .card.orange { border-color: #f39c12; }
-        .card.orange .card-icon { background: #fef5e7; color: #f39c12; }
-
-        /* Chart & Table Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        @media(max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-        .chart-container, .table-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #444; }
-
-        /* Table Styles */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: #888; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        td { padding: 12px 0; font-size: 14px; color: #333; border-bottom: 1px solid #f5f5f5; }
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-        .status-Completed { background: #eafaf1; color: #2ecc71; }
-        .status-Pending { background: #fef9e7; color: #f1c40f; }
-        .status-Cancelled { background: #fdecec; color: #e74c3c; }
-    </style>
 </head>
-<body>
+<body class="bg-gray-50 p-8 min-h-screen font-sans">
 
-    <div class="reports-container">
-        <div class="page-header">
-            <h1 class="page-title">Sales & Booking Reports</h1>
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-800 border-l-8 border-red-700 pl-4">Sales & Booking Reports</h1>
+            <button onclick="window.location.reload()" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 transition shadow">
+                <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+            </button>
         </div>
 
-        <!-- 1. KEY METRICS -->
-        <div class="metrics-grid">
-            <!-- Total Revenue -->
-            <div class="card green">
-                <div class="card-icon"><i class="fa-solid fa-peso-sign"></i></div>
-                <div class="card-info">
-                    <p>Total Revenue</p>
-                    <h3>₱<?= number_format($revenue, 2) ?></h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-green-500 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 font-bold uppercase tracking-wider">Total Revenue</p>
+                    <p class="text-3xl font-extrabold text-gray-800 mt-1">₱<?= number_format($revenue, 2) ?></p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full text-green-600">
+                    <i class="fas fa-peso-sign text-2xl"></i>
                 </div>
             </div>
 
-            <!-- Tickets Sold -->
-            <div class="card blue">
-                <div class="card-icon"><i class="fa-solid fa-ticket"></i></div>
-                <div class="card-info">
-                    <p>Tickets Sold</p>
-                    <h3><?= number_format($tickets_sold) ?></h3>
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-blue-500 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 font-bold uppercase tracking-wider">Tickets Sold</p>
+                    <p class="text-3xl font-extrabold text-gray-800 mt-1"><?= number_format($tickets_sold) ?></p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-full text-blue-600">
+                    <i class="fas fa-ticket-alt text-2xl"></i>
                 </div>
             </div>
 
-            <!-- Today's Activity -->
-            <div class="card orange">
-                <div class="card-icon"><i class="fa-regular fa-calendar-check"></i></div>
-                <div class="card-info">
-                    <p>Bookings Today</p>
-                    <h3><?= number_format($today_bookings) ?></h3>
+            <div class="bg-white p-6 rounded-xl shadow-md border-b-4 border-yellow-500 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 font-bold uppercase tracking-wider">Bookings Today</p>
+                    <p class="text-3xl font-extrabold text-gray-800 mt-1"><?= number_format($today_bookings) ?></p>
+                </div>
+                <div class="p-3 bg-yellow-100 rounded-full text-yellow-600">
+                    <i class="far fa-calendar-check text-2xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <!-- 2. SALES CHART -->
-            <div class="chart-container">
-                <div class="section-title">Revenue Trends (Last 7 Days)</div>
-                <canvas id="revenueChart"></canvas>
-            </div>
+        <h2 class="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <i class="fab fa-python text-blue-600"></i> AI Data Analytics
+        </h2>
 
-            <!-- 3. RECENT TRANSACTIONS -->
-            <div class="table-container">
-                <div class="section-title">Recent Transactions</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>MOVIE</th>
-                            <th>AMOUNT</th>
-                            <th>STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($recent_transactions->num_rows > 0): ?>
-                            <?php while($row = $recent_transactions->fetch_assoc()): ?>
-                            <tr>
-                                <td>
-                                    <div style="font-weight:bold;"><?= htmlspecialchars($row['movie_name']) ?></div>
-                                    <div style="font-size:11px; color:#999;"><?= date('M d, h:i A', strtotime($row['date_booked'])) ?></div>
-                                </td>
-                                <td style="font-weight:bold;">₱<?= number_format($row['final_price']) ?></td>
-                                <td>
-                                    <span class="status-badge status-<?= $row['status'] ?>"><?= $row['status'] ?></span>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr><td colspan="3" style="text-align:center; color:#999;">No transactions found.</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+        <?php if ($charts && !isset($charts['error'])): ?>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Revenue Growth</h3>
+                    <?php if ($charts['sales_trend']): ?>
+                        <img src="data:image/png;base64,<?= $charts['sales_trend'] ?>" alt="Sales Trend" class="w-full h-auto rounded-lg">
+                    <?php else: ?>
+                        <p class="text-center text-gray-400 py-10">Not enough data to display sales trend.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Top Performing Movies</h3>
+                    <?php if ($charts['top_movies']): ?>
+                        <img src="data:image/png;base64,<?= $charts['top_movies'] ?>" alt="Top Movies" class="w-full h-auto rounded-lg">
+                    <?php else: ?>
+                        <p class="text-center text-gray-400 py-10">Not enough data to display top movies.</p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2 flex flex-col items-center">
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2 w-full">Audience Preference (Genres)</h3>
+                    <?php if ($charts['genre_dist']): ?>
+                        <div class="w-1/2">
+                            <img src="data:image/png;base64,<?= $charts['genre_dist'] ?>" alt="Genre Distribution" class="w-full h-auto rounded-lg">
+                        </div>
+                    <?php else: ?>
+                        <p class="text-center text-gray-400 py-10">Not enough data to display genre analysis.</p>
+                    <?php endif; ?>
+                </div>
+
             </div>
-        </div>
+        <?php else: ?>
+            <div class="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                <p class="font-bold">Analytics Service Unavailable</p>
+                <p class="text-sm">Please ensure the Python Analytics Server is running on port 5001.</p>
+            </div>
+        <?php endif; ?>
+
     </div>
-
-    <!-- CHART JS CONFIGURATION -->
-    <script>
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        const revenueChart = new Chart(ctx, {
-            type: 'bar', // or 'line'
-            data: {
-                labels: <?= json_encode($chart_labels) ?>,
-                datasets: [{
-                    label: 'Daily Revenue (₱)',
-                    data: <?= json_encode($chart_data) ?>,
-                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
-                    borderColor: 'rgba(52, 152, 219, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4], color: '#f0f0f0' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    </script>
 
 </body>
 </html>

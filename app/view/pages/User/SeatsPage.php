@@ -26,8 +26,11 @@ $cinema_name = $cinema_res['cinema_name'] ?? '';
 $cinema_stmt->close();
 
 // DETERMINE CINEMA TYPE
-$is_sm_cinema = (strpos(strtoupper($cinema_name), 'SM') !== false);
-$is_robinsons_cinema = (strpos(strtoupper($cinema_name), 'ROBINSON') !== false);
+$cinema_upper = strtoupper($cinema_name);
+
+// LOGIC UPDATE: Treat 'Ayala' as 'SM' temporarily
+$is_sm_cinema = (strpos($cinema_upper, 'SM') !== false) || (strpos($cinema_upper, 'AYALA') !== false);
+$is_robinsons_cinema = (strpos($cinema_upper, 'ROBINSON') !== false);
 
 // ------------------------------
 // 3. FETCH BOOKED SEATS
@@ -262,7 +265,7 @@ $stmt->close();
     <div id="seatModal" class="modal">
         <div class="modal-content">
             <div style="text-align: center; margin-bottom: 10px;">
-                <h3 style="margin:0; color:#333; font-size: 18px;">Select Seats (SM)</h3>
+                <h3 style="margin:0; color:#333; font-size: 18px;">Select Seats (<?= htmlspecialchars($cinema_name) ?>)</h3>
                 <p style="margin:2px 0; color:#666; font-size: 13px;">Booking <strong><?= $qty ?></strong> seat(s)</p>
             </div>
 

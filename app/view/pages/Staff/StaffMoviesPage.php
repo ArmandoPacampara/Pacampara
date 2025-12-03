@@ -7,18 +7,41 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'Staff' && $_SESSION['ro
     die("Access Denied");
 }
 
+$user_id = $_SESSION['user_id'];
+
+// --- 0. GET STAFF'S ASSIGNED CINEMA ---
+$staff_cinema_id = 0;
+$staff_cinema_name = "Unknown Cinema";
+
+// Fetch cinema_id from user table
+$u_stmt = $con->prepare("SELECT cinema_id FROM users WHERE user_id = ?");
+$u_stmt->bind_param("i", $user_id);
+$u_stmt->execute();
+$u_res = $u_stmt->get_result()->fetch_assoc();
+$u_stmt->close();
+
+if ($u_res && $u_res['cinema_id']) {
+    $staff_cinema_id = $u_res['cinema_id'];
+    
+    // Fetch Cinema Name
+    $c_stmt = $con->prepare("SELECT cinema_name FROM cinemas WHERE cinema_id = ?");
+    $c_stmt->bind_param("i", $staff_cinema_id);
+    $c_stmt->execute();
+    $c_res = $c_stmt->get_result()->fetch_assoc();
+    $staff_cinema_name = $c_res['cinema_name'];
+    $c_stmt->close();
+}
+
 // --- 1. HANDLE FORM SUBMISSIONS ---
 
-// Add Movie
+// Add Movie (Global)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_movie') {
     $title = $_POST['title'];
     $genre = $_POST['genre'];
-    $duration = $_POST['duration']; // "02:30:00"
+    $duration = $_POST['duration']; 
     $price = $_POST['price'];
     $class = $_POST['class'];
-    $status = 'Coming Soon'; // Default
-    
-    // Basic Poster Logic (You can enhance this)
+    $status = 'Coming Soon'; 
     $poster = 'default_poster.jpg'; 
 
     $stmt = $con->prepare("INSERT INTO movies (movie_name, genre, movie_hours, price, movie_class, movie_status, movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -26,24 +49,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute();
     $stmt->close();
     
-    header("Location: StaffMoviesPage.php"); // Refresh
+    header("Location: StaffMoviesPage.php"); 
     exit;
 }
 
-// Add Schedule
+// Add Schedule (Cinema Specific)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_schedule') {
     $movie_id = $_POST['movie_id'];
-    $cinema_id = $_POST['cinema_id'];
+    // FIX: Use the staff's cinema ID automatically
+    $cinema_id = $staff_cinema_id; 
+    
     $date = $_POST['date'];
     $time = $_POST['time'];
     $price = $_POST['price'];
     
     $datetime = $date . ' ' . $time;
 
-    $stmt = $con->prepare("INSERT INTO cinema_movies (cinema_id, movie_id, showtime, ticket_price) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iisd", $cinema_id, $movie_id, $datetime, $price);
-    $stmt->execute();
-    $stmt->close();
+    if ($cinema_id > 0) {
+        $stmt = $con->prepare("INSERT INTO cinema_movies (cinema_id, movie_id, showtime, ticket_price) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("iisd", $cinema_id, $movie_id, $datetime, $price);
+        $stmt->execute();
+        $stmt->close();
+    }
     
     header("Location: StaffMoviesPage.php");
     exit;
@@ -51,17 +78,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // --- 2. FETCH DATA ---
 $movies = $con->query("SELECT * FROM movies ORDER BY movie_id DESC");
-$cinemas = $con->query("SELECT * FROM cinemas");
 
-// Fetch Schedules for JSON use in JS
+// Fetch Schedules (Filtered for this Staff's Cinema)
 $schedules_data = [];
-$sched_res = $con->query("
-    SELECT cm.id, cm.movie_id, c.cinema_name, cm.showtime, cm.ticket_price
-    FROM cinema_movies cm
-    JOIN cinemas c ON cm.cinema_id = c.cinema_id
-");
-while($row = $sched_res->fetch_assoc()) {
-    $schedules_data[] = $row;
+if ($staff_cinema_id > 0) {
+    $sched_stmt = $con->prepare("
+        SELECT cm.id, cm.movie_id, c.cinema_name, cm.showtime, cm.ticket_price
+        FROM cinema_movies cm
+        JOIN cinemas c ON cm.cinema_id = c.cinema_id
+        WHERE cm.cinema_id = ?
+    ");
+    $sched_stmt->bind_param("i", $staff_cinema_id);
+    $sched_stmt->execute();
+    $sched_res = $sched_stmt->get_result();
+    while($row = $sched_res->fetch_assoc()) {
+        $schedules_data[] = $row;
+    }
+    $sched_stmt->close();
 }
 ?>
 
@@ -71,7 +104,6 @@ while($row = $sched_res->fetch_assoc()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Movie Management</title>
-    <!-- Adjust path to CSS -->
     <link rel="stylesheet" href="../../../../public/styles/css/StaffMoviesPage.css">
     <style>
         /* Small fix for modal visibility */
@@ -91,10 +123,10 @@ while($row = $sched_res->fetch_assoc()) {
                 <button class="tab-btn active" onclick="switchTab('movies')">Movie List</button>
             </div>
 
-            <!-- Movie List Tab -->
             <div id="movies" class="tab-content active">
                 <div class="card">
                     <h2>Available Movies</h2>
+                    <p style="color: #666; margin-bottom: 20px;">Managing for: <strong><?= htmlspecialchars($staff_cinema_name) ?></strong></p>
                     
                     <div class="search-bar">
                         <input type="text" id="movieSearch" placeholder="Search movies..." onkeyup="searchMovies()">
@@ -111,7 +143,6 @@ while($row = $sched_res->fetch_assoc()) {
                     </div>
 
                     <div class="movie-grid" id="movieGrid">
-                        <!-- Add Movie Button -->
                         <div class="movie-item add-movie-item" onclick="openAddMovieModal()">
                             <div class="movie-poster add-movie-poster">
                                 <div class="add-icon">+</div>
@@ -121,7 +152,6 @@ while($row = $sched_res->fetch_assoc()) {
                             <div class="movie-info">New Title</div>
                         </div>
 
-                        <!-- PHP Loop for Movies -->
                         <?php while($movie = $movies->fetch_assoc()): ?>
                             <div class="movie-item" 
                                  data-id="<?= $movie['movie_id'] ?>"
@@ -143,7 +173,6 @@ while($row = $sched_res->fetch_assoc()) {
             </div>
         </div>
 
-        <!-- Movie Details Modal -->
         <div id="movieDetailsModal" class="modal">
             <div class="modal-content modal-large">
                 <div class="modal-header">
@@ -154,8 +183,7 @@ while($row = $sched_res->fetch_assoc()) {
                 <div class="movie-details-container">
                     <div class="movie-info-section">
                         <div class="movie-poster-large" id="moviePosterLarge">
-                            <!-- Poster injected via JS -->
-                        </div>
+                            </div>
                         <div class="movie-meta">
                             <h2 id="movieMetaTitle">Title</h2>
                             <p id="movieMetaInfo" class="meta-info"></p>
@@ -166,21 +194,18 @@ while($row = $sched_res->fetch_assoc()) {
                         <button class="details-tab-btn active" onclick="switchDetailsTab('schedules')">Schedules</button>
                     </div>
 
-                    <!-- Schedules Tab -->
                     <div id="schedules" class="details-tab-content active">
                         <div class="section-header">
                             <h3>Movie Schedules</h3>
                             <button class="btn btn-add" onclick="openScheduleForm()">+ Add Schedule</button>
                         </div>
                         <div id="schedulesList" class="schedules-list">
-                            <!-- JS will populate this -->
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Schedule Form Modal -->
         <div id="scheduleFormModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -194,14 +219,8 @@ while($row = $sched_res->fetch_assoc()) {
 
                     <div class="form-group">
                         <label>Cinema</label>
-                        <select name="cinema_id" required>
-                            <?php 
-                            $cinemas->data_seek(0); // Reset pointer
-                            while($c = $cinemas->fetch_assoc()): 
-                            ?>
-                                <option value="<?= $c['cinema_id'] ?>"><?= htmlspecialchars($c['cinema_name']) ?></option>
-                            <?php endwhile; ?>
-                        </select>
+                        <input type="text" value="<?= htmlspecialchars($staff_cinema_name) ?>" disabled style="background-color: #f0f0f0; color: #555;">
+                        <p style="font-size: 12px; color: #888; margin-top: 3px;">Auto-assigned to your branch.</p>
                     </div>
 
                     <div class="form-row" style="display:flex; gap:10px;">
@@ -225,7 +244,6 @@ while($row = $sched_res->fetch_assoc()) {
             </div>
         </div>
 
-        <!-- Add Movie Modal (New Form) -->
         <div id="addMovieModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -326,7 +344,7 @@ while($row = $sched_res->fetch_assoc()) {
             const movieScheds = allSchedules.filter(s => s.movie_id == movieId);
 
             if (movieScheds.length === 0) {
-                list.innerHTML = '<p class="empty-state">No schedules yet.</p>';
+                list.innerHTML = '<p class="empty-state" style="text-align:center; padding:20px; color:#888;">No schedules yet for this cinema.</p>';
                 return;
             }
 
@@ -334,10 +352,17 @@ while($row = $sched_res->fetch_assoc()) {
                 const date = new Date(s.showtime).toLocaleString();
                 const item = document.createElement('div');
                 item.className = 'schedule-card';
+                // Inline styles for basic card look if CSS is missing
+                item.style.border = '1px solid #ddd';
+                item.style.padding = '10px';
+                item.style.borderRadius = '5px';
+                item.style.marginBottom = '10px';
+                item.style.background = '#f9f9f9';
+                
                 item.innerHTML = `
                     <div class="schedule-info">
-                        <h4>${date}</h4>
-                        <p>Cinema: ${s.cinema_name} | Price: ₱${s.ticket_price}</p>
+                        <h4 style="margin:0;">${date}</h4>
+                        <p style="margin:5px 0 0; font-size:14px;">Price: ₱${s.ticket_price}</p>
                     </div>
                 `;
                 list.appendChild(item);

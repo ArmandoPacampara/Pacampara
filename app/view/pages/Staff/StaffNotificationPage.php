@@ -7,14 +7,50 @@ if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'Staff' && $_SESSION['ro
     die("Access Denied");
 }
 
+$user_id = $_SESSION['user_id'];
+
+// --- 0. GET STAFF'S ASSIGNED CINEMA ---
+$staff_cinema_id = 0;
+// Fetch cinema_id from user table
+$u_stmt = $con->prepare("SELECT cinema_id FROM users WHERE user_id = ?");
+$u_stmt->bind_param("i", $user_id);
+$u_stmt->execute();
+$u_res = $u_stmt->get_result()->fetch_assoc();
+$u_stmt->close();
+
+if ($u_res && $u_res['cinema_id']) {
+    $staff_cinema_id = $u_res['cinema_id'];
+}
+
 // --- 1. HANDLE ACTIONS (AJAX-like via POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $notif_id = intval($_POST['id']);
     
+    // SECURITY CHECK: Ensure this booking belongs to the staff's cinema
+    $access_granted = false;
+    if ($staff_cinema_id > 0) {
+        $chk_stmt = $con->prepare("
+            SELECT b.ticket_id 
+            FROM booking b
+            JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+            JOIN seats s ON bs.seat_id = s.seat_id
+            WHERE b.ticket_id = ? AND s.cinema_id = ?
+            LIMIT 1
+        ");
+        $chk_stmt->bind_param("ii", $notif_id, $staff_cinema_id);
+        $chk_stmt->execute();
+        if ($chk_stmt->get_result()->num_rows > 0) {
+            $access_granted = true;
+        }
+        $chk_stmt->close();
+    }
+
+    if (!$access_granted) {
+        exit("error: unauthorized access");
+    }
+
     if (isset($_POST['action']) && $_POST['action'] === 'mark_read') {
-        // For now, let's assume "Mark as Read" means acknowledging a pending booking
-        // You could also just have a separate 'is_read' column in a notifications table.
-        // Here, we'll update status to 'Booked' as an example of "Processing" it.
+        // "Mark as Read" means acknowledging a pending booking
         $stmt = $con->prepare("UPDATE booking SET status = 'Booked' WHERE ticket_id = ?");
         $stmt->bind_param("i", $notif_id);
         $stmt->execute();
@@ -30,21 +66,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- 2. FETCH NOTIFICATIONS ---
-// We fetch bookings that are 'Pending' or 'Booked' to show as notifications.
-// Ordered by date_booked DESC so newest are at top.
+// --- 2. FETCH NOTIFICATIONS (Filtered by Cinema) ---
+// We join booked_seats -> seats to filter by cinema_id
 $query = "
-    SELECT b.ticket_id, b.date_booked, b.schedule, b.status, 
+    SELECT DISTINCT b.ticket_id, b.date_booked, b.schedule, b.status, 
            u.user_name, m.movie_name,
            (SELECT COUNT(*) FROM booked_seats bs WHERE bs.ticket_id = b.ticket_id) as seat_count
     FROM booking b
     JOIN users u ON b.user_id = u.user_id
     JOIN movies m ON b.movie_id = m.movie_id
+    JOIN booked_seats bs ON b.ticket_id = bs.ticket_id
+    JOIN seats s ON bs.seat_id = s.seat_id
     WHERE b.status IN ('Pending', 'Booked', 'Completed')
+    AND s.cinema_id = ?
     ORDER BY b.date_booked DESC
     LIMIT 20
 ";
-$result = $con->query($query);
+
+$stmt = $con->prepare($query);
+$stmt->bind_param("i", $staff_cinema_id);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -99,13 +141,12 @@ $result = $con->query($query);
 
             <?php endwhile; ?>
         <?php else: ?>
-            <div style="text-align:center; padding:20px; color:#777;">No new notifications.</div>
+            <div style="text-align:center; padding:20px; color:#777;">No new notifications for your cinema.</div>
         <?php endif; ?>
 
     </div>
 </div>
 
-<!-- 📌 Popup Modal -->
 <div class="notif-modal" id="notifModal">
     <div class="modal-box">
         <div class="popup-header">
@@ -115,7 +156,6 @@ $result = $con->query($query);
         <div id="modalMessage" class="popup-content"></div>
 
         <div class="modal-actions">
-            <!-- We pass the ID to these buttons via JS -->
             <button id="markReadBtn">Approve / Mark Read</button>
             <button id="deleteBtn" class="delete">Cancel Booking</button>
         </div>
@@ -173,7 +213,7 @@ $result = $con->query($query);
                     currentNotif.style.borderLeft = "4px solid #3498db"; // Visual feedback
                     closeModal();
                 } else {
-                    alert("Error updating status.");
+                    alert("Error updating status: " + data);
                 }
             });
         }
@@ -195,7 +235,7 @@ $result = $con->query($query);
                     currentNotif.remove();
                     closeModal();
                 } else {
-                    alert("Error deleting booking.");
+                    alert("Error deleting booking: " + data);
                 }
             });
         }
