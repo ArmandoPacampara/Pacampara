@@ -1,39 +1,39 @@
 <?php
-require_once __DIR__ . '/../../config/db.php';
+// app/model/UserModel.php
+require_once __DIR__ . '/../core/db.php'; // Assuming you have your DB connection here
 
 class UserModel {
     private $conn;
 
-    public function __construct($db = null) {
-        $this->conn = $db ?? require __DIR__ . '/../config/db.php';
+    public function __construct() {
+        $db = new Database(); // Assuming your db.php class is named Database
+        $this->conn = $db->getConnection();
     }
 
-    public function getAllUsers() {
-        $query = "SELECT * FROM users";
-        return $this->conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getUserByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_Email = ?");
-        $stmt->execute([$email]);
-        return $stmt->fetch();
-    }
-
-    public function getUserById($id) {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE user_ID = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function createUser($data) {
-        $query = "INSERT INTO users (user_Name, user_Email, user_contact, user_Password, email_Recovery, role_ID)
-                  VALUES (:name, :email, :contact, :password, :recovery, :role)";
+    public function checkUserByEmail($email) {
+        // 1. Prepare Statement
+        $query = "SELECT user_id, user_name, user_email, user_password, role_id, failed_login_attempts, lockout_until 
+                  FROM users WHERE user_email = ? LIMIT 1";
+        
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute($data);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc(); // Return the user array
+        }
+        
+        return false; // User not found
     }
 
-    public function deleteUser($id) {
-        $stmt = $this->conn->prepare("DELETE FROM users WHERE user_ID = ?");
-        return $stmt->execute([$id]);
+    // You can add methods here to update failed attempts, etc.
+    public function updateLoginAttempts($user_id, $attempts, $lockout = null) {
+        $query = "UPDATE users SET failed_login_attempts = ?, lockout_until = ? WHERE user_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("isi", $attempts, $lockout, $user_id);
+        $stmt->execute();
     }
 }
+?>
