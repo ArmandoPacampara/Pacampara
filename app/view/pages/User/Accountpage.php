@@ -31,17 +31,76 @@ if (isset($_GET['logout'])) {
       }
       
       // Handle Profile Image
-      $avatar_sql = "";
-      if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === 0) {
-          $upload_dir = '../../../../public/assets/images/'; 
-          if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
-          
-          $file_name = time() . '_' . $_FILES['profile_img']['name'];
-          $upload_file = $upload_dir . $file_name;
-          
-          if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $upload_file)) {
-              $avatar_sql = ", user_avatar = '$file_name'";
-          }
+$avatar_sql = "";
+    $is_file_valid = true;
+    $max_size = 2097152; // 2 MB
+    $allowed_types = ['image/jpeg', 'image/png'];
+
+    if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === 0) {
+        $file = $_FILES['profile_img'];
+        
+        // 1. Check file size
+        if ($file['size'] > $max_size) {
+            $message = "Error: Profile image is too large. Max size is 2MB.";
+            $is_file_valid = false;
+        }
+        
+        // 2. Check file type (using MIME type for better security)
+        if ($is_file_valid) {
+            $file_mime = function_exists('mime_content_type') ? mime_content_type($file['tmp_name']) : '';
+            
+            if (empty($file_mime) || !in_array($file_mime, $allowed_types)) {
+                
+                // Secondary check using extension if MIME type is unavailable
+                $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                if (!in_array("image/{$file_extension}", $allowed_types) && $file_mime !== 'unknown') {
+                     $message = "Error: Invalid file type. Only JPEG and PNG images are allowed.";
+                     $is_file_valid = false;
+                }
+            }
+        }
+        
+        // 3. Process valid file
+        if ($is_file_valid) {
+            $upload_dir = '../../../../public/assets/images/'; 
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            
+            // Use basename for security against directory traversal
+            $file_name = time() . '_' . basename($file['name']);
+            $upload_file = $upload_dir . $file_name;
+            
+            if (move_uploaded_file($file['tmp_name'], $upload_file)) {
+                $avatar_sql = ", user_avatar = '$file_name'";
+            } else {
+                $message = "Error moving uploaded file. Check directory permissions.";
+                $is_file_valid = false;
+            }
+        }
+    }
+    // Handle Profile Image - END MODIFIED LOGIC
+
+    // Only proceed with DB update if no file upload error occurred
+    if ($is_file_valid) {
+        $update_stmt = $con->prepare("
+            UPDATE users 
+            SET user_name = ?, user_contact = ?, user_genre = ? $avatar_sql 
+            WHERE user_id = ?
+        ");
+        $update_stmt->bind_param("sssi", $new_username, $new_contact, $new_genre_string, $user_id);
+        
+        if ($update_stmt->execute()) {
+            // Only overwrite $message if it was not set by a move_uploaded_file error
+            if (empty($message)) {
+                $message = "Profile updated successfully!";
+            }
+            $_SESSION['user_name'] = $new_username;
+        } else {
+            $message = "Error updating profile.";
+        }
+        $update_stmt->close();
+    } else {
+        // If file upload failed, do not update other fields
+        $message = "Profile update failed due to image upload error.";
       }
 
       $update_stmt = $con->prepare("
@@ -252,6 +311,15 @@ if (isset($_GET['logout'])) {
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       text-align: center;
     }
+
+        .account-container {
+      width: 500px;
+      height: 750px;
+      background: white;
+      border-radius: 15px;
+      padding: 30px 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
     </style>
   </head>
 
@@ -284,7 +352,7 @@ if (isset($_GET['logout'])) {
               </button>
 
               <div class="profile-img-wrapper">
-                <img src="../../../../public/assets/profile_img.png" class="profile-img" id="profileImg" alt="Profile Image" />
+                <img src="../../../../public/assets/images/profile_icon.png" class="profile-img" id="profileImg" alt="Profile Image" />
                 <input type="file" name="profile_img" id="profileInput" accept="image/*" style="display: none" />
               </div>
 

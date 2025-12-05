@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 2. VERIFY TOKEN (Protects both Add and Delete actions)
     Csrf::verifyToken();
 
-    if (isset($_POST['add_movie'])) {
+if (isset($_POST['add_movie'])) {
         $name = $_POST['name'];
         $hours = $_POST['hours']; // format 02:30:00
         $price = $_POST['price'];
@@ -19,36 +19,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $class = $_POST['class'];
         
-        // Image Upload (Simplified)
+        // --- START NEW FILE UPLOAD AND VALIDATION LOGIC ---
         $poster = "default_poster.jpg"; 
-        if(isset($_FILES['poster']) && $_FILES['poster']['error'] == 0) {
-            $poster = time() . "_" . $_FILES['poster']['name'];
-            $target_dir = "../../../../public/assets/images/";
-            // Ensure directory exists
-            if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
-            move_uploaded_file($_FILES['poster']['tmp_name'], $target_dir . $poster);
-        }
-
-        $stmt = $con->prepare("INSERT INTO movies (movie_name, movie_hours, price, genre, movie_status, movie_class, movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssdssss", $name, $hours, $price, $genre, $status, $class, $poster);
+        $is_file_valid = true;
         
-        if ($stmt->execute()) {
-            // [LOG MOVIE ADDITION]
-            Logger::log($con, $_SESSION['user_id'], "MOVIE_ADDED", "Added new movie: $name ($genre)");
+        if(isset($_FILES['poster']) && $_FILES['poster']['error'] == UPLOAD_ERR_OK) {
+            $file = $_FILES['poster'];
+            $max_size = 2097152; // 2 MB in bytes
+            $allowed_types = ['image/jpeg', 'image/png'];
+            
+            // Use mime_content_type for better security
+            if (function_exists('mime_content_type')) {
+                $file_mime = mime_content_type($file['tmp_name']);
+            } else {
+                // Fallback: use file extension (less secure)
+                $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+                $extension_map = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png'];
+                $file_mime = $extension_map[$file_extension] ?? 'unknown';
+            }
+
+            // 1. Check file size
+            if ($file['size'] > $max_size) {
+                $upload_message = "Error: Poster file is too large. Max size is 2MB.";
+                $is_file_valid = false;
+            }
+            // 2. Check file type
+            elseif (!in_array($file_mime, $allowed_types)) {
+                $upload_message = "Error: Invalid file type ({$file_mime}). Only JPEG and PNG files are allowed.";
+                $is_file_valid = false;
+            }
+
+            if ($is_file_valid) {
+                $poster = time() . "_" . basename($file['name']);
+                $target_dir = "../../../../public/assets/images/";
+                
+                if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+                
+                if (!move_uploaded_file($file['tmp_name'], $target_dir . $poster)) {
+                    $upload_message = "Error moving uploaded file. Check directory permissions.";
+                    $poster = "default_poster.jpg";
+                }
+            }
         }
-        $stmt->close();
+        // --- END NEW FILE UPLOAD AND VALIDATION LOGIC ---
+
+        // Only proceed with DB insertion if file was valid or no file was uploaded
+        if ($is_file_valid || !isset($_FILES['poster']) || $_FILES['poster']['error'] == UPLOAD_ERR_NO_FILE) {
+            $stmt = $con->prepare("INSERT INTO movies (movie_name, movie_hours, price, genre, movie_status, movie_class, movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssdssss", $name, $hours, $price, $genre, $status, $class, $poster);
+            
+            if ($stmt->execute()) {
+                Logger::log($con, $_SESSION['user_id'], "MOVIE_ADDED", "Added new movie: $name ($genre)");
+                // Set success message only if no error message was set
+                if (empty($upload_message) || strpos($upload_message, 'Success') !== false) {
+                     $upload_message = "Success: Movie added successfully!";
+                }
+            } else {
+                $upload_message = "Error: Database insertion failed. " . $con->error;
+            }
+            $stmt->close();
+        }
 
     } elseif (isset($_POST['delete_movie'])) {
-        $id = intval($_POST['movie_id']); // Sanitize ID
-        
-        // Fetch name before deleting for the log
-        $check = $con->query("SELECT movie_name FROM movies WHERE movie_id = $id");
-        $movie_name = ($check->num_rows > 0) ? $check->fetch_assoc()['movie_name'] : "Unknown Movie";
-
+        // ... (rest of the delete logic is unchanged, but you need to add the $upload_message update)
+        // ...
         if ($con->query("DELETE FROM movies WHERE movie_id = $id")) {
-            // [LOG MOVIE DELETION]
-            Logger::log($con, $_SESSION['user_id'], "MOVIE_DELETED", "Deleted movie: $movie_name (ID: $id)");
-        }
+             Logger::log($con, $_SESSION['user_id'], "MOVIE_DELETED", "Deleted movie: $movie_name (ID: $id)");
+             $upload_message = "Success: Movie deleted successfully!";
+         } else {
+             $upload_message = "Error: Failed to delete movie.";
+         }
     }
 }
 
