@@ -1,6 +1,7 @@
 <?php
   session_start();
   require_once '../../../../app/core/db.php';
+// Use DateTime objects, which require PHP 5.2+ and are used here for robust date comparison.
 
   // --- 1. AUTHENTICATION CHECK ---
   if (!isset($_SESSION['user_id'])) {
@@ -152,7 +153,8 @@ if (isset($_GET['logout'])) {
         }
 
         /* ACTION BUTTON STYLES */
-        .view-ticket-btn, .continue-btn, .detail-btn {
+        .view-ticket-btn { 
+            background-color: #28a745; 
             padding: 6px 12px;
             border: none;
             border-radius: 4px;
@@ -160,15 +162,56 @@ if (isset($_GET['logout'])) {
             color: white;
             font-size: 13px;
             text-decoration: none;
-        }
-        .view-ticket-btn { background-color: #28a745; } 
+        } 
         .view-ticket-btn:hover { background-color: #218838; }
 
-        .continue-btn { background-color: #ffc107; color: #333; } 
+        .continue-btn { 
+            background-color: #ffc107; 
+            color: #333; 
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+        } 
         .continue-btn:hover { background-color: #e0a800; }
 
-        .detail-btn { background-color: #6c757d; } 
+        .detail-btn { 
+            background-color: #6c757d; 
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-size: 13px;
+            text-decoration: none;
+        } 
         .detail-btn:hover { background-color: #5a6268; }
+        
+        /* NEW: Cancel Button Styles */
+        .cancel-btn-enabled {
+            background-color: #dc3545; /* Red for Cancel */
+            color: white; 
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .cancel-btn-enabled:hover {
+            background-color: #c82333;
+        }
+        .cancel-btn-disabled {
+            background-color: #6c757d; /* Gray for disabled/past deadline */
+            color: white; 
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: not-allowed;
+            font-size: 13px;
+        }
 
         /* NEW: LOGOUT BUTTON STYLES */
         .logout-btn {
@@ -199,15 +242,35 @@ if (isset($_GET['logout'])) {
               background-color: #fdecec;
               height: 59.92vh;
           }
+
+        .records-container {
+      width: 800px;
+      height: 680px;
+      background: white;
+      border-radius: 15px;
+      padding: 30px 50px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      text-align: center;
+    }
     </style>
   </head>
 
   <body>
     <div class="page-wrapper">
       
-      <?php if ($message): ?>
+            <?php if ($message): ?>
           <div style="position: fixed; top: 20px; right: 20px; background: #4caf50; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
               <?= $message ?>
+          </div>
+      <?php endif; ?>
+      
+            <?php if (isset($_SESSION['success'])): ?>
+          <div style="position: fixed; top: 20px; right: 20px; background: #4caf50; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
+              <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+          </div>
+      <?php elseif (isset($_SESSION['error'])): ?>
+          <div style="position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 15px; border-radius: 5px; z-index: 1000;">
+              <?= $_SESSION['error']; unset($_SESSION['error']); ?>
           </div>
       <?php endif; ?>
 
@@ -307,29 +370,47 @@ if (isset($_GET['logout'])) {
                     <?php while($row = $bookings_result->fetch_assoc()): 
                           $status = htmlspecialchars($row['status']);
                           $ticket_id = htmlspecialchars($row['ticket_id']);
-                          
-                          $action_link = '#';
-                          $button_text = 'Details';
-                          $button_class = 'detail-btn';
+                            
+                            // Date calculation using DateTime for the 3-day rule
+                          $schedule_dt = new DateTime($row['schedule']);
+                            $current_dt = new DateTime();
+                            
+                            // Calculate cancellation deadline: 3 days before schedule
+                            $deadline_dt = (clone $schedule_dt)->sub(new DateInterval('P3D'));
+                            $can_cancel_window = $current_dt < $deadline_dt;
 
-                          if ($status == 'Completed' || $status == 'Booked') {
-                              $action_link = "ReceiptPage.php?ticket_id=" . $ticket_id;
-                              $button_text = "View Ticket";
-                              $button_class = "view-ticket-btn";
-                          } elseif ($status == 'Pending') {
-                              $action_link = "Checkout.php?ticket_id=" . $ticket_id . "&resume=1";
-                              $button_text = "Continue Payment";
-                              $button_class = "continue-btn";
-                          }
+                            // Determine buttons/actions
+                            $actions = [];
+                            
+                            if ($status == 'Completed' || $status == 'Booked') {
+                                // 1. Add View Ticket button
+                                $actions[] = '<a href="ReceiptPage.php?ticket_id=' . $ticket_id . '"><button class="view-ticket-btn">View Ticket</button></a>';
+                                
+                                // 2. Add Cancel button based on the 3-day rule
+                                if ($can_cancel_window) {
+                                    $cancel_link = '../../../../app/model/CancelBooking.php?ticket_id=' . $ticket_id;
+                                    $actions[] = '<a href="' . $cancel_link . '" onclick="return confirm(\'Are you sure you want to cancel Ticket ID #'. $ticket_id .' and free the seats? Cancellation must be done 3 days before the show.\')"><button class="cancel-btn-enabled">Cancel Booking</button></a>';
+                                } else {
+                                    $actions[] = '<button class="cancel-btn-disabled" disabled title="Cancellation is only allowed 3 days before the show. (Deadline: ' . $deadline_dt->format('Y-m-d H:i') . ')">Cancel (Deadline Passed)</button>';
+                                }
+                            } elseif ($status == 'Pending') {
+                                // Action to resume payment
+                                $actions[] = '<a href="Checkout.php?ticket_id=' . $ticket_id . '&resume=1"><button class="continue-btn">Continue Payment</button></a>';
+                            } else {
+                                // Status is Cancelled
+                                $actions[] = '<button class="detail-btn" disabled>No Action</button>';
+                            }
+
+                            // Combine all actions for the cell
+                            $action_cell_content = implode('&nbsp;', $actions);
+                            
                     ?>
                     <tr>
                       <td><?= date("M d, Y - g:i A", strtotime($row['schedule'])) ?></td>
                       <td><?= htmlspecialchars($row['movie_name']) ?></td>
                       <td><?= $status ?></td>
                       <td>
-                          <a href="<?= $action_link ?>">
-                              <button class="<?= $button_class ?>"><?= $button_text ?></button>
-                          </a>
+                          <?= $action_cell_content ?>
                       </td>
                     </tr>
                     <?php endwhile; ?>
@@ -361,7 +442,7 @@ if (isset($_GET['logout'])) {
           <button id="cancelSave" class="cancel-btn">Cancel</button>
           <button id="confirmSave" class="confirm-btn">Save</button>
         </div>
-      </div>
+        </div>
     </div>
 
     <script>
@@ -451,3 +532,4 @@ if (isset($_GET['logout'])) {
     </script>
   </body>
   </html>
+

@@ -6,6 +6,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
+
 body {
     background-color: #a31212;
     display: flex;
@@ -13,6 +14,7 @@ body {
     align-items: center;
     height: 100vh;
 }
+
 
 h2 {
     text-align: center;
@@ -23,12 +25,14 @@ h2 {
     font-size: 16px;
 }
 
+
 .divider {
     display: flex;
     align-items: center;
     color: #999;
     margin-bottom: -20px;
 }
+
 
 .divider::before,
 .divider::after {
@@ -38,9 +42,11 @@ h2 {
     background: #ccc;
 }
 
+
 .divider span {
     font-size: 14px;
 }
+
 
 /* ===== Layout (unchanged) ===== */
 .wrapper {
@@ -49,6 +55,7 @@ h2 {
     justify-content: center;
     gap: 40px;
 }
+
 
 .poster-container {
     border-radius: 20px;
@@ -61,9 +68,11 @@ h2 {
     transition: transform 0.3s ease;
 }
 
+
 .poster-container:hover {
     transform: translateY(-8px);
 }
+
 
 .poster-container img {
     width: 100%;
@@ -71,6 +80,7 @@ h2 {
     object-fit: cover;
     border-radius: 20px;
 }
+
 
 .container {
     position: unset;
@@ -83,6 +93,7 @@ h2 {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
+
 /* ===== Logo Section (unchanged) ===== */
 .logo {
     display: flex;
@@ -91,11 +102,13 @@ h2 {
     margin-bottom: 10px;
 }
 
+
 .logo img {
     width: 42px;
     margin-top: -10px;
     margin-right: 10px;
 }
+
 
 .logo h1 {
     color: #a31212;
@@ -103,6 +116,7 @@ h2 {
     font-weight: 700;
     margin-right: 50px;
 }
+
 
 /* ===== Input Fields (icon outside input) ===== */
 /* NOTE: We modify the input-group margin here to reduce the gap for Step 2/3 buttons */
@@ -113,12 +127,14 @@ h2 {
     width: 92%;
 }
 
+
 .input-icon {
     width: 28px;
     height: 28px;
     margin-right: 15px;
     flex-shrink: 0;
 }
+
 
 form .input-group input[type="text"] {
     width: 80%;
@@ -133,6 +149,7 @@ form .input-group input[type="text"] {
     transition: all 0.3s ease;
 }
 
+
 .input-group input,
 .input-group select {
     flex: 1;
@@ -146,10 +163,12 @@ form .input-group input[type="text"] {
     transition: border-color 0.3s;
 }
 
+
 .input-group input:focus,
 .input-group select:focus {
     border-color: #870e0e;
 }
+
 
 /* ===== Buttons (unchanged, but relies on new .input-group margin) ===== */
 .next-btn {
@@ -161,8 +180,9 @@ form .input-group input[type="text"] {
     cursor: pointer;
     transition: 0.3s;
     color: #fff;
-    margin-right: 0; 
+    margin-right: 0;
 }
+
 
 .back-btn,
 .signup-btn {
@@ -174,40 +194,47 @@ form .input-group input[type="text"] {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
-    margin-right: 10px; 
+    margin-right: 10px;
 }
+
 
 .signup-btn {
     margin-right: 0;
 }
+
 
 .next-btn,
 .signup-btn {
     background-color: #a31212;
 }
 
+
 .next-btn:hover,
 .signup-btn:hover {
     background-color: #870e0e;
 }
 
+
 .back-btn {
     background-color: #666;
 }
+
 
 .back-btn:hover {
     background-color: #555;
 }
 
+
 /* ===== Step Buttons Container - Vertical Alignment FIX ===== */
 .button-container {
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     margin-top: 8px; /* ADJUSTED: Reduced from 20px to 10px for vertical alignment */
-    width: 92%; 
-    margin-left: 40px; 
-    padding: 0; 
+    width: 92%;
+    margin-left: 40px;
+    padding: 0;
 }
+
 
 .step-2-buttons {
     display: flex;
@@ -215,6 +242,7 @@ form .input-group input[type="text"] {
     margin-top: 30px;
     padding-left: 130px;
 }
+
 
 /* ===== Step Transition (unchanged) ===== */
 .container2 {
@@ -227,6 +255,7 @@ form .input-group input[type="text"] {
     min-height: 320px;
 }
 
+
 /* ===== Dots Indicator (unchanged) ===== */
 .dots {
     display: flex;
@@ -235,6 +264,7 @@ form .input-group input[type="text"] {
     margin-right: 55px;
     color: #a31212;
 }
+
 
 .dots span {
     height: 8px;
@@ -246,23 +276,28 @@ form .input-group input[type="text"] {
     transition: opacity 0.3s;
 }
 
+
 /* default lower opacity handled in script */
+
 
 /* ================================================= */
 /* ===== GENRE SELECTOR (Step 2) STYLES - FIXED WIDTH (unchanged) ===== */
 /* ================================================= */
 
+
 /* 1. Genre Group container width FIX: Match the standard 92% width */
 .genre-group {
-    width: 92%; 
-    margin-left: 0; 
+    width: 92%;
+    margin-left: 0;
 }
+
 
 /* Ensures the inner input-group for the new button is aligned */
 .genre-input-group {
-    width: 100%; 
+    width: 100%;
     margin-left: 0;
 }
+
 
 .genre-label {
     display: block;
@@ -273,17 +308,18 @@ form .input-group input[type="text"] {
     text-align: left;
 }
 
+
 /* New full-width selector styled like a form input */
 .genre-select-display {
     flex: 1;
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
-    width: 100%; 
-    
+    width: 100%;
+   
     /* Matches standard input styling */
     padding: 12px;
-    border: 1px solid #a31212; 
+    border: 1px solid #a31212;
     border-radius: 8px;
     outline: none;
     background-color: #fff;
@@ -293,10 +329,12 @@ form .input-group input[type="text"] {
     transition: border-color 0.3s;
 }
 
+
 .genre-select-display:hover,
 .genre-select-display:focus {
     border-color: #870e0e;
 }
+
 
 /* Style the text span inside the button */
 .genre-select-display span {
@@ -305,14 +343,16 @@ form .input-group input[type="text"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 90%; 
+    max-width: 90%;
 }
+
 
 /* Style the chevron icon (or any other icon used) */
 .genre-select-display .fas {
     font-size: 12px;
     color: #a31212;
 }
+
 
 /* REMOVED/MODIFIED OLD GENRE STYLES (unchanged) */
 .genre-input-wrapper {
@@ -326,6 +366,8 @@ form .input-group input[type="text"] {
 */
 
 
+
+
 /* Existing genre list styles (kept for completeness, though some are likely unused now) */
 .genres-container {
     display: grid;
@@ -336,6 +378,7 @@ form .input-group input[type="text"] {
     margin-left: 30px;
 }
 
+
 .genres-container label {
     display: flex;
     align-items: center;
@@ -344,6 +387,7 @@ form .input-group input[type="text"] {
     cursor: pointer;
 }
 
+
 .genres-container input[type="checkbox"] {
     accent-color: #a31212;
     width: 16px;
@@ -351,12 +395,14 @@ form .input-group input[type="text"] {
     cursor: pointer;
 }
 
+
 .checkbox-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 3px;
     margin-top: 5px;
 }
+
 
 .checkbox-label {
     display: flex;
@@ -369,9 +415,11 @@ form .input-group input[type="text"] {
     transition: background-color 0.2s;
 }
 
+
 .checkbox-label:hover {
     background-color: #f5f5f5;
 }
+
 
 .checkbox-label input[type="checkbox"] {
     margin-right: 8px;
@@ -381,6 +429,7 @@ form .input-group input[type="text"] {
     accent-color: #a31212;
 }
 
+
 /* ===== Responsive (unchanged) ===== */
 @media (max-width: 900px) {
     .wrapper {
@@ -388,16 +437,19 @@ form .input-group input[type="text"] {
         gap: 20px;
     }
 
+
     .poster-container {
         width: 70%;
         height: 300px;
     }
+
 
     .container {
         width: 80%;
         padding-left: 40px;
     }
 }
+
 
 /* ===== Profile Upload Section (unchanged) ===== */
 .profile-upload {
@@ -410,6 +462,7 @@ form .input-group input[type="text"] {
     margin-bottom: 25px;
     margin-right: 230px;
 }
+
 
 .profile-upload label {
     display: block;
@@ -424,9 +477,11 @@ form .input-group input[type="text"] {
     transition: transform 0.3s ease;
 }
 
+
 .profile-upload label:hover {
     transform: scale(1.05);
 }
+
 
 .profile-upload img {
     width: 100%;
@@ -435,6 +490,7 @@ form .input-group input[type="text"] {
     border-radius: 50%;
     background-color: #fff6f6;
 }
+
 
 .upload-overlay {
     position: absolute;
@@ -451,9 +507,11 @@ form .input-group input[type="text"] {
     transition: opacity 0.3s ease;
 }
 
+
 .profile-upload label:hover .upload-overlay {
     opacity: 1;
 }
+
 
 /* ===== Small Utilities (unchanged) ===== */
 .summary-box {
@@ -464,12 +522,14 @@ form .input-group input[type="text"] {
     color: #333;
 }
 
+
 .summary-row {
     display: flex;
     justify-content: space-between;
     padding: 6px 0;
     font-size: 14px;
 }
+
 
 /* final small responsive tweaks for mobile (unchanged) */
 @media (max-width: 520px) {
@@ -480,9 +540,11 @@ form .input-group input[type="text"] {
         height: auto;
     }
 
+
     .poster-container {
         display: none;
     }
+
 
     .profile-upload {
         margin-right: 0;
@@ -490,14 +552,19 @@ form .input-group input[type="text"] {
 }
 
 
+
+
 .step3-wrapper {
     /* margin-top: -px; */
 }
 
 
+
+
 /* ================================================= */
 /* ===== GENRE POPUP STYLES (MODAL) (unchanged) ===== */
 /* ================================================= */
+
 
 /* Popup modal */
 .genre-popup {
@@ -513,10 +580,12 @@ form .input-group input[type="text"] {
     z-index: 999;
 }
 
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
 
 .genre-popup-content {
     width: 90%;
@@ -525,8 +594,9 @@ form .input-group input[type="text"] {
     padding: 25px; /* Increased padding */
     border-radius: 15px; /* More rounded corners */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
-    animation: fadeIn 0.3s ease-out; 
+    animation: fadeIn 0.3s ease-out;
 }
+
 
 /* Popup Header */
 .genre-popup-content h3 {
@@ -538,13 +608,15 @@ form .input-group input[type="text"] {
     padding-bottom: 10px;
 }
 
+
 /* Scrollable Genre List */
 .genres-container-popup {
-    max-height: 250px; 
+    max-height: 250px;
     overflow-y: auto;
     margin-top: 15px;
     padding-right: 15px; /* Space for scrollbar */
 }
+
 
 /* Style for each genre label/item */
 .popup-item {
@@ -557,22 +629,26 @@ form .input-group input[type="text"] {
     transition: background-color 0.2s;
 }
 
+
 .popup-item:hover {
     background-color: #fff6f6; /* Light red background on hover */
 }
 
+
 .popup-item input[type="checkbox"] {
-    accent-color: #a31212; 
+    accent-color: #a31212;
     margin-right: 10px;
     width: 18px;
     height: 18px;
 }
+
 
 /* Done Button */
 .popup-buttons {
     margin-top: 25px;
     text-align: right;
 }
+
 
 .close-popup-btn {
     padding: 10px 20px;
@@ -585,9 +661,11 @@ form .input-group input[type="text"] {
     transition: background-color 0.3s;
 }
 
+
 .close-popup-btn:hover {
     background: #870e0e; /* Darker red on hover */
 }
+
 
 /* --- New Styles for Password Toggle (unchanged) --- */
 /* This section fixes the positioning of the eye icon inside the password inputs. */
@@ -596,12 +674,14 @@ form .input-group input[type="text"] {
     width: 92%;
 }
 
+
 .toggle-password {
     /* Absolute positioning relative to .password-group */
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
+
 
     cursor: pointer;
     color: #666;
@@ -611,9 +691,11 @@ form .input-group input[type="text"] {
     /* Ensures it sits on top of the input field */
 }
 
+
 .toggle-password:hover {
     color: #a31212;
 }
+
 
 .location-selectors {
     display: flex;
@@ -621,6 +703,7 @@ form .input-group input[type="text"] {
     gap: 15px; /* Space between the dropdowns */
     margin-top: 20px;
 }
+
 
 /* Apply input field styles to the select elements */
 .location-selectors select {
@@ -633,7 +716,7 @@ form .input-group input[type="text"] {
     background-color: #fff;
     color: #333;
     /* Use custom styling for consistency if possible, otherwise use browser defaults */
-    -webkit-appearance: none; 
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="%23a31212" d="M8 11.5L2.5 6h11L8 11.5z"/></svg>');
@@ -643,9 +726,11 @@ form .input-group input[type="text"] {
     cursor: pointer;
 }
 
+
 .location-selectors select:focus {
     border-color: #870e0e;
 }
+
 
 .error-modal {
     display: none;
@@ -656,6 +741,7 @@ form .input-group input[type="text"] {
     align-items: center;
     z-index: 9999;
 }
+
 
 /* Modal box */
 .error-modal-content {
@@ -668,6 +754,7 @@ form .input-group input[type="text"] {
     box-shadow: 0 4px 15px rgba(0,0,0,.2);
 }
 
+
 /* Title */
 .error-modal-content h3 {
     margin-top: 0;
@@ -675,6 +762,7 @@ form .input-group input[type="text"] {
     color: #c62828;
     font-size: 22px;
 }
+
 
 /* Error list */
 #errorList {
@@ -684,6 +772,7 @@ form .input-group input[type="text"] {
     max-height: 200px;
     overflow-y: auto;
 }
+
 
 /* Button */
 .error-modal-btn {
@@ -697,15 +786,18 @@ form .input-group input[type="text"] {
     cursor: pointer;
 }
 
+
 .error-modal-btn:hover {
     background: #a61e1e;
 }
+
 
 /* Animation */
 @keyframes popupFade {
     from { transform: scale(0.8); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+
 
 /* Password Strength Indicator - ALWAYS VISIBLE */
 .password-strength-container {
@@ -714,6 +806,7 @@ form .input-group input[type="text"] {
     margin-top: 8px;
     margin-bottom: 13px;
 }
+
 
 .strength-bar-bg {
     width: 100%;
@@ -724,12 +817,14 @@ form .input-group input[type="text"] {
     margin-bottom: 8px;
 }
 
+
 .strength-bar {
     height: 100%;
     width: 0%;
     transition: width 0.4s ease, background-color 0.4s ease;
     border-radius: 4px;
 }
+
 
 .strength-text {
     font-size: 13px;
@@ -738,6 +833,7 @@ form .input-group input[type="text"] {
     min-height: 18px;
     text-align: left;
 }
+
 
 .requirements-list {
     display: flex;
@@ -748,6 +844,7 @@ form .input-group input[type="text"] {
     border-radius: 8px;
     border: 1px solid #e0e0e0;
 }
+
 
 .password-strength-container:hover .requirements-list,
 .requirements-list:hover {
@@ -763,37 +860,45 @@ form .input-group input[type="text"] {
     border-radius: 4px;
 }
 
+
 .requirement i {
     font-size: 14px;
     width: 16px;
     flex-shrink: 0;
 }
 
+
 .requirement.unchecked {
     color: #666;
 }
 
+
 .requirement.unchecked i {
     color: #d32f2f;
 }
+
 
 .requirement.checked {
     color: #388e3c;
     font-weight: 500;
 }
 
+
 .requirement.checked i::before {
     content: "\f00c"; /* fa-check */
 }
+
 
 .requirement.checked i {
     color: #388e3c;
 }
 
+
 /* Password input with icon adjustment */
 .password-group input {
     padding-right: 45px !important; /* Make room for the eye icon */
 }
+
 
 /* Privacy checkbox row styling */
 .privacy-row {
@@ -809,6 +914,7 @@ form .input-group input[type="text"] {
     color: #333;
 }
 
+
 .privacy-row input[type="checkbox"] {
     accent-color: #a31212;
     width: 18px;
@@ -818,6 +924,7 @@ form .input-group input[type="text"] {
     flex-shrink: 0;
 }
 
+
 .privacy-link {
     color: #a31212;
     text-decoration: underline;
@@ -825,10 +932,12 @@ form .input-group input[type="text"] {
     font-weight: 600;
 }
 
+
 .privacy-link:hover {
     color: #870e0e;
     text-decoration: none;
 }
+
 
 /* Step 3 wrapper spacing adjustment */
 .step3-wrapper {
@@ -836,10 +945,12 @@ form .input-group input[type="text"] {
     padding-bottom: 10px;
 }
 
+
 /* Adjust input group spacing in step 3 */
 .step3-wrapper .input-group {
     margin-bottom: 15px;
 }
+
 
 /* Error message for password mismatch */
 #passwordError {
@@ -852,3 +963,4 @@ form .input-group input[type="text"] {
     min-height: 20px;
     font-weight: 500;
 }
+
