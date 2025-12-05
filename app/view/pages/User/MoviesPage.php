@@ -109,7 +109,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
 
 <body class="flex flex-col justify-start items-center w-screen h-screen m-0 bg-gray-100 overflow-x-hidden">
 
-<div class="w-[95%] flex items-center justify-between px-10 py-4 bg-white shadow-md mt-[10px]">
+<div class="w-[100%] flex items-center justify-between px-10 py-4 bg-white shadow-md pt-5">
 
   <div class="flex items-center gap-2">
     <label for="genres" class="text-xl text-red-700 font-bold">Genre:</label>
@@ -255,7 +255,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
   </div>
 
   <div class="w-[95%] h-fit mb-10 mt-10">
-    <span class="flex flex-row w-[100%] justify-between items-center mb-4">
+    <span class="flex flex-row w-[100%] justify-between items-center mb-4"> 
       <h1 class="text-3xl text-red-700 font-extrabold tracking-wide uppercase border-b-4 border-red-700 pb-1">YOU MIGHT LIKE</h1>
     </span>
     <div class="flex flex-wrap gap-6 justify-start w-full h-fit p-3">
@@ -420,9 +420,6 @@ popUp.addEventListener("click", (e) => {
   }
 });
 
-// ======================================
-// NEW: AI POPUP HANDLER
-// ======================================
 const aiBtn = document.getElementById("btn-smart-schedule");
 const aiPopup = document.getElementById("ai-pop-up");
 const closeAiPopup = document.getElementById("close-ai-popup");

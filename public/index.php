@@ -297,11 +297,26 @@ input[type="checkbox"] {
 
 <!-- reCAPTCHA script -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+  // Select the error message div
+  const errorMsg = document.querySelector('.error-message');
+
+  if (errorMsg) {
+      // Wait 5 seconds
+      setTimeout(() => {
+          // Smooth fade out
+          errorMsg.style.transition = 'opacity 0.5s ease';
+          errorMsg.style.opacity = '0';
+
+          // Remove from DOM after fading
+          setTimeout(() => errorMsg.remove(), 500);
+      }, 5000); // 5000ms = 5 seconds
+  }
+</script>
+
+
     </div>
   </div>
-
-
-
 
 </body>
 </html>

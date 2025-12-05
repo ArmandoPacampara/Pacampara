@@ -79,6 +79,7 @@ h2 {
     height: 609px;
     width: 920px;
     padding: 50px;
+    padding-top: 80px;
     padding-left: 280px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
@@ -104,12 +105,10 @@ h2 {
     margin-right: 50px;
 }
 
-/* ===== Input Fields (icon outside input) ===== */
-/* NOTE: We modify the input-group margin here to reduce the gap for Step 2/3 buttons */
 .input-group {
     display: flex;
     align-items: center;
-    margin-bottom: 12px; /* ADJUSTED: Reduced from 20px to 12px for better spacing */
+    margin-bottom: 20px; 
     width: 92%;
 }
 
@@ -402,12 +401,12 @@ form .input-group input[type="text"] {
 /* ===== Profile Upload Section (unchanged) ===== */
 .profile-upload {
     position: relative;
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     margin: 0 auto 20px auto;
     cursor: pointer;
-    margin-top: 10px;
-    margin-bottom: 25px;
+    margin-top: 5px;
+    margin-bottom: 20px;
     margin-right: 230px;
 }
 
@@ -416,7 +415,7 @@ form .input-group input[type="text"] {
     width: 100%;
     height: 100%;
     position: relative;
-    border-radius: 50%;
+    border-radius: 100%;
     border: 2px solid #a31212;
     border-color: #870e0e;
     overflow: hidden;
@@ -455,7 +454,6 @@ form .input-group input[type="text"] {
     opacity: 1;
 }
 
-/* ===== Small Utilities (unchanged) ===== */
 .summary-box {
     background: #fff6f6;
     border: 1px solid #eee;
@@ -471,7 +469,6 @@ form .input-group input[type="text"] {
     font-size: 14px;
 }
 
-/* final small responsive tweaks for mobile (unchanged) */
 @media (max-width: 520px) {
     .container {
         padding-left: 20px;
@@ -494,12 +491,6 @@ form .input-group input[type="text"] {
     margin-top: 40px;
 }
 
-
-/* ================================================= */
-/* ===== GENRE POPUP STYLES (MODAL) (unchanged) ===== */
-/* ================================================= */
-
-/* Popup modal */
 .genre-popup {
     display: none;
     position: fixed;
@@ -507,7 +498,7 @@ form .input-group input[type="text"] {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.75); /* Darker overlay */
+    background: rgba(0, 0, 0, 0.75); 
     justify-content: center;
     align-items: center;
     z-index: 999;
@@ -520,17 +511,16 @@ form .input-group input[type="text"] {
 
 .genre-popup-content {
     width: 90%;
-    max-width: 350px; /* Refined max width */
+    max-width: 350px; 
     background: #fff;
-    padding: 25px; /* Increased padding */
-    border-radius: 15px; /* More rounded corners */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    padding: 25px; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); 
     animation: fadeIn 0.3s ease-out; 
 }
 
-/* Popup Header */
 .genre-popup-content h3 {
-    color: #a31212; /* Match theme color */
+    color: #a31212; 
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 20px;
@@ -538,15 +528,13 @@ form .input-group input[type="text"] {
     padding-bottom: 10px;
 }
 
-/* Scrollable Genre List */
 .genres-container-popup {
     max-height: 250px; 
     overflow-y: auto;
     margin-top: 15px;
-    padding-right: 15px; /* Space for scrollbar */
+    padding-right: 15px; 
 }
 
-/* Style for each genre label/item */
 .popup-item {
     display: flex;
     align-items: center;
@@ -558,7 +546,7 @@ form .input-group input[type="text"] {
 }
 
 .popup-item:hover {
-    background-color: #fff6f6; /* Light red background on hover */
+    background-color: #fff6f6; 
 }
 
 .popup-item input[type="checkbox"] {
@@ -568,7 +556,6 @@ form .input-group input[type="text"] {
     height: 18px;
 }
 
-/* Done Button */
 .popup-buttons {
     margin-top: 25px;
     text-align: right;
@@ -578,7 +565,7 @@ form .input-group input[type="text"] {
     padding: 10px 20px;
     border-radius: 8px;
     border: none;
-    background: #a31212; /* Primary red theme color */
+    background: #a31212; 
     color: white;
     font-weight: 600;
     cursor: pointer;
@@ -586,18 +573,15 @@ form .input-group input[type="text"] {
 }
 
 .close-popup-btn:hover {
-    background: #870e0e; /* Darker red on hover */
+    background: #870e0e; 
 }
 
-/* --- New Styles for Password Toggle (unchanged) --- */
-/* This section fixes the positioning of the eye icon inside the password inputs. */
 .password-group {
     position: relative;
     width: 92%;
 }
 
 .toggle-password {
-    /* Absolute positioning relative to .password-group */
     position: absolute;
     right: 20px;
     top: 50%;
@@ -608,7 +592,6 @@ form .input-group input[type="text"] {
     font-size: 16px;
     padding: 5px;
     z-index: 10;
-    /* Ensures it sits on top of the input field */
 }
 
 .toggle-password:hover {
@@ -617,22 +600,21 @@ form .input-group input[type="text"] {
 
 .location-selectors {
     display: flex;
-    flex-direction: column; /* Stacks the selectors vertically */
-    gap: 15px; /* Space between the dropdowns */
+    flex-direction: column; 
+    gap: 15px; 
     margin-top: 20px;
 }
 
-/* Apply input field styles to the select elements */
 .location-selectors select {
-    width: 100%; /* Make them fill the popup width */
+    width: 100%; 
     padding: 12px;
-    border: 1px solid #a31212; /* Match input border */
-    border-radius: 8px; /* Match input radius */
+    border: 1px solid #a31212; 
+    border-radius: 8px; 
     outline: none;
     font-size: 14px;
     background-color: #fff;
     color: #333;
-    /* Use custom styling for consistency if possible, otherwise use browser defaults */
+
     -webkit-appearance: none; 
     -moz-appearance: none;
     appearance: none;
@@ -657,7 +639,6 @@ form .input-group input[type="text"] {
     z-index: 9999;
 }
 
-/* Modal box */
 .error-modal-content {
     background: #ffffff;
     padding: 25px 30px;
@@ -668,7 +649,6 @@ form .input-group input[type="text"] {
     box-shadow: 0 4px 15px rgba(0,0,0,.2);
 }
 
-/* Title */
 .error-modal-content h3 {
     margin-top: 0;
     margin-bottom: 10px;
@@ -676,7 +656,6 @@ form .input-group input[type="text"] {
     font-size: 22px;
 }
 
-/* Error list */
 #errorList {
     padding-left: 20px;
     color: #333;
@@ -685,7 +664,6 @@ form .input-group input[type="text"] {
     overflow-y: auto;
 }
 
-/* Button */
 .error-modal-btn {
     width: 100%;
     padding: 10px;
@@ -701,7 +679,6 @@ form .input-group input[type="text"] {
     background: #a61e1e;
 }
 
-/* Animation */
 @keyframes popupFade {
     from { transform: scale(0.8); opacity: 0; }
     to { transform: scale(1); opacity: 1; }

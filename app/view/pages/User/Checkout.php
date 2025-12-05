@@ -2,9 +2,6 @@
 session_start();
 include '../../../../app/core/db.php';
 
-// ------------------------------
-// 0. RESUME TRANSACTION LOGIC (NEW CODE)
-// ------------------------------
 $is_resumed = false; // Flag to track if we are resuming
 $ticket_id_resume = 0;
 
@@ -157,16 +154,26 @@ if ($current_step == 1) {
                 }
                 $discount_amount = min($discount_amount, $subtotal);
                 $voucher_id = $voucher['voucher_id']; 
-                $voucher_message = "<span class='text-green-600 font-bold'>Voucher Applied!</span>";
+                $voucher_message = "<span class='text-green-600 font-bold'><i class='fas fa-check-circle mr-2'></i>Voucher Applied!</span>";
             } else {
-                $voucher_message = "<span class='text-red-600'>Min spend ₱" . number_format($voucher['min_spend']) . " required.</span>";
+                $voucher_message = "<span class='text-red-600'><i class='fas fa-exclamation-circle mr-2'></i>Min spend ₱" . number_format($voucher['min_spend']) . " required.</span>";
             }
         } else {
-            $voucher_message = "<span class='text-red-600'>Invalid code.</span>";
+            $voucher_message = "<span class='text-red-600'><i class='fas fa-times-circle mr-2'></i>Invalid code.</span>";
         }
     }
     $final_price = $subtotal - $discount_amount;
 } 
+
+// Calculate progress width based on step position
+$progress_width = match($current_step) {
+    1 => '0%',      // At Step 1, line starts
+    2 => '25%',     // Line reaches Step 2
+    3 => '50%',     // Line reaches Step 3
+    4 => '75%',     // Line reaches Step 4
+    5 => '100%',    // Line reaches Step 5
+    default => '0%'
+};
 ?>
 
 <!DOCTYPE html>
@@ -174,144 +181,336 @@ if ($current_step == 1) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoviEase Booking</title>
-  <link rel="stylesheet" href="../../../../public/styles/css/checkout.css">
+  <title>MoviEase Booking - <?= htmlspecialchars($movie_data['movie_name']) ?></title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-      .payment-option { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
-      .payment-option:hover { background: #f9f9f9; border-color: #aaa; }
-      .payment-option input { margin-right: 15px; transform: scale(1.2); accent-color: #d60000; }
-      .summary-box { background: #fdfdfd; padding: 15px; border: 1px dashed #ccc; border-radius: 8px; margin-bottom: 20px; }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../public/styles/css/Checkout.css">
 </head>
 
-<body>
-  <div class="booking-container">
+<body class="p-4 md:p-8">
+  <div class="max-w-6xl mx-auto">
     
-    <div class="movie-header">
-      <img src="../../../../public/assets/images/<?= $movie_data['movie_poster'] ?>" alt="Poster" class="movie-poster">
-      <div class="movie-info">
-        <h2 class="movie-title"><?= $movie_data['movie_name'] ?></h2>
-        <div class="address"><p><?= $cinema_data['cinema_address'] ?></p></div>
-        <div class="cinema_number"><p><?= $cinema_data['cinema_name'] ?></p></div>
-        <div class="schedule"><p><?= date("M d, Y • g:i A", strtotime($schedule)) ?></p></div>
-        <?php if($current_step >= 3): ?>
-            <div class="seats"><p>Seats: <strong><?= htmlspecialchars($selected_seats) ?></strong></p></div>
-        <?php endif; ?>
-      </div>
+<!-- Movie Header -->
+<div class="movie-header-card">
+  <div class="movie-poster-wrapper">
+    <img src="../../../../public/assets/images/<?= htmlspecialchars($movie_data['movie_poster']) ?>" 
+         alt="<?= htmlspecialchars($movie_data['movie_name']) ?> Poster">
+  </div>
+  <div class="movie-details">
+    <h1 class="movie-title"><?= htmlspecialchars($movie_data['movie_name']) ?></h1>
+    <div class="movie-info-item">
+      <i class="fas fa-film"></i>
+      <span><strong><?= htmlspecialchars($movie_data['genre']) ?></strong></span>
     </div>
+    <div class="movie-info-item">
+      <i class="fas fa-map-marker-alt"></i>
+      <span><?= htmlspecialchars($cinema_data['cinema_address']) ?></span>
+    </div>
+    <div class="movie-info-item">
+      <i class="fas fa-building"></i>
+      <span><?= htmlspecialchars($cinema_data['cinema_name']) ?></span>
+    </div>
+    <div class="movie-info-item">
+      <i class="fas fa-calendar-alt"></i>
+      <span><?= date("M d, Y • g:i A", strtotime($schedule)) ?></span>
+    </div>
+    <?php if($current_step >= 3 && !empty($selected_seats)): ?>
+    <div class="movie-info-item">
+      <i class="fas fa-chair"></i>
+      <span>Seats: <strong><?= htmlspecialchars($selected_seats) ?></strong></span>
+    </div>
+    <?php endif; ?>
+  </div>
 
+  <?php
+  // Calculate cancellation expiration (3 days before showing)
+  $showing_date = new DateTime($schedule);
+  $cancellation_deadline = clone $showing_date;
+  $cancellation_deadline->modify('-3 days');
+  ?>
+  
+  <div style="position: absolute; top: 20px; right: 20px; background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #fca5a5; border-radius: 12px; padding: 16px; max-width: 250px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <i class="fas fa-exclamation-triangle" style="color: #991b1b; font-size: 20px;"></i>
+      <span style="font-weight: 700; color: #991b1b; font-size: 14px;">CANCELLATION POLICY</span>
+    </div>
+    <div style="font-size: 12px; color: #7f1d1d; line-height: 1.4;">
+      <strong>Last day to cancel:</strong><br>
+      <?= $cancellation_deadline->format('M d, Y') ?> at <?= $cancellation_deadline->format('g:i A') ?>
+    </div>
+    <div style="font-size: 11px; color: #991b1b; margin-top: 8px; font-style: italic;">
+      Free cancellation up to 3 days before show time
+    </div>
+  </div>
+</div>
+
+    <!-- Progress Steps -->
     <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-line" style="width: <?= ($current_step == 1) ? '10%' : (($current_step == 3) ? '60%' : '85%') ?>;"></div>
-      </div>
-      <div class="steps">
-        <div class="step <?= ($current_step >= 1) ? 'completed' : '' ?>">
-            <div class="circle">✔</div><p>Step 1<br><span>Tickets</span></p>
+      <div class="steps-wrapper">
+        <!-- Step 1 -->
+        <div class="step-item <?= ($current_step >= 1) ? 'completed' : 'disabled' ?>">
+          <div class="step-icon <?= ($current_step == 1) ? 'active' : (($current_step > 1) ? 'completed' : 'disabled') ?>">
+            <?= ($current_step > 1) ? '<i class="fas fa-check"></i>' : '<i class="fas fa-ticket-alt"></i>' ?>
+          </div>
+          <div class="step-label">
+            <div class="title">Step 1</div>
+            <div class="subtitle">Select Tickets</div>
+          </div>
         </div>
-        <div class="step <?= ($current_step >= 2) ? 'completed' : 'disabled' ?>">
-            <div class="circle">✔</div><p>Step 2<br><span>Seats</span></p>
+
+        <!-- Connector 1-2 -->
+        <?php if($current_step > 1): ?>
+        <div class="step-connector active" style="left: calc(10% + 25px); width: calc(20% - 50px);"></div>
+        <?php else: ?>
+        <div class="step-connector" style="left: calc(10% + 25px); width: calc(20% - 50px);"></div>
+        <?php endif; ?>
+
+        <!-- Step 2 -->
+        <div class="step-item <?= ($current_step >= 2) ? 'completed' : 'disabled' ?>">
+          <div class="step-icon <?= ($current_step == 2) ? 'active' : (($current_step > 2) ? 'completed' : 'disabled') ?>">
+            <?= ($current_step > 2) ? '<i class="fas fa-check"></i>' : '<i class="fas fa-chair"></i>' ?>
+          </div>
+          <div class="step-label">
+            <div class="title">Step 2</div>
+            <div class="subtitle">Select Seats</div>
+          </div>
         </div>
-        <div class="step <?= ($current_step >= 3) ? 'completed' : 'disabled' ?>">
-            <div class="circle">✔</div><p>Step 3<br><span>Vouchers</span></p>
+
+        <!-- Connector 2-3 -->
+        <?php if($current_step > 2): ?>
+        <div class="step-connector active" style="left: calc(30% + 25px); width: calc(20% - 50px);"></div>
+        <?php else: ?>
+        <div class="step-connector" style="left: calc(30% + 25px); width: calc(20% - 50px);"></div>
+        <?php endif; ?>
+
+        <!-- Step 3 -->
+        <div class="step-item <?= ($current_step >= 3) ? 'completed' : 'disabled' ?>">
+          <div class="step-icon <?= ($current_step == 3) ? 'active' : (($current_step > 3) ? 'completed' : 'disabled') ?>">
+            <?= ($current_step > 3) ? '<i class="fas fa-check"></i>' : '<i class="fas fa-tags"></i>' ?>
+          </div>
+          <div class="step-label">
+            <div class="title">Step 3</div>
+            <div class="subtitle">Apply Vouchers</div>
+          </div>
         </div>
-        <div class="step <?= ($current_step == 4) ? 'active' : 'disabled' ?>">
-            <div class="circle">✔</div><p>Step 4<br><span>Payment</span></p>
+
+        <!-- Connector 3-4 -->
+        <?php if($current_step > 3): ?>
+        <div class="step-connector active" style="left: calc(50% + 25px); width: calc(20% - 50px);"></div>
+        <?php else: ?>
+        <div class="step-connector" style="left: calc(50% + 25px); width: calc(20% - 50px);"></div>
+        <?php endif; ?>
+
+        <!-- Step 4 -->
+        <div class="step-item <?= ($current_step >= 4) ? 'active' : 'disabled' ?>">
+          <div class="step-icon <?= ($current_step == 4) ? 'active' : (($current_step > 4) ? 'completed' : 'disabled') ?>">
+            <?= ($current_step > 4) ? '<i class="fas fa-check"></i>' : '<i class="fas fa-credit-card"></i>' ?>
+          </div>
+          <div class="step-label">
+            <div class="title">Step 4</div>
+            <div class="subtitle">Confirm Payment</div>
+          </div>
         </div>
-        <div class="step disabled">
-            <div class="circle">✔</div><p>Step 5<br><span>Success</span></p>
+
+        <!-- Connector 4-5 -->
+        <?php if($current_step > 4): ?>
+        <div class="step-connector active" style="left: calc(70% + 25px); width: calc(20% - 50px);"></div>
+        <?php else: ?>
+        <div class="step-connector" style="left: calc(70% + 25px); width: calc(20% - 50px);"></div>
+        <?php endif; ?>
+
+        <!-- Step 5 -->
+        <div class="step-item disabled">
+          <div class="step-icon disabled">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="step-label">
+            <div class="title">Step 5</div>
+            <div class="subtitle">Booking Success</div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="step-content">
       
-      <?php if ($current_step == 1): ?>
-          <h3>SELECT TICKETS <span>(Available: <?= $seats_available ?>)</span></h3>
-          <div class="content-box">
-            <label style="font-size: 20px;">Number of Tickets:</label>
-            <input type="number" id="ticketQty" min="1" max="<?= $seats_available ?>" value="<?= $qty ?>" class="border p-2 rounded w-20 text-center">
-            <p style="margin-top: 10px; font-size: 18px;">
-              Ticket Price: <strong>₱<?= number_format($ticket_price, 2) ?></strong>
-            </p>
+<?php if ($current_step == 1): ?>
+    <!-- STEP 1: SELECT TICKETS -->
+    <div class="content-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
+        <h2 class="content-title" style="margin-bottom: 0;">
+          <i class="fas fa-ticket-alt"></i>
+          SELECT TICKETS
+          <span class="text-sm font-normal text-red-600">(Available: <?= $seats_available ?>)</span>
+        </h2>
+
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <label class="quantity-label">Number of Tickets:</label>
+          <div class="quantity-controls">
+            <button type="button" class="quantity-btn" id="decreaseQty" onclick="decreaseQuantity()">
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="number" id="ticketQty" class="custom-input quantity-input" 
+                   value="<?= $qty ?>" min="1" max="<?= $seats_available ?>" readonly>
+            <button type="button" class="quantity-btn" id="increaseQty" onclick="increaseQuantity()">
+              <i class="fas fa-plus"></i>
+            </button>
           </div>
+        </div>
+      </div>
+
+      <div class="price-display">
+        <div class="price-label">Ticket Price per Person</div>
+        <div class="price-amount">₱<?= number_format($ticket_price, 2) ?></div>
+      </div>
+
+      <div class="summary-box mt-6">
+        <div class="summary-title"><i class="fas fa-calculator mr-2"></i> Price Summary</div>
+        <div class="summary-row">
+          <span>Ticket Price</span>
+          <span>₱<?= number_format($ticket_price, 2) ?></span>
+        </div>
+        <div class="summary-row">
+          <span>Number of Tickets</span>
+          <span id="displayQty"><?= $qty ?></span>
+        </div>
+        <div class="summary-total">
+          <span>Total Price</span>
+          <span id="totalPrice">₱<?= number_format($ticket_price * $qty, 2) ?></span>
+        </div>
+      </div>
+
+      <script>
+        const ticketPrice = <?= $ticket_price ?>;
+        const maxSeats = <?= $seats_available ?>;
+
+        function updateTotal() {
+          const qty = parseInt(document.getElementById('ticketQty').value);
+          const total = ticketPrice * qty;
+          document.getElementById('totalPrice').textContent = '₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+          document.getElementById('displayQty').textContent = qty;
+
+          // Disable/enable buttons
+          document.getElementById('decreaseQty').disabled = qty <= 1;
+          document.getElementById('increaseQty').disabled = qty >= maxSeats;
+        }
+
+        function decreaseQuantity() {
+          const qtyInput = document.getElementById('ticketQty');
+          let currentQty = parseInt(qtyInput.value);
+          if (currentQty > 1) {
+            qtyInput.value = currentQty - 1;
+            updateTotal();
+          }
+        }
+
+        function increaseQuantity() {
+          const qtyInput = document.getElementById('ticketQty');
+          let currentQty = parseInt(qtyInput.value);
+          if (currentQty < maxSeats) {
+            qtyInput.value = currentQty + 1;
+            updateTotal();
+          }
+        }
+
+        updateTotal();
+      </script>
+    </div>
 
       <?php elseif ($current_step == 3): ?>
-          <h3>APPLY VOUCHERS</h3>
-          <div class="content-box" style="height:auto; min-height:220px;">
-            <form method="POST" action="Checkout.php" class="flex flex-col gap-2">
-                <input type="hidden" name="step" value="3">
-                <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
-                <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
-                <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
-                <input type="hidden" name="qty" value="<?= $qty ?>">
-                <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
+          <!-- STEP 3: APPLY VOUCHERS -->
+          <div class="content-card">
+            <h2 class="content-title">
+              <i class="fas fa-tags"></i>
+              APPLY VOUCHERS
+            </h2>
+            
+            <form method="POST" action="Checkout.php">
+              <input type="hidden" name="step" value="3">
+              <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
+              <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
+              <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
+              <input type="hidden" name="qty" value="<?= $qty ?>">
+              <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
 
-                <div class="flex gap-2 items-center mt-2">
-                    <input type="text" name="voucher_code" value="<?= htmlspecialchars($voucher_code) ?>" placeholder="Enter Code" class="border p-2 rounded w-1/2">
-                    <button type="submit" name="apply_voucher" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700">Apply</button>
-                </div>
-                <p class="text-sm mt-1"><?= $voucher_message ?></p>
+              <div class="voucher-group">
+                <input type="text" name="voucher_code" value="<?= htmlspecialchars($voucher_code) ?>" 
+                       placeholder="Enter Voucher Code" class="custom-input voucher-input">
+                <button type="submit" name="apply_voucher" class="btn-primary whitespace-nowrap">
+                  <i class="fas fa-check mr-2"></i> Apply
+                </button>
+              </div>
+              
+              <?php if(!empty($voucher_message)): ?>
+              <p class="text-sm mt-3"><?= $voucher_message ?></p>
+              <?php endif; ?>
             </form>
 
-            <div class="mt-6 pt-4 border-t border-dashed border-gray-300">
-                <div class="flex justify-between text-lg">
-                    <span>Subtotal (<?= $qty ?> items)</span>
-                    <span>₱<?= number_format($subtotal, 2) ?></span>
-                </div>
-                <div class="flex justify-between text-lg text-green-600">
-                    <span>Discount</span>
-                    <span>-₱<?= number_format($discount_amount, 2) ?></span>
-                </div>
-                <div class="flex justify-between text-xl font-bold text-red-700 mt-2">
-                    <span>Total Amount</span>
-                    <span>₱<?= number_format($final_price, 2) ?></span>
-                </div>
+            <div class="summary-box mt-8">
+              <div class="summary-title"><i class="fas fa-receipt mr-2"></i> Order Summary</div>
+              <div class="summary-row">
+                <span>Subtotal (<?= $qty ?> items)</span>
+                <span>₱<?= number_format($subtotal, 2) ?></span>
+              </div>
+              <div class="summary-row text-green-600">
+                <span>Discount</span>
+                <span>-₱<?= number_format($discount_amount, 2) ?></span>
+              </div>
+              <div class="summary-total">
+                <span>Total Amount</span>
+                <span>₱<?= number_format($final_price, 2) ?></span>
+              </div>
             </div>
           </div>
 
       <?php elseif ($current_step == 4): ?>
-          <h3>CONFIRM PAYMENT</h3>
-          <div class="content-box" style="height:auto; min-height:300px;">
+          <!-- STEP 4: CONFIRM PAYMENT -->
+          <div class="content-card">
+            <h2 class="content-title">
+              <i class="fas fa-credit-card"></i>
+              CONFIRM PAYMENT
+            </h2>
             
             <div class="summary-box">
-                <p class="font-bold text-gray-700 mb-2 border-b pb-1">Order Summary</p>
-                <div class="flex justify-between text-sm">
-                    <span>Tickets (<?= $qty ?>x)</span>
-                    <span>₱<?= number_format($subtotal, 2) ?></span>
-                </div>
-                <?php if($discount_amount > 0): ?>
-                <div class="flex justify-between text-sm text-green-600">
-                    <span>Voucher Applied</span>
-                    <span>-₱<?= number_format($discount_amount, 2) ?></span>
-                </div>
-                <?php endif; ?>
-                <div class="flex justify-between font-bold text-xl text-red-700 mt-2 pt-2 border-t">
-                    <span>Amount to Pay</span>
-                    <span>₱<?= number_format($final_price, 2) ?></span>
-                </div>
+              <div class="summary-title"><i class="fas fa-receipt mr-2"></i> Order Summary</div>
+              <div class="summary-row">
+                <span>Tickets (<?= $qty ?>x)</span>
+                <span>₱<?= number_format($subtotal, 2) ?></span>
+              </div>
+              <?php if($discount_amount > 0): ?>
+              <div class="summary-row text-green-600">
+                <span>Voucher Applied</span>
+                <span>-₱<?= number_format($discount_amount, 2) ?></span>
+              </div>
+              <?php endif; ?>
+              <div class="summary-total">
+                <span>Amount to Pay</span>
+                <span>₱<?= number_format($final_price, 2) ?></span>
+              </div>
             </div>
 
             <form action="ProcessPayment.php" method="POST" id="paymentForm">
-                <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
-                <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
-                <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
-                <input type="hidden" name="qty" value="<?= $qty ?>">
-                <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
-                <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
-                <input type="hidden" name="discount_amount" value="<?= $discount_amount ?>">
-                <input type="hidden" name="final_price" value="<?= $final_price ?>">
-                
-                <?php if($is_resumed): ?>
-                    <input type="hidden" name="resume_ticket_id" value="<?= $ticket_id_resume ?>">
-                <?php endif; ?>
+              <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
+              <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
+              <input type="hidden" name="schedule" value="<?= htmlspecialchars($schedule) ?>">
+              <input type="hidden" name="qty" value="<?= $qty ?>">
+              <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
+              <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
+              <input type="hidden" name="discount_amount" value="<?= $discount_amount ?>">
+              <input type="hidden" name="final_price" value="<?= $final_price ?>">
+              
+              <?php if($is_resumed): ?>
+                  <input type="hidden" name="resume_ticket_id" value="<?= $ticket_id_resume ?>">
+              <?php endif; ?>
 
-                <p class="font-bold mb-3">Select Payment Method:</p>
-                
-                <label class="payment-option">
-                    <input type="radio" name="payment_method" value="GCash" checked>
-                    <span class="font-bold">Pay Online with Paymongo</span>
-                </label>
+              <p class="font-bold mb-3 text-xl text-gray-800">
+                <i class="fas fa-wallet mr-2 text-red-600"></i> Select Payment Method:
+              </p>
+              
+              <label class="payment-option">
+                <input type="radio" name="payment_method" value="GCash" checked>
+                <span class="font-bold">Pay Online with Paymongo</span>
+              </label>
             </form>
           </div>
 
@@ -319,19 +518,25 @@ if ($current_step == 1) {
 
     </div>
 
-<div class="buttons">
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
       
       <?php if ($current_step == 1): ?>
-          <button id="prevBtn" disabled>Previous</button>
-          <button id="nextBtn" onclick="window.location.href='SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_id ?>&schedule=<?= urlencode($schedule) ?>&qty='+document.getElementById('ticketQty').value;">Next</button>
+          <button id="prevBtn" class="btn-secondary w-full sm:w-auto" disabled>
+            <i class="fas fa-arrow-left mr-2"></i> Previous
+          </button>
+          <button id="nextBtn" class="btn-primary w-full sm:w-auto" 
+                  onclick="window.location.href='SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_id ?>&schedule=<?= urlencode($schedule) ?>&qty='+document.getElementById('ticketQty').value;">
+            Next <i class="fas fa-arrow-right ml-2"></i>
+          </button>
       
       <?php elseif ($current_step == 3): ?>
-          <button id="prevBtn" type="button" 
+          <button id="prevBtn" type="button" class="btn-secondary w-full sm:w-auto"
               onclick="window.location.href='SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_id ?>&schedule=<?= urlencode($schedule) ?>&qty=<?= $qty ?>'">
-              Change Seats
+            <i class="fas fa-arrow-left mr-2"></i> Change Seats
           </button>
           
-          <form method="POST" action="Checkout.php" style="display:inline;">
+          <form method="POST" action="Checkout.php" class="w-full sm:w-auto">
               <input type="hidden" name="step" value="4">
               <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
               <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
@@ -342,14 +547,19 @@ if ($current_step == 1) {
               <input type="hidden" name="discount_amount" value="<?= $discount_amount ?>">
               <input type="hidden" name="final_price" value="<?= $final_price ?>">
               
-              <button id="nextBtn" type="submit">Proceed to Payment</button>
+              <button id="nextBtn" type="submit" class="btn-primary w-full">
+                Proceed to Payment <i class="fas fa-arrow-right ml-2"></i>
+              </button>
           </form>
 
       <?php elseif ($current_step == 4): ?>
           <?php if($is_resumed): ?>
-              <button id="prevBtn" onclick="window.location.href='AccountPage.php'">Back</button>
+              <button id="prevBtn" class="btn-secondary w-full sm:w-auto" 
+                      onclick="window.location.href='AccountPage.php'">
+                <i class="fas fa-arrow-left mr-2"></i> Back
+              </button>
           <?php else: ?>
-              <form method="POST" action="Checkout.php" style="display:inline;">
+              <form method="POST" action="Checkout.php" class="w-full sm:w-auto">
                   <input type="hidden" name="step" value="3">
                   <input type="hidden" name="movie_id" value="<?= $movie_id ?>">
                   <input type="hidden" name="cinema_id" value="<?= $cinema_id ?>">
@@ -357,11 +567,16 @@ if ($current_step == 1) {
                   <input type="hidden" name="qty" value="<?= $qty ?>">
                   <input type="hidden" name="selected_seats" value="<?= htmlspecialchars($selected_seats) ?>">
                   <input type="hidden" name="voucher_id" value="<?= $voucher_id ?>">
-                  <button id="prevBtn" type="submit">Back</button>
+                  <button id="prevBtn" type="submit" class="btn-secondary w-full">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                  </button>
               </form>
           <?php endif; ?>
 
-          <button id="nextBtn" onclick="document.getElementById('paymentForm').submit()">Pay & Book</button>
+          <button id="nextBtn" class="btn-primary w-full sm:w-auto" 
+                  onclick="document.getElementById('paymentForm').submit()">
+            <i class="fas fa-lock mr-2"></i> Pay & Book
+          </button>
       <?php endif; ?>
 
     </div>

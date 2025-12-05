@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include '../../../../app/core/db.php';
-require_once '../../../../app/core/Logger.php'; // 1. Moved Logger Include Here
+require_once '../../../../app/core/Logger.php'; 
 
 // --- CONFIGURATION ---
 $paymongo_secret_key = 'sk_test_7nEvkxPN6zoadN1mM8QJAd1S'; 

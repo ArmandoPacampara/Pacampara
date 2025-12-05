@@ -17,10 +17,6 @@ class Csrf {
         return $_SESSION['csrf_token'];
     }
 
-    /**
-     * Return the HTML input field with the token.
-     * Usage: <?= Csrf::getTokenField() ?> inside your <form>
-     */
     public static function getTokenField() {
         $token = self::getToken();
         return '<input type="hidden" name="csrf_token" value="' . $token . '">';
