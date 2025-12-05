@@ -181,11 +181,13 @@ button {
 #prevBtn {
   background: #ccc;
   color: #333;
+  padding: 20px 20px;
 }
 
 #nextBtn {
   background: #a31212;
   color: #fff;
+  padding: 20px 20px;
 }
 
 button:hover {

@@ -73,9 +73,10 @@ body {
 
 
 /* ===== MAIN CONTAINER ===== */
+/* ===== MAIN CONTAINER ===== */
 .container {
   display: flex;
-  margin-top: 65px;
+  /* margin-top: 65px; <-- REMOVE THIS */ 
   height: calc(100vh - 65px);
   transition: all 0.3s ease;
 }
@@ -124,7 +125,8 @@ body {
   transition: background 0.3s, color 0.3s;
   border-bottom: 1px solid #ddd;
   white-space: nowrap; /* Prevent text wrapping */
-}
+  margin-top: -100px;
+}   
 
 
 .menu a i {

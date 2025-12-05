@@ -182,6 +182,17 @@ if ($current_step == 1) {
       .payment-option:hover { background: #f9f9f9; border-color: #aaa; }
       .payment-option input { margin-right: 15px; transform: scale(1.2); accent-color: #d60000; }
       .summary-box { background: #fdfdfd; padding: 15px; border: 1px dashed #ccc; border-radius: 8px; margin-bottom: 20px; }
+      #prevBtn {
+  background: #ccc;
+  color: #333;
+  padding: 7px 7px;
+}
+
+#nextBtn {
+  background: #a31212;
+  color: #fff;
+  padding: 7px 7px;
+}
   </style>
 </head>
 

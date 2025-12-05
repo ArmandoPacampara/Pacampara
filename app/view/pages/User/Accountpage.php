@@ -270,6 +270,7 @@ $avatar_sql = "";
             border-radius: 4px;
             cursor: not-allowed;
             font-size: 13px;
+            margin-top: 10px;
         }
 
         /* NEW: LOGOUT BUTTON STYLES */
@@ -348,7 +349,7 @@ $avatar_sql = "";
           <div class="account-container">
             <div class="profile-section">
               <button type="button" class="edit-btn" id="editBtn">
-                <img src="../../../../public/assets/edit_btn.png" id="editIcon" alt="edit-icon" />
+                <img src="../../../../public/assets/images/edit_btn.png" id="editIcon" alt="edit-icon" />
               </button>
 
               <div class="profile-img-wrapper">
@@ -550,7 +551,7 @@ $avatar_sql = "";
             usernameInput.style.display = "inline-block";
             usernameInput.classList.add("editing");
             
-            editIcon.src = "../../../../public/assets/save_btn.png";
+            editIcon.src = "../../../../public/assets/images/save_btn.png";
           } else {
             // --- CLICKED SAVE (Validation) ---
             if (!validateFields()) {
