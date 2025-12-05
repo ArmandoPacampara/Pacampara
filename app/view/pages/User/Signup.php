@@ -117,7 +117,7 @@ h2 {
 
 
 .container {
-    position: relative; /* MODIFIED: Set to relative for positioning the back button */
+    position: static; /* MODIFIED: Set to relative for positioning the back button */
     background-color: #fff;
     border-radius: 25px;
     height: 640px;
@@ -1036,9 +1036,6 @@ form .input-group input[type="text"] {
 
 
         <div class="container">
-            <a href="../../../../public/index.php" class="back-to-login-link">
-                <i class="fas fa-arrow-left"></i> Back to Login
-            </a>
             <div class="logo">
                 <img src="../../../../public/assets/images/movies_icon.png" alt="logo">
                 <h1>MoviEase</h1>
