@@ -221,7 +221,7 @@ if (isset($_GET['logout'])) {
               </button>
 
               <div class="profile-img-wrapper">
-                <img src="<?= $avatar ?>" class="profile-img" id="profileImg" alt="Profile Image" />
+                <img src="../../../../public/assets/profile_img.png" class="profile-img" id="profileImg" alt="Profile Image" />
                 <input type="file" name="profile_img" id="profileInput" accept="image/*" style="display: none" />
               </div>
 

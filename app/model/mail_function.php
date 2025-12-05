@@ -81,6 +81,46 @@ function send_ticket_receipt($recipient_email, $recipient_name, $ticket_data) {
     }
 }
 
+// === THE FUNCTION FOR PASSWORD RESET (MUST NOT BE WRAPPED IN function_exists) ===
+function sendPasswordResetEmail($recipient_email, $token) {
+    $mail = new PHPMailer(true);
+    try {
+        configure_mailer($mail); // Use helper function
+        
+        // Construct the reset URL (ADJUST BASE_URL)
+        $base_url = "http://localhost/moviease/app/view/pages/User/"; 
+        $reset_link = $base_url . "ResetPassword.php?token=" . urlencode($token);
+
+        $mail->setFrom(MAIL_USER, 'MoviEase Password Reset');
+        $mail->addAddress($recipient_email);
+        $mail->isHTML(true);
+        $mail->Subject = 'MoviEase Password Reset Request';
+        $mail->Body    = "
+            <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
+                <h2>MoviEase Password Reset</h2>
+                <p>You requested a password reset for your MoviEase account. Please click the button below to set a new password:</p>
+                <p style='margin: 20px 0;'>
+                    <a href='{$reset_link}' style='background: #a31212; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;'>
+                        Reset My Password
+                    </a>
+                </p>
+                <p>If you did not request this, please ignore this email. This link will expire in 1 hour.</p>
+                <hr>
+                <p><small>MoviEase Support</small></p>
+            </div>
+        ";
+        
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        // Log the detailed PHPMailer error (for debugging on your server)
+        error_log("PHPMailer Error (Reset): {$e->getMessage()}");
+        return false;
+    }
+}
+
+
+
 // Helper to avoid repeating settings
 function configure_mailer($mail) {
     $mail->isSMTP();

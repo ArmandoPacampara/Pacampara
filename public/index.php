@@ -280,9 +280,9 @@ input[type="checkbox"] {
       </div>
 
       <div class="options">
-        <label><input type="checkbox" name="remember-me"> Remember me</label>
-        <a href="#" name="forgot-password"><b>Forgot Password?</b></a>
-      </div>
+        <label><input type="checkbox" name="remember-me"> Remember me</label>
+        <a href="../app/view/pages/User/ForgotPassword.php" name="forgot-password"><b>Forgot Password?</b></a>
+      </div>
 
       <div class="g-recaptcha" data-sitekey="6LcWAgwsAAAAALl4FSBG6_2tVBB8msJpmc88e8KR"></div>
       <br>

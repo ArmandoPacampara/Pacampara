@@ -10,6 +10,74 @@ $con = $database->getConnection();
 const MAX_ATTEMPTS = 3;
 const LOCKOUT_DURATION_MINUTES = 30; 
 
+// --- 0. REMEMBER ME CHECK (Auto-Login) ---
+if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])) {
+    
+    $cookie_parts = explode(':', $_COOKIE['remember_me']);
+
+    // Check for correct format (selector:authenticator)
+    if (count($cookie_parts) === 2) {
+        list($selector, $authenticator_b64) = $cookie_parts;
+        $authenticator_raw = base64_decode($authenticator_b64);
+        
+        // 0a. Fetch token from DB using selector
+        $token_query = "SELECT t.user_id, t.hashed_authenticator, u.user_name, u.user_email, u.role_id, u.cinema_id, r.user_role 
+                        FROM remember_tokens t
+                        JOIN users u ON t.user_id = u.user_id
+                        JOIN roles r ON u.role_id = r.role_id
+                        WHERE t.selector = ? AND t.expires > NOW() LIMIT 1";
+        $token_stmt = $con->prepare($token_query);
+        $token_stmt->bind_param("s", $selector);
+        $token_stmt->execute();
+        $token_result = $token_stmt->get_result();
+        $token_data = $token_result->fetch_assoc();
+        $token_stmt->close();
+        
+        if ($token_data) {
+            // 0b. Verify authenticator
+            if (hash_equals($token_data['hashed_authenticator'], hash('sha256', $authenticator_raw))) {
+                
+                // VALID TOKEN: Auto-login successful
+                session_regenerate_id(true);
+
+                // Create session (same logic as successful login)
+                $_SESSION['user_id'] = $token_data['user_id'];
+                $_SESSION['user_name'] = $token_data['user_name'];
+                $_SESSION['user_email'] = $token_data['user_email'];
+                $_SESSION['role'] = $token_data['user_role'];
+                $_SESSION['cinema_id'] = $token_data['cinema_id'];
+                $_SESSION['last_activity'] = time();
+
+                // Redirect based on role (same logic as successful login)
+                if ($token_data['user_role'] === 'Admin') {
+                    header("Location: /moviease/app/view/pages/Admin/AdminPage.php"); 
+                } elseif ($token_data['user_role'] === 'Staff') {
+                    header("Location: /moviease/app/view/pages/Staff/StaffPage.php"); 
+                } else {
+                    header("Location: /moviease/app/view/pages/User/HomePage.php"); 
+                }
+                exit;
+
+            } else {
+                // TOKEN MISMATCH (potential theft): Delete all tokens for this user
+                $delete_query = "DELETE FROM remember_tokens WHERE user_id = ?";
+                $delete_stmt = $con->prepare($delete_query);
+                $delete_stmt->bind_param("i", $token_data['user_id']);
+                $delete_stmt->execute();
+                $delete_stmt->close();
+            }
+        }
+    }
+    // Clear the cookie if it was invalid, expired, or failed verification
+    setcookie('remember_me', '', [
+        'expires' => time() - 3600,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+}
+
 // Check for the login form submission
 if (isset($_POST['login'])) {
 
@@ -113,6 +181,33 @@ if (isset($_POST['login'])) {
             $_SESSION['role'] = $role;
             $_SESSION['cinema_id'] = $user['cinema_id'];
             $_SESSION['last_activity'] = time();
+
+            if (isset($_POST['remember-me']) && $_POST['remember-me'] === 'on') {
+                
+                // 1. GENERATE SECURE TOKENS: Selector/Authenticator pair
+                $selector = bin2hex(random_bytes(6)); // 12 chars
+                $authenticator = random_bytes(32); // 64 chars raw
+                $hashed_authenticator = hash('sha256', $authenticator); // Hash for DB storage
+                $expires = date('Y-m-d H:i:s', time() + (86400 * 30)); // 30 days expiry
+
+                // 2. STORE TOKEN IN DATABASE 
+                $token_query = "INSERT INTO remember_tokens (user_id, selector, hashed_authenticator, expires) VALUES (?, ?, ?, ?)";
+                $token_stmt = $con->prepare($token_query);
+                $user_id = $user['user_id'];
+                $token_stmt->bind_param("isss", $user_id, $selector, $hashed_authenticator, $expires);
+                $token_stmt->execute();
+                $token_stmt->close();
+
+                // 3. SET SECURE COOKIE (selector:raw_authenticator)
+                $cookie_value = $selector . ':' . base64_encode($authenticator);
+                setcookie('remember_me', $cookie_value, [
+                    'expires' => time() + (86400 * 30), // 30 days
+                    'path' => '/',
+                    'secure' => true, 
+                    'httponly' => true, 
+                    'samesite' => 'Lax'
+                ]);
+            }
 
             // Redirection
             if ($role === 'Admin') {

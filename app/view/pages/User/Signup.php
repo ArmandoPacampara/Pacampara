@@ -174,6 +174,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="genre-popup-content">
                             <h3>Select Your Location</h3>
                             <div class="location-selectors">
+                                <label for="islandSelect" class="location-label">Island Group:</label>
+                                <select id="islandSelect" onchange="populateProvincesFromIsland()" required>
+                                    <option value="" disabled selected>Select Island Group</option>
+                                    <option value="Luzon">Luzon</option>
+                                    <option value="Visayas">Visayas</option>
+                                    <option value="Mindanao">Mindanao</option>
+                                </select>
                                 <label for="provinceSelect" class="location-label">Province:</label>
                                 <select id="provinceSelect" onchange="populateCities()" required>
                                     <option value="" disabled selected>Select Province</option>
@@ -350,15 +357,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <img src="../../../../public/assets/images/profile_icon.png" class="input-icon">
         <input id="age" type="number" readonly>
     </div>
+            <div class="input-group">
+            <img src="../../../../public/assets/images/mail_icon.png" class="input-icon">
+            <input id="emailInput" type="email" placeholder="Email" required name="email">
+        </div>
     `;
 
     // UPDATED STEP 3: Now includes the Checkbox and Link
     const step3Content = `
     <div class="step3-wrapper">
-        <div class="input-group">
-            <img src="../../../../public/assets/images/mail_icon.png" class="input-icon">
-            <input id="emailInput" type="email" placeholder="Email" required name="email">
-        </div>
         <div class="input-group password-group"> 
             <img src="../../../../public/assets/images/lock_icon.png" class="input-icon">
             <input id="passwordInput" type="password" placeholder="Password" required name="password">
@@ -369,7 +376,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input id="confirmPasswordInput" type="password" placeholder="Confirm Password" required name="confirm_password">
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmPasswordInput')"></i>
         </div>
-        <div id="passwordError" style="color: #a31212; margin-top: -10px; margin-bottom: 10px; font-size: 14px; text-align: left; padding-left: 55px; min-height: 20px;"></div>
+        
+        <!-- Password Strength Indicator -->
+        <div class="password-strength-container">
+            <div class="strength-bar-bg">
+                <div id="strengthBar" class="strength-bar"></div>
+            </div>
+            <p id="strengthText" class="strength-text"></p>
+            <div class="requirements-list">
+                <div id="req-length" class="requirement unchecked">
+                    <i class="fas fa-times"></i> At least 8 characters
+                </div>
+                <div id="req-number" class="requirement unchecked">
+                    <i class="fas fa-times"></i> At least 1 number
+                </div>
+                <div id="req-lowercase" class="requirement unchecked">
+                    <i class="fas fa-times"></i> At least 1 lowercase letter
+                </div>
+                <div id="req-uppercase" class="requirement unchecked">
+                    <i class="fas fa-times"></i> At least 1 uppercase letter
+                </div>
+                <div id="req-special" class="requirement unchecked">
+                    <i class="fas fa-times"></i> At least 1 special character
+                </div>
+            </div>
+        </div>
 
         <div class="privacy-row">
             <input type="checkbox" id="privacyCheck">
@@ -400,7 +431,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     function goToStep3() {
         saveStepData();
-        transitionStep(step3Content, 3, null);
+        transitionStep(step3Content, 3, attachPasswordStrengthChecker); // Change null to attachPasswordStrengthChecker
     }
 
     function transitionStep(content, step, callback) {
@@ -466,7 +497,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Inject hidden inputs for data from previous steps
         const hiddenFields = { 'name': formData.name, 'province': formData.province, 'phone-number': formData.phone };
         for (const [key, value] of Object.entries(hiddenFields)) {
-            if (value && !form.querySelector(`input[name="${key}"]`)) {
+            if (value && !form.querySelector(input[name="${key}"])) {
                 let input = document.createElement("input");
                 input.type = "hidden";
                 input.name = key;
@@ -536,11 +567,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
     function saveLocationAndClose() {
-        const p = document.getElementById('provinceSelect').value;
+        const o = document.getElementById('provinceSelect').value;
         const c = document.getElementById('citySelect').value;
         const b = document.getElementById('barangaySelect').value;
-        if (!p || !c || !b) { alert("Incomplete location."); return; }
-        const loc = `${p} / ${c} / ${b}`;
+        if (!o || !c || !b) { alert("Incomplete location."); return; }
+        const loc = `${o} / ${c} / ${b}`;
         document.getElementById('provinceInput').value = loc;
         document.getElementById('locationDisplayField').textContent = loc;
         formData.province = loc;
@@ -578,6 +609,97 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             fileInput._hasHandler = true;
         }
     }
+
+     function attachPasswordStrengthChecker() {
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+    
+    if (!passwordInput) return;
+
+    // Password strength checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        
+        // Check each requirement
+        const hasLength = password.length >= 8;
+        const hasNumber = /\d/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        
+        // Update requirement indicators
+        updateRequirement('req-length', hasLength);
+        updateRequirement('req-number', hasNumber);
+        updateRequirement('req-lowercase', hasLowercase);
+        updateRequirement('req-uppercase', hasUppercase);
+        updateRequirement('req-special', hasSpecial);
+        
+        // Calculate strength
+        let strength = 0;
+        if (hasLength) strength++;
+        if (hasNumber) strength++;
+        if (hasLowercase) strength++;
+        if (hasUppercase) strength++;
+        if (hasSpecial) strength++;
+        
+        // Update strength bar
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        
+        if (password.length === 0) {
+            strengthBar.style.width = '0%';
+            strengthBar.style.backgroundColor = '#e0e0e0';
+            strengthText.textContent = '';
+            strengthText.style.color = '#999';
+        } else if (strength <= 2) {
+            strengthBar.style.width = '33%';
+            strengthBar.style.backgroundColor = '#d32f2f';
+            strengthText.textContent = 'Weak Password';
+            strengthText.style.color = '#d32f2f';
+        } else if (strength === 3 || strength === 4) {
+            strengthBar.style.width = '66%';
+            strengthBar.style.backgroundColor = '#ff9800';
+            strengthText.textContent = 'Medium Password';
+            strengthText.style.color = '#ff9800';
+        } else {
+            strengthBar.style.width = '100%';
+            strengthBar.style.backgroundColor = '#388e3c';
+            strengthText.textContent = 'Strong Password';
+            strengthText.style.color = '#388e3c';
+        }
+    });
+    
+    // Also check confirm password match
+    if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword.length > 0) {
+                if (password === confirmPassword) {
+                    this.style.borderColor = '#388e3c';
+                } else {
+                    this.style.borderColor = '#d32f2f';
+                }
+            } else {
+                this.style.borderColor = '#a31212';
+            }
+        });
+    }
+}
+
+function updateRequirement(id, satisfied) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    
+    if (satisfied) {
+        element.classList.remove('unchecked');
+        element.classList.add('checked');
+    } else {
+        element.classList.remove('checked');
+        element.classList.add('unchecked');
+    }
+}   
 
     document.addEventListener('DOMContentLoaded', () => {
         updateButton(); updateDots(); attachProfileImageHandlerIfNeeded(); loadStepData();
