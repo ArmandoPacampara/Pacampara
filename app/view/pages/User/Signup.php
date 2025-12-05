@@ -2,92 +2,20 @@
 session_start();
 // Adjust paths to match your project structure (app/view/pages/User/)
 require_once '../../../../app/core/db.php';
-require_once '../../../../app/core/Logger.php';
-require_once '../../../../vendor/autoload.php';
+require_once '../../../../app/controller/SignupController.php'; // Include the Controller
 
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-
-// Ensure database connection is established
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'];
-    $province = $_POST['province'];
-    $address = $_POST['address'];
-    $city = $_POST['city'];
-    $phone = $_POST['phone-number'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $confirm = $_POST['confirm_password'];
-
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        die("Invalid email address.");
-    }
-
-
-    if ($_POST['password'] !== $_POST['confirm_password']) {
-        die("Passwords do not match.");
-    }
-
-
-    $check = $con->prepare("SELECT * FROM users WHERE user_email = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $result = $check->get_result();
-
-
-    if ($result->num_rows > 0) {
-        Logger::log($con, 0, "SIGNUP_FAILED", "Attempted signup with existing email: $email");
-        die("Email already exists.");
-    }
-
-
-    $otp = rand(100000, 999999);
-    $_SESSION['otp'] = $otp;
-    $_SESSION['signup_data'] = [
-        'name' => $name,
-        'province' => $province,
-        'address' => $address,
-        'city' => $city,
-        'phone' => $phone,
-        'email' => $email,
-        'password' => $password
-    ];
-
-
-    $mail = new PHPMailer(true);
-
-
-    try {
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'austrianeon@gmail.com';
-        $mail->Password   = 'nghr kpmt blck nkwg';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
-
-
-        $mail->setFrom('austrianeon@gmail.com', 'MoviEase');
-        $mail->addAddress($email, $name);
-        $mail->isHTML(true);
-        $mail->Subject = 'MoviEase Email Verification OTP';
-        $mail->Body    = "<h2>Hi $name!</h2><p>Your OTP is: <b>$otp</b></p><p>Enter this code to complete your signup.</p>";
-
-
-        $mail->send();
-       
-        Logger::log($con, 0, "SIGNUP_INITIATED", "OTP sent to potential new user: $email");
-
-
-        header("Location: VerifyOTP.php");
-        exit;
-    } catch (Exception $e) {
-        echo "Error sending OTP: {$mail->ErrorInfo}";
-    }
+// Ensure database connection is established (from db.php, provides $con)
+if ($con === null || $con->connect_error) {
+    die("Database connection failed.");
 }
+
+// 1. Instantiate the Controller
+$signupController = new SignupController($con);
+
+// 2. Delegate the request handling
+$signupController->handleSignupRequest();
+// If successful, the controller redirects to VerifyOTP.php. 
+// If unsuccessful, the controller redirects back to Signup.php after setting $_SESSION['error'].
 ?>
 
 
@@ -154,7 +82,7 @@ h2 {
 }
 
 
-/* ===== Layout (unchanged) ===== */
+/* ===== Layout (MODIFIED: .container position changed to relative for back button) ===== */
 .wrapper {
     display: flex;
     align-items: center;
@@ -189,7 +117,7 @@ h2 {
 
 
 .container {
-    position: unset;
+    position: relative; /* MODIFIED: Set to relative for positioning the back button */
     background-color: #fff;
     border-radius: 25px;
     height: 640px;
@@ -223,6 +151,31 @@ h2 {
     margin-right: 50px;
 }
 
+/* ===== Back Button ADDED Styles (unchanged from last request) ===== */
+.back-to-login-link {
+    display: inline-flex;
+    align-items: center;
+    position: absolute;
+    top: 35px;
+    left: 45px; 
+    text-decoration: none;
+    color: #a31212;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s;
+    z-index: 10;
+}
+
+.back-to-login-link i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.back-to-login-link:hover {
+    color: #870e0e;
+    text-decoration: underline;
+}
+/* =================================== */
 
 /* ===== Input Fields (icon outside input) ===== */
 /* NOTE: We modify the input-group margin here to reduce the gap for Step 2/3 buttons */
@@ -1083,6 +1036,9 @@ form .input-group input[type="text"] {
 
 
         <div class="container">
+            <a href="../../../../public/index.php" class="back-to-login-link">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
             <div class="logo">
                 <img src="../../../../public/assets/images/movies_icon.png" alt="logo">
                 <h1>MoviEase</h1>
@@ -1092,7 +1048,11 @@ form .input-group input[type="text"] {
             <h2>Sign Up your Account</h2>
             <div class="divider"></div>
 
-
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="error-message" style="color: red; text-align: center; margin-bottom: 15px; font-weight: 500;">
+                    <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                </div>
+            <?php endif; ?>
             <form id="signupForm" method="POST" action="" enctype="multipart/form-data">
                 <center>
                     <div class="container2">
@@ -1232,8 +1192,10 @@ form .input-group input[type="text"] {
             formData.birthdate = document.getElementById('birthdate') ? document.getElementById('birthdate').value : '';
             formData.age = document.getElementById('age') ? document.getElementById('age').value : '';
             formData.genres = Array.from(document.querySelectorAll('input[name="popupGenre"]:checked')).map(i => i.value);
-        } else if (currentStep === 3) {
+            // NEW: Save email input from step 2
             formData.email = document.getElementById('emailInput') ? document.getElementById('emailInput').value : '';
+        } else if (currentStep === 3) {
+            // NEW: Use email from step 2 data
             formData.password = document.getElementById('passwordInput') ? document.getElementById('passwordInput').value : '';
             formData.confirmPassword = document.getElementById('confirmPasswordInput') ? document.getElementById('confirmPasswordInput').value : '';
             // Don't need to save checkbox state as it's the final action
@@ -1257,10 +1219,11 @@ form .input-group input[type="text"] {
                 checkboxes.forEach(cb => { cb.checked = formData.genres.includes(cb.value); });
                 updateGenreField();
             }
+            // NEW: Load email input into step 2
+            if (document.getElementById('emailInput') && formData.email) document.getElementById('emailInput').value = formData.email;
 
 
         } else if (currentStep === 3) {
-            if (document.getElementById('emailInput') && formData.email) document.getElementById('emailInput').value = formData.email;
             if (document.getElementById('passwordInput') && formData.password) document.getElementById('passwordInput').value = formData.password;
             if (document.getElementById('confirmPasswordInput') && formData.confirmPassword) document.getElementById('confirmPasswordInput').value = formData.confirmPassword;
         }
@@ -1345,7 +1308,6 @@ form .input-group input[type="text"] {
             <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility('confirmPasswordInput')"></i>
         </div>
        
-        <!-- Password Strength Indicator -->
         <div class="password-strength-container">
             <div class="strength-bar-bg">
                 <div id="strengthBar" class="strength-bar"></div>
@@ -1395,7 +1357,11 @@ form .input-group input[type="text"] {
 
     function goToStep2() {
         saveStepData();
-        transitionStep(step2Content, 2, () => { attachAgeCalculator(); });
+        transitionStep(step2Content, 2, () => { 
+            attachAgeCalculator();
+            // Ensure email field is loaded for validation
+            if (document.getElementById('emailInput') && formData.email) document.getElementById('emailInput').value = formData.email;
+        });
     }
     function goToStep1() {
         saveStepData();
@@ -1426,40 +1392,46 @@ form .input-group input[type="text"] {
 
     // --- VALIDATION AND SUBMIT ---
     function validateAndSubmit() {
+        // MUST call saveStepData() one last time to pull data from fields currently in view (Step 3)
+        // AND data from Step 2 fields that are displayed in Step 2.
+        saveStepData(); 
+
         const errors = [];
        
-        // Re-validate Step 1 & 2 data from memory
-        const name = formData.name || document.getElementById("nameInput")?.value;
-        const location = formData.province || document.getElementById("provinceInput")?.value;
-        const phone = formData.phone || document.getElementById("phoneInput")?.value;
-        if (!name || name.trim().length < 2) errors.push("Please enter a valid name.");
-        if (!location) errors.push("Please select your complete location.");
-        if (!phone || !/^[0-9]{10,12}$/.test(phone)) errors.push("Phone number must be 10-12 digits.");
+        // Re-validate Step 1 data from memory
+        const name = formData.name;
+        const location = formData.province;
+        const phone = formData.phone;
+        if (!name || name.trim().length < 2) errors.push("Step 1: Please enter a valid name.");
+        if (!location) errors.push("Step 1: Please select your complete location.");
+        if (!phone || !/^[0-9]{10,12}$/.test(phone)) errors.push("Step 1: Phone number must be 10-12 digits.");
 
-
-        const birthdate = formData.birthdate || document.getElementById("birthdate")?.value;
-        const age = formData.age || document.getElementById("age")?.value;
-        if (!birthdate) errors.push("Please select your birthdate.");
-        if (!age || age < 5) errors.push("Your age is invalid.");
-        if (!formData.genres || formData.genres.length === 0) errors.push("Please choose at least one genre.");
+        // Re-validate Step 2 data from memory
+        const birthdate = formData.birthdate;
+        const age = formData.age;
+        const email = formData.email;
+        if (!birthdate) errors.push("Step 2: Please select your birthdate.");
+        if (!age || age < 5) errors.push("Step 2: Your age is invalid.");
+        if (!formData.genres || formData.genres.length === 0) errors.push("Step 2: Please choose at least one genre.");
+        if (!email || !email.includes("@")) errors.push("Step 2: Please enter a valid email address.");
 
 
         // Validate Step 3 (Current)
-        const email = document.getElementById("emailInput").value;
-        const password = document.getElementById("passwordInput").value;
-        const confirmPassword = document.getElementById("confirmPasswordInput").value;
-        const privacyChecked = document.getElementById("privacyCheck").checked;
+        const password = formData.password;
+        const confirmPassword = formData.confirmPassword;
+        const privacyChecked = document.getElementById("privacyCheck")?.checked;
 
 
-        if (!email || !email.includes("@")) errors.push("Please enter a valid email address.");
-        if (!password) errors.push("Password cannot be empty.");
-        else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) errors.push("Password must be 8+ chars, with uppercase, lowercase, and numbers.");
-        if (password !== confirmPassword) errors.push("Passwords do not match.");
+        if (!password) errors.push("Step 3: Password cannot be empty.");
+        // Use the stricter regex check
+        else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/.test(password)) errors.push("Step 3: Password must be 8+ chars, with uppercase, lowercase, numbers, and a special character.");
+        
+        if (password !== confirmPassword) errors.push("Step 3: Passwords do not match.");
 
 
-        // NEW CHECK: Checkbox validation
+        // Checkbox validation
         if (!privacyChecked) {
-            errors.push("You must agree to the Data Privacy Consent.");
+            errors.push("Step 3: You must agree to the Data Privacy Consent.");
         }
 
 
@@ -1475,10 +1447,24 @@ form .input-group input[type="text"] {
 
     function confirmSignup() {
         const form = document.getElementById("signupForm");
-        // Inject hidden inputs for data from previous steps
-        const hiddenFields = { 'name': formData.name, 'province': formData.province, 'phone-number': formData.phone };
+        // Inject hidden inputs for ALL data from previous steps (1 & 2) AND current step (3) that need to be POSTed to PHP
+        
+        // Data from Step 1
+        const hiddenFields = { 
+            'name': formData.name, 
+            'province': formData.province, 
+            'phone-number': formData.phone, 
+            'email': formData.email, // From step 2 (now added to formData in saveStepData)
+            'password': formData.password, // From step 3 (now added to formData in saveStepData)
+            'confirm_password': formData.confirmPassword // From step 3 (now added to formData in saveStepData)
+            // Note: birthdate, age, genres are currently not captured by PHP but can be added here if the PHP uses them later
+        };
+        
+        // Clear any existing hidden fields before adding new ones
+        form.querySelectorAll('input[type="hidden"]').forEach(input => input.remove());
+        
         for (const [key, value] of Object.entries(hiddenFields)) {
-            if (value && !form.querySelector(`input[name="${key}"]`)) {
+            if (value !== undefined && value !== null) { // Only add if present
                 let input = document.createElement("input");
                 input.type = "hidden";
                 input.name = key;
@@ -1486,18 +1472,19 @@ form .input-group input[type="text"] {
                 form.appendChild(input);
             }
         }
+        
+        // **This line triggers the POST request to the Controller via PHP**
         form.submit();
     }
 
 
-    // --- MODAL LOGIC ---
+    // --- MODAL LOGIC (UNCHANGED) ---
     function showPrivacyModal() { document.getElementById("privacyModal").style.display = "flex"; }
     function closePrivacyModal() { document.getElementById("privacyModal").style.display = "none"; }
    
     function acceptPrivacy() {
-        // When clicking "I Agree" in the modal:
         const checkbox = document.getElementById("privacyCheck");
-        if (checkbox) checkbox.checked = true; // Check the box automatically
+        if (checkbox) checkbox.checked = true;
         closePrivacyModal();
     }
 
@@ -1515,7 +1502,7 @@ form .input-group input[type="text"] {
     function closeErrorModal() { document.getElementById("errorModal").style.display = "none"; }
 
 
-    // --- UTILITIES (Password toggle, location, genre, etc.) ---
+    // --- UTILITIES (Password toggle, location, genre, etc. - UNCHANGED) ---
     function togglePasswordVisibility(id) {
         const input = document.getElementById(id);
         const icon = document.querySelector(`#${id} + .toggle-password`);
@@ -1528,6 +1515,8 @@ form .input-group input[type="text"] {
     function populateProvinces() {
         const sel = document.getElementById('provinceSelect');
         sel.innerHTML = '<option value="" disabled selected>Select Province</option>';
+        // Note: The original JS had a separate populateProvincesFromIsland, maintaining the original one here.
+        // Assuming the JS helper 'populateProvincesFromIsland()' correctly filters by island group.
         for (const p in locationData) { const opt = document.createElement('option'); opt.value = p; opt.textContent = p; sel.appendChild(opt); }
         document.getElementById('citySelect').disabled = true; document.getElementById('barangaySelect').disabled = true;
     }
@@ -1700,6 +1689,3 @@ function updateRequirement(id, satisfied) {
 </script>
 </body>
 </html>
-
-
-

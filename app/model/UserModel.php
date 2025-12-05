@@ -36,4 +36,20 @@ class UserModel {
         $stmt = $this->conn->prepare("DELETE FROM users WHERE user_ID = ?");
         return $stmt->execute([$id]);
     }
+
+    public function isEmailTaken(string $email): bool {
+        $check = $this->conn->prepare("SELECT user_id FROM users WHERE user_email = ? LIMIT 1");
+        
+        if (!$check) {
+            // Log database error if necessary
+            return false; 
+        }
+
+        $check->bind_param("s", $email);
+        $check->execute();
+        $result = $check->get_result();
+        $check->close();
+
+        return $result->num_rows > 0;
+    }
 }

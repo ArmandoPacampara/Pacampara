@@ -1,143 +1,123 @@
 <?php
-session_start();
-// Path from app/Controller/ up two levels to the project root, then down into app/core/
-require_once __DIR__ . '/../../app/core/db.php'; 
+// Note: Session is started in the main index.php or Signup.php before this is included
 
-$database = new Database();
-$con = $database->getConnection(); // mysqli object connection
+require_once __DIR__ . '/../model/UserModel.php';
+require_once __DIR__ . '/../core/Logger.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-// --- Utility Function: Strong Password Policy (Matches your JS rules) ---
-function is_strong_password($password) {
-    $min_length = 8;
-    // Regex: at least one lowercase, one uppercase, one digit
-    $complexity_regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-    if (strlen($password) < $min_length) {
-        return "Password must be at least {$min_length} characters long.";
-    }
-    if (!preg_match($complexity_regex, $password)) {
-        return "Password must include at least one uppercase letter, one lowercase letter, and one number.";
-    }
-    return true;
-}
+class SignupController {
+    private $userModel;
+    private $con;
 
-// Check if the form was submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // --- 1. Collect and Sanitize Input ---
-    $name = trim($_POST['name'] ?? '');
-    $phone = trim($_POST['phone-number'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    
-    // Data from Steps 1 & 2
-    $location = trim($_POST['location'] ?? ''); 
-    $birthdate = trim($_POST['birthdate'] ?? '');
-    $age = (int)($_POST['age'] ?? 0);
-    $genres = trim($_POST['genres'] ?? ''); // Comma-separated string
-    
-    // Default values
-    $default_role_id = 2; // Assuming 2 is 'Customer'
-    $email_recovery = $email; 
-    
-    // Profile Image Handling (Basic)
-    $avatar_file = $_FILES['profileImageInput'] ?? null;
-    $avatar_filename = 'account_icon.png';
-    // NOTE: Full image upload logic (moving file, checking size/type) is complex and omitted here.
-
-    $error = null;
-
-    // --- 2. PHP Server-Side Validation (CRITICAL) ---
-    
-    // a. Basic checks (must mirror client-side)
-    if (empty($name) || empty($phone) || empty($email) || empty($password) || empty($location)) {
-        $error = "Please fill in all required fields.";
-    }
-    if ($password !== $confirm_password) {
-        $error = "Passwords do not match.";
-    }
-    if ($age < 13) {
-        $error = "You must be at least 13 years old to register.";
-    }
-    
-    // b. Strong Password Policy Check
-    $policy_result = is_strong_password($password);
-    if ($policy_result !== true) {
-        $error = $policy_result;
+    public function __construct($con) {
+        $this->con = $con;
+        $this->userModel = new UserModel($con);
     }
 
-    // c. Check if Email Already Exists (Use Prepared Statements)
-    if (!$error) {
-        $check_query = "SELECT user_id FROM users WHERE user_email = ? LIMIT 1";
-        $stmt_check = $con->prepare($check_query);
-        $stmt_check->bind_param("s", $email);
-        $stmt_check->execute();
-        $stmt_check->store_result();
-
-        if ($stmt_check->num_rows > 0) {
-            $error = "This email address is already registered.";
+    /**
+     * Handles the full signup request lifecycle (validation, email check, OTP generation).
+     */
+    public function handleSignupRequest() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
         }
-        $stmt_check->close();
-    }
-    
-    // --- 3. Process and Save User ---
-    if (!$error) {
         
-        // **CRITICAL SECURITY STEP: HASH THE PASSWORD**
-        // Store the hash securely.
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        // Data should be coming from JavaScript-injected hidden fields when the form is submitted
+        $name = $_POST['name'] ?? '';
+        $province = $_POST['province'] ?? ''; // This holds the concatenated location (Province / City / Barangay)
+        // Note: address and city are not passed in the current JS logic, so they are set to empty string
+        $address = $_POST['address'] ?? ''; // Currently unused in JS, adjust if needed
+        $city = $_POST['city'] ?? ''; // Currently unused in JS, adjust if needed
+        $phone = $_POST['phone-number'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+
+        // --- 1. Server-Side Validation ---
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Invalid email address format.";
+            $this->redirectBack();
+        }
+
+        if ($password !== $confirm) {
+            $_SESSION['error'] = "Passwords do not match.";
+            $this->redirectBack();
+        }
         
-        $current_datetime = date('Y-m-d H:i:s'); 
+        // Re-check password strength requirements if necessary (as done in JS validateAndSubmit)
+        // Example check:
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/', $password)) {
+            $_SESSION['error'] = "Password must be at least 8 characters long and contain uppercase, lowercase, and a number.";
+            $this->redirectBack();
+        }
 
-        $insert_query = "INSERT INTO users (
-            role_id, user_name, user_email, user_contact, user_password, 
-            email_recovery, user_avatar, last_password_change
-            -- Note: 'user_location' and 'user_genres' columns are assumed to be handled elsewhere, 
-            -- or you need to add them to the 'users' table or separate tables.
-        ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?
-        )";
 
-        $stmt = $con->prepare($insert_query);
-        
-        // Bind parameters: isssssss (i=int, s=string)
-        $stmt->bind_param("isssssss", 
-            $default_role_id, 
-            $name, 
-            $email, 
-            $phone, 
-            $hashed_password, 
-            $email_recovery, 
-            $avatar_filename, // Using default filename for now
-            $current_datetime 
-        );
+        // --- 2. Database Check (Model Call) ---
+        if ($this->userModel->isEmailTaken($email)) {
+            Logger::log($this->con, 0, "SIGNUP_FAILED", "Attempted signup with existing email: $email");
+            $_SESSION['error'] = "Email address already exists.";
+            $this->redirectBack();
+        }
 
-        if ($stmt->execute()) {
-            $stmt->close();
-            
-            // Registration SUCCESS: Redirect to login page (index.php)
-            $_SESSION['success_message'] = "Registration successful! Please log in.";
-            // Path from app/Controller/ up two levels to the project root index.php
-            header("Location: ../../public/index.php"); 
+        // --- 3. Data Staging & OTP Generation ---
+        $otp = rand(100000, 999999);
+        $_SESSION['otp'] = $otp;
+        $_SESSION['signup_data'] = [
+            'name' => $name,
+            'province' => $province,
+            'address' => $address, 
+            'city' => $city,
+            'phone' => $phone,
+            'email' => $email,
+            // Hashing the password immediately before storing in session
+            'password' => password_hash($password, PASSWORD_DEFAULT) 
+        ];
+
+
+        // --- 4. Email Sending (PHPMailer) ---
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'austrianeon@gmail.com';
+            $mail->Password   = 'nghr kpmt blck nkwg'; // WARNING: Use environment variable or vault for real password
+            $mail->SMTPSecure = 'tls';
+            $mail->Port       = 587;
+
+            $mail->setFrom('austrianeon@gmail.com', 'MoviEase');
+            $mail->addAddress($email, $name);
+            $mail->isHTML(true);
+            $mail->Subject = 'MoviEase Email Verification OTP';
+            $mail->Body    = "<h2>Hi $name!</h2><p>Your OTP is: <b>$otp</b></p><p>Enter this code to complete your signup.</p>";
+
+            $mail->send();
+           
+            Logger::log($this->con, 0, "SIGNUP_INITIATED", "OTP sent to potential new user: $email");
+
+            // --- 5. Final Redirection ---
+            header("Location: VerifyOTP.php");
             exit;
-        } else {
-            $error = "Database error: Could not register user. " . $con->error;
+            
+        } catch (Exception $e) {
+            // Log the error and set user-friendly message
+            Logger::log($this->con, 0, "EMAIL_FAILED", "Error sending OTP to $email: {$mail->ErrorInfo}");
+            $_SESSION['error'] = "Error sending verification code. Please check your email address and try again. Technical error: {$mail->ErrorInfo}";
+            $this->redirectBack();
         }
-        $stmt->close();
     }
 
-    // --- 4. Handle Error and Redirect Back ---
-    if ($error) {
-        $_SESSION['signup_error'] = $error;
-        $_SESSION['form_data'] = $_POST; // Persist form data to re-fill fields
-        // Path from app/Controller/ to app/view/pages/Signup.php
-        header("Location: ../view/pages/Signup.php"); 
+    /**
+     * Helper function to redirect back to the signup form on failure.
+     */
+    private function redirectBack() {
+        header("Location: Signup.php"); 
         exit;
     }
-} else {
-    // If accessed directly, redirect
-    header("Location: ../view/pages/Signup.php"); 
-    exit;
 }
 ?>

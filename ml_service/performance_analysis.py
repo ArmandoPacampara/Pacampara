@@ -1,9 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
-# Import numpy for square root calculation
+# Import numpy for general calculations (though not strictly needed just for R2)
 import numpy as np 
-# Import mean_squared_error for metric calculation
-from sklearn.metrics import mean_squared_error
+# 💥 CHANGED: Import r2_score instead of mean_squared_error
+from sklearn.metrics import r2_score 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split 
 from flask import Flask, jsonify, request
@@ -69,15 +69,17 @@ if not df.empty:
     # 1. Predict on the test set
     y_pred = model.predict(X_test)
     
-    # 2. Calculate Root Mean Squared Error (RMSE)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+    # 2. Calculate R-squared (R²) Score
+    # R2 ranges from -∞ to 1.0. Higher is better.
+    r_squared = r2_score(y_test, y_pred)
     
     # 3. Extract Feature Importance
     importances = model.feature_importances_
     
     print("-" * 50)
     print(f"Model Trained Successfully on {len(X_train)} samples.")
-    print(f"Performance Metric (RMSE on Test Set): {rmse:.2f}")
+    # 💥 UPDATED: Print R-squared score
+    print(f"Performance Metric (R-squared Score on Test Set): {r_squared:.4f}")
     print("\nFeature Importance:")
     for feature, importance in zip(features, importances):
         # Day 0 = Monday, Day 6 = Sunday

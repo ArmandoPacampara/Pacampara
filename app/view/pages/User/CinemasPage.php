@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinemas</title>
     <link rel="stylesheet" href="../../../../public/styles/css/CinemasPage.css">
-
+    <link rel="stylesheet" href="../../../../public/styles/css/cookie-consent.css">
 
     <script>
         function handleVisitClick(cinema) {
@@ -58,12 +58,9 @@
                 <a href="javascript:void(0)" class="visit-btn" onclick="handleVisitClick('Ayala')">VISIT</a>
             </div>
         </div>
-
-
     </div>
+    <script src="../../../../utils/cookie-consent.js"></script>
 </body>
-
-
 </html>
 
 

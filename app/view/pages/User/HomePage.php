@@ -11,7 +11,6 @@ require_once __DIR__ . '/../../../core/session_check.php';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase</title>
 
-
   <!-- Correct path to CSS (3 levels up + styles/css/) -->
   <link rel="stylesheet" href="../../../../public/styles/css/HomepageStyle.css">
 </head>
@@ -99,7 +98,6 @@ require_once __DIR__ . '/../../../core/session_check.php';
         document.getElementById("mainFrame").src = "CinemasPage.php";
     }
   </script>
-
 
 </body>
 </html>
