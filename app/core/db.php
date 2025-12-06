@@ -1,10 +1,10 @@
 <?php
 class Database {
-    private $host = "sql301.infinityfree.com";
-    private $db_name = "if0_40607448_XXX";
-    private $username = "if0_40607448";
-    private $password = "z0gB9iFfmMA";
-    private $port = 3306; // Defined port property
+    private $host = "localhost";
+    private $db_name = "moviease_db";
+    private $username = "root";
+    private $password = "admin";
+    private $port = 3307; // Defined port property
     public $conn;
 
     public function getConnection() {
@@ -26,12 +26,11 @@ class Database {
 }
 
 // Procedural connection (Global variable)
-$host = "sql301.infinityfree.com";
-$user = "if0_40607448";
-$pass = "z0gB9iFfmMA";
-$dbname = "if0_40607448_XXX";
-$port = 3306; // Port added here
-
+$host = "localhost";
+$user = "root";
+$pass = "admin";
+$dbname = "moviease_db";
+$port = 3307; // Port added here
 // Establish procedural connection
 $con = new mysqli($host, $user, $pass, $dbname, $port);
 

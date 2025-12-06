@@ -296,7 +296,7 @@ function format_date_header($date_string) {
                 </span>
                 <div class="flex flex-row flex-nowrap justify-start items-center w-[60%] gap-2 overflow-x-auto p-2">
                     <?php foreach ($showtimes as $time): ?>
-                    <a href="SeatsPage.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_info['id'] ?>&schedule=<?= urlencode($time['full_showtime']) ?>"
+                    <a href="Checkout.php?movie_id=<?= $movie_id ?>&cinema_id=<?= $cinema_info['id'] ?>&schedule=<?= urlencode($time['full_showtime']) ?>"
                        class="flex justify-center items-center bg-gray-200 rounded-xl text-red-700 font-bold p-2 min-w-[100px] hover:bg-white duration-200 text-center whitespace-nowrap">
                         <?= $time['time'] ?>
                     </a>
