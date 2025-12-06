@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviEase</title>
   <link rel="stylesheet" href="../../../public/styles/css/HomepageStyle.css">
+  <link rel="stylesheet" href="../../../../public/styles/css/cookie-consent.css">
+
   <style>
     html, body {
       height: 100%;
@@ -54,5 +56,7 @@
     </nav>
   </div>
   <iframe name="main-frame" id="mainFrame" src="Checkout.php"></iframe>
+  <script src="../../../../utils/cookie-consent.js"></script>
+
 </body>
 </html>

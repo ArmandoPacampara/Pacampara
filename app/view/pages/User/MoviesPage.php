@@ -100,6 +100,7 @@ $coming_soon_result = $con->query("SELECT * FROM movies WHERE movie_status='Comi
   <title>Movies</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="../../../../public/styles/css/cookie-consent.css">
   <style>
     .shadow-strong {
       box-shadow: 0 0 12px rgba(0,0,0,0.4);

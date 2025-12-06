@@ -185,6 +185,8 @@ $progress_width = match($current_step) {
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="../../../../public/styles/css/Checkout.css">
+  <link rel="stylesheet" href="../../../../public/styles/css/cookie-consent.css">
+
 </head>
 
 <body class="p-4 md:p-8">
@@ -578,9 +580,9 @@ $progress_width = match($current_step) {
             <i class="fas fa-lock mr-2"></i> Pay & Book
           </button>
       <?php endif; ?>
-
     </div>
-
   </div>
+    <script src="../../../../utils/cookie-consent.js"></script>
+
 </body>
 </html>
