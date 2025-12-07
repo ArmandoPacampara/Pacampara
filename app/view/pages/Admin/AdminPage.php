@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MoviEase Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/AdminPage.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+
+  <style>
+    /* ===== GENERAL STYLES ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #a10000;
+  color: #fff;
+  padding: 10px 30px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  margin-left: -8px;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.navbar-left i {
+  font-size: 1.3rem;
+}
+
+#toggleSidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.navbar-center {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  display: flex;
+  margin-top: 65px; 
+  height: calc(100vh - 65px);
+  transition: all 0.3s ease;
+}
+
+.sidebar {
+  width: 280px;
+  height: 100%;
+  margin-top: -3.5px;
+  background-color: #f2e4e2;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu a {
+  color: #ab1f1f;
+  padding: 17px 25px;
+  padding-left: 25px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-weight: bold;
+  font-size: 1.25rem;
+  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid #ddd;
+}
+
+.menu a i {
+  width: 25px;
+  text-align: center;
+}
+
+/* ===== ACTIVE MENU AND HOVER STYLES ===== */
+.menu a:hover,
+.menu a.active { /* Add this to keep hover color when active */
+  background-color: #ff4d4d;
+  color: #fff;
+}
+
+.menu a.active {
+  background-color: #d93333; /* Same hover color to keep when active */
+  color: #fff; /* Keep the text white */
+}
+
+/* ===== MAIN CONTENT / IFRAME ===== */
+.main-content {
+  flex: 1;
+  display: flex;
+  margin-top: -3.5px;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+  </style>
+  <body>
+    <!-- ===== TOP NAVBAR ===== -->
+    <header class="navbar">
+      <div class="navbar-left">
+        <button id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+        <span class="navbar-title">MOVIEASE</span>
+      </div>
+      <h2 class="navbar-center">ADMIN DASHBOARD</h2>
+      <div class="navbar-right">
+        <i class="fa-solid fa-gear" style="font-size: 25px;"></i>
+        <a href="AdminAccount.php" target="content-frame">
+    <img src="../../../../public/assets/images/account_icon.png" alt="Admin" class="profile-pic" />
+</a>
+      </div>
+    </header>
+
+    <div class="container">
+
+      <aside class="sidebar" id="sidebar">
+        <nav class="menu">
+          <a href="AdminDashboard.php" target="content-frame">
+            <i class="fa-solid fa-gauge"></i> <span>DASHBOARD</span>
+          </a>
+          <a href="UsersPage.php" target="content-frame">
+            <i class="fa-solid fa-users" style="font-size: 25px;"></i> <span>USERS</span>
+          </a>
+          <a href="CinemasPage.php" target="content-frame">
+            <i class="fa-solid fa-building" style="font-size: 25px;"></i> <span>CINEMAS</span>
+          </a>
+          <a href="MoviesPageA.php" target="content-frame">
+            <i class="fa-solid fa-film" style="font-size: 25px;"></i> <span>MOVIES</span>
+          </a>
+          <a href="SchedulePage.php" target="content-frame">
+            <i class="fa-solid fa-calendar-days" style="font-size: 25px;"></i> <span>CALENDAR</span>
+          </a>
+          <a href="SeatsPageA.php" target="content-frame">
+            <i class="fa-solid fa-chair" style="font-size: 25px;"></i> <span>SEATS</span>
+          </a>
+          <a href="ReportsPage.php" target="content-frame">
+            <i class="fa-solid fa-chart-line" style="font-size: 25px;"></i> <span>REPORTS</span>
+          </a>
+          <a href="AuditLogPage.php" target="content-frame">
+            <i class="fa-solid fa-shield-halved" style="font-size: 25px;"></i> <span>AUDIT LOGS</span>
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <iframe
+          id="adminIframe"
+          name="content-frame"
+          src="AdminDashboard.php"
+          frameborder="0"
+          class="content-frame"
+        ></iframe>
+      </main>
+    </div>
+
+    <script>
+      const toggleButton = document.getElementById("toggleSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const menuItems = sidebar.querySelectorAll(".menu a");
+
+      toggleButton.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+      });
+
+      menuItems.forEach((menuItem) => {
+        menuItem.addEventListener("click", () => {
+          menuItems.forEach((item) => item.classList.remove("active"));
+          
+          menuItem.classList.add("active");
+        });
+      });
+
+    function loadCinema(cinema) {
+        const iframe = document.getElementById("adminIframe");
+
+        switch (cinema) {
+            case "SM":
+                iframe.src = "Cinema_SM_Page.html";
+                break;
+            case "Robinson":
+                iframe.src = "Cinema_Robinson_Page.html";
+                break; 
+            case "Ayala":
+                iframe.src = "Cinema_Ayala_Page.html";
+                break;
+        }
+    }
+
+    function goBackToDashboard() {
+        document.getElementById("adminIframe").src = "AdminDashboard.php";
+    }
+    </script>
+  </body> 
+</html>
